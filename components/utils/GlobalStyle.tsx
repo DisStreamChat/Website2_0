@@ -48,16 +48,14 @@ const GlobalStyle = createGlobalStyle`
 
 	/* Handle */
 	::-webkit-scrollbar-thumb {
-		background: var(--background-dark-gray);
+		background: var(--disstreamchat-blue);
 		border-radius: 100px;
 	}
 
 	/* Handle on hover */
 	::-webkit-scrollbar-thumb:hover {
-		background: #111;
-}
-
-
+		background: ${chroma("#2d688d").darken(.1).hex()}
+	}
 
 	.MuiFormHelperText-contained{
 		margin-left: 0px !important;
