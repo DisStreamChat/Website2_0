@@ -1,4 +1,3 @@
-import "../styles/globals.css";
 import Router from "next/router";
 import NProgress from "nprogress";
 import SEO from "../components/utils/SEO"
