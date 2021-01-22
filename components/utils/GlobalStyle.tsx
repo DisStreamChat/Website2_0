@@ -14,7 +14,7 @@ const GlobalStyle = createGlobalStyle`
 			rgb(162, 58, 195) -17.84%,
 			rgb(106, 69, 173) 114.96%
 		);
-		}
+	}
 
     html,
     body {

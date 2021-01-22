@@ -9,6 +9,7 @@ const SEO = () => {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
 			<meta name="title" content="DisStreamChat" />
+			<meta httpEquiv="Content-Security-Policy" content="" />
 			<meta name="keywords" content="disstreamchat discord twitch disstreambot" />
 			<meta
 				name="description"
@@ -71,6 +72,30 @@ const SEO = () => {
 				data-hid="og:title"
 				property="og:title"
 				content="DisStreamChat - The Best Discord/Twitch chat manager"
+			/>
+			<link
+				rel="preload"
+				href="https://cdn.jsdelivr.net/gh//GypsyDangerous/simple-css-reset/reset.css"
+				as="style"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/gh//GypsyDangerous/simple-css-reset/reset.css"
+			/>
+			<link
+				rel="stylesheet"
+				href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.css"
+				integrity="sha512-DanfxWBasQtq+RtkNAEDTdX4Q6BPCJQ/kexi/RftcP0BcA4NIJPSi7i31Vl+Yl5OCfgZkdJmCqz+byTOIIRboQ=="
+				crossOrigin="anonymous"
+			/>
+			<link
+				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+				rel="preload"
+				as="style"
+			/>
+			<link
+				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
+				rel="stylesheet"
 			/>
 			<title>DisStreamChat</title>
 		</Head>

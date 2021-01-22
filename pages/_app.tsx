@@ -1,6 +1,7 @@
 import Router from "next/router";
 import NProgress from "nprogress";
-import SEO from "../components/utils/SEO"
+import Header from "../components/header";
+import SEO from "../components/utils/SEO";
 
 Router.events.on("routeChangeStart", () => {
 	NProgress.start();
@@ -15,13 +16,18 @@ Router.events.on("routeChangeError", () => {
 });
 
 const App = ({ children }) => {
-	return <>{children}</>;
+	return (
+		<>
+			<Header />
+			{children}
+		</>
+	);
 };
 
 function MyApp({ Component, pageProps }) {
 	return (
 		<App>
-			<SEO/>
+			<SEO />
 			<Component {...pageProps} />
 		</App>
 	);
