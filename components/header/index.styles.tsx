@@ -6,6 +6,7 @@ const Header = styled.header`
 	align-items: center;
 	height: 80px;
 	background: var(--background-dark-gray);
+	position: relative;
 `;
 
 const nav = styled.nav`
