@@ -4,6 +4,7 @@ import Anchor from "../shared/ui-components/Anchor";
 import { useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
 import { useState } from "react";
+import {PurpleButton} from "../shared/ui-components/Button"
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +71,7 @@ const Header = () => {
 							/>
 						</div>
 					) : (
-						"Profile"
+						<PurpleButton>Login</PurpleButton>
 					)}
 				</styles.navItem>
 			</styles.nav>
