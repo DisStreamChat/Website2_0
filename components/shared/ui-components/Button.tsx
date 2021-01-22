@@ -20,9 +20,9 @@ export const PaddingButton = withStyles((theme: Theme) => ({
 export const PurpleButton = withStyles((theme: Theme) => ({
 	root: {
 		color: theme.palette.getContrastText("#462b45"),
-		backgroundColor: " #462b45",
+		background: "#462b45",
 		"&:hover": {
-			backgroundColor: chroma("#462b45").darken(0.25).hex(),
+			background: chroma("#462b45").darken(0.25).hex(),
 		},
 	},
 }))(PaddingButton);
@@ -30,9 +30,9 @@ export const PurpleButton = withStyles((theme: Theme) => ({
 export const BlueButton = withStyles((theme: Theme) => ({
 	root: {
 		color: theme.palette.getContrastText("#2d688d"),
-		backgroundColor: "#2d688d",
+		background: "#2d688d",
 		"&:hover": {
-			backgroundColor: chroma("#2d688d").darken(0.25).hex(),
+			background: chroma("#2d688d").darken(0.25).hex(),
 		},
 	},
 }))(PaddingButton);
