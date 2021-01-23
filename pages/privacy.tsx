@@ -4,7 +4,7 @@ const Privacy = () => {
 	return (
 		<>
 			<Head>
-				<title>DisStreamChat | Privacy</title>
+				<title>DisStreamChat | Privacy Policy</title>
 			</Head>
 		</>
 	);

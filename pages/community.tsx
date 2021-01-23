@@ -1,5 +1,11 @@
+import Head from "next/head"
+
 const Community = () => {
-	return <></>;
+	return <>
+		<Head>
+			<title>DisStreamChat | Community</title>
+		</Head>
+	</>;
 };
 
 export default Community;

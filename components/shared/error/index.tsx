@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import { NotFoundContainer, NotFoundHeader, NotFoundText } from "./index.styled";
@@ -10,6 +11,9 @@ interface ErrorProps {
 function CustomError(props: ErrorProps) {
 	return (
 		<NotFoundContainer>
+			<Head>
+				<title>DisStreamChat | {props.title}</title>
+			</Head>
 			<NotFoundHeader>
 				<h1>{props.title}</h1>
 			</NotFoundHeader>
