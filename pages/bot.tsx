@@ -1,5 +1,66 @@
 import Head from "next/head";
+import Link from "next/link";
+import React from "react";
+import styled from "styled-components";
 import { Main, Hero } from "../components/shared/styles";
+import { H1 } from "../components/shared/styles/headings";
+import Anchor from "../components/shared/ui-components/Anchor";
+import { OrangeButton } from "../components/shared/ui-components/Button";
+
+const BotHero = styled(Hero)`
+	text-align: left;
+	flex-direction: row;
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	padding: 1rem 8rem;
+	justify-content: space-around;
+	& > * {
+		max-width: 45%;
+	}
+	p {
+		line-height: 170%;
+		font-weight: 500;
+		color: #aaa;
+		font-size: 1.125rem;
+	}
+	@keyframes hover {
+		from {
+			transform: translateY(-25px);
+		}
+		to {
+			transform: translateY(25px);
+		}
+	}
+	.hover {
+		animation: hover infinite ease-in-out 1s alternate;
+	}
+	.image {
+		position: relative;
+		&:before {
+			position: absolute;
+			width: 100%;
+			height: 130%;
+			transform: scale(1.5) translateY(8%);
+			content: "";
+
+			filter: grayscale(1);
+			background-image: url("https://i.ibb.co/YhsScDB/blob.png");
+			background-size: 100%;
+			background-repeat: no-repeat;
+		}
+	}
+	button{
+		margin-top: 1rem;
+		font-size: 1.15rem;
+		font-weight: bold;
+	}
+	.hero-buttons {
+		& > * + * {
+			margin-left: 3rem;
+		}
+	}
+`;
 
 const Bot = () => {
 	return (
@@ -51,7 +112,35 @@ const Bot = () => {
 				/>
 			</Head>
 			<Main>
-				<Hero></Hero>
+				<BotHero>
+					<div className="description">
+						<div className="text">
+							<H1>The best utility bot for Discord</H1>
+							<p>
+								Manage your server and keep members engaged with an auto moderator,
+								a high quality leveling system, Versatile custom commands, a robust
+								role management system, and much more!
+							</p>
+						</div>
+						<div className="buttons hero-buttons">
+							<Link href="/dashboard/discord">
+								<a className="main-button dashboard-button">
+									<OrangeButton>Get Started</OrangeButton>
+								</a>
+							</Link>
+							<Anchor
+								newTab
+								href="https://api.disstreamchat.com/invite"
+								className="main-button dashboard-button"
+							>
+								<OrangeButton>Add to Discord</OrangeButton>
+							</Anchor>
+						</div>
+					</div>
+					<div className="image">
+						<img className="hover" src="/bot-hero.gif" alt="" />
+					</div>
+				</BotHero>
 			</Main>
 		</>
 	);
