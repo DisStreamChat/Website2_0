@@ -22,6 +22,7 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
 		font-family: 'Poppins', sans-serif;
         /* overflow: hidden; */
+		color: white;
         box-sizing: border-box !important;
     }
 
