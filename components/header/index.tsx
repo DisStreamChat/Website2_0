@@ -3,12 +3,17 @@ import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
 import { useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
-import { useState } from "react";
-import {PurpleButton} from "../shared/ui-components/Button"
+import { useEffect, useState } from "react";
+import { PurpleButton } from "../shared/ui-components/Button";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
+
+	useEffect(() => {
+		setMenuOpen(prev => prev && useHamburger)
+	}, [useHamburger])
 
 	return (
 		<styles.Header>
@@ -63,7 +68,7 @@ const Header = () => {
 							<HamburgerMenu
 								isOpen={menuOpen}
 								menuClicked={() => setMenuOpen(u => !u)}
-								strokeWidth={3}
+								strokeWidth={5}
 								rotate={0}
 								color="white"
 								borderRadius={5}
@@ -75,6 +80,17 @@ const Header = () => {
 					)}
 				</styles.navItem>
 			</styles.nav>
+			<AnimatePresence>
+				{menuOpen && (
+					<styles.sidebar
+						key="sidebar"
+						exit={{ x: 900, opacity: 0 }}
+						initial={{ x: 900, opacity: 0 }}
+						animate={{ x: 0, opacity: 1 }}
+						transition={{ duration: 0.25 }}
+					></styles.sidebar>
+				)}
+			</AnimatePresence>
 		</styles.Header>
 	);
 };

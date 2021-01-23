@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {motion} from "framer-motion"
 
 const Header = styled.header`
 	padding: 0 1rem;
@@ -30,9 +31,21 @@ const navItem = styled.div`
 
 const logo = styled.div``;
 
+const sidebar = styled(motion.div)`
+	position: fixed;
+	top: 80px;
+	right: 0;
+	height: calc(100vh - 80px);
+	width: 100vw;
+	background: var(--background-dark-gray);
+	z-index: 100;
+	display: flex;
+`
+
 export default {
 	Header,
 	nav,
 	logo,
 	navItem,
+	sidebar
 };

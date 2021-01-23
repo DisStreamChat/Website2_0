@@ -11,7 +11,9 @@ import {
 	ThemeProvider,
 	useMediaQuery,
 } from "@material-ui/core";
-import { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import Error from "../components/shared/error";
 
 Router.events.on("routeChangeStart", () => {
 	NProgress.start();
@@ -36,10 +38,32 @@ const App = ({ children }) => {
 		[]
 	);
 
+	const [error, setError] = useState(false);
+
+	Router.events.on("routeChangeStart", () => {
+		setError(false);
+	});
+
 	return (
 		<ThemeProvider theme={theme}>
+			<GlobalStyle />
+			<SEO />
 			<Header />
-			{children}
+			<ErrorBoundary
+				resetKeys={[error]}
+				FallbackComponent={({ error }) => (
+					<Error
+						message={`An unexpected error occured: ${error.message}`}
+						title="Uncaught Exception"
+					/>
+				)}
+				onError={() => setError(true)}
+				onReset={() => {
+					// reset the state of your app so the error doesn't happen again
+				}}
+			>
+				{children}
+			</ErrorBoundary>
 			<Footer />
 		</ThemeProvider>
 	);
@@ -48,8 +72,6 @@ const App = ({ children }) => {
 function MyApp({ Component, pageProps }) {
 	return (
 		<App>
-			<GlobalStyle />
-			<SEO />
 			<Component {...pageProps} />
 		</App>
 	);
