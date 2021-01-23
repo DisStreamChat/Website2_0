@@ -1,11 +1,12 @@
 import Head from "next/head";
+import { Main, Hero } from "../components/shared/styles";
 
 const Bot = () => {
 	return (
 		<>
 			<Head>
 				<title>DisStreamChat | Discord Bot</title>
-		
+
 				<meta
 					data-n-head="ssr"
 					data-hid="og:image"
@@ -49,6 +50,9 @@ const Bot = () => {
 					content="DisStreamBot"
 				/>
 			</Head>
+			<Main>
+				<Hero></Hero>
+			</Main>
 		</>
 	);
 };

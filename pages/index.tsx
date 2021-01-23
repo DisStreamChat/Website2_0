@@ -1,22 +1,11 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Main } from "../components/shared/styles";
+import { Main, Hero } from "../components/shared/styles";
 import { H1, H3 } from "../components/shared/styles/headings";
 import { OrangeButton } from "../components/shared/ui-components/Button";
 
-const Hero = styled.section`
-	min-height: calc(100vh - 80px);
-	padding: 1rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 2rem;
-	box-sizing: content-box;
-	text-align: center;
-	color: white;
-	flex-direction: column;
-`;
+
 
 const Subheading = styled(H3)`
 	font-style: normal;
