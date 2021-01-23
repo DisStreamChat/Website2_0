@@ -4,7 +4,7 @@ const SEO = () => {
 	return (
 		<Head>
 			<meta charSet="utf-8" />
-			<link rel="icon" href="%PUBLIC_URL%/logo.png" />
+			<link rel="icon" href="/logo.png" />
 			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
@@ -15,7 +15,7 @@ const SEO = () => {
 				name="description"
 				content="An incredibly easy to use and feature filled system for connecting Twitch and Discord chat."
 			/>
-			<meta name="image" content="%PUBLIC_URL%/logo.png" />
+			<meta name="image" content="/logo.png" />
 			<meta name="application-name" content="disstreamchat" />
 			<meta
 				data-n-head="ssr"
