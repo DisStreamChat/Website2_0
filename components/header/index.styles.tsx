@@ -31,7 +31,7 @@ const navItem = styled.div`
 
 const logo = styled.div``;
 
-const sidebar = styled(motion.div)`
+const sidebar = styled(motion.nav)`
 	position: fixed;
 	top: 80px;
 	right: 0;
@@ -40,6 +40,14 @@ const sidebar = styled(motion.div)`
 	background: var(--background-dark-gray);
 	z-index: 100;
 	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 2rem;
+	justify-content: center;
+	padding: 2rem;
+	button {
+		margin-right: .5rem;
+	}
 `
 
 export default {

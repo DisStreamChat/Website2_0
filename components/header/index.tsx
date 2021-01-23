@@ -6,14 +6,27 @@ import HamburgerMenu from "react-hamburger-menu";
 import { useEffect, useState } from "react";
 import { PurpleButton } from "../shared/ui-components/Button";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/router";
+
+const Profile = () => {
+
+	return <PurpleButton>Login</PurpleButton>
+}
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
+	
+	const router = useRouter();
+	
+	useEffect(() => {
+		setMenuOpen(prev => prev && useHamburger);
+	}, [useHamburger]);
+
 
 	useEffect(() => {
-		setMenuOpen(prev => prev && useHamburger)
-	}, [useHamburger])
+		setMenuOpen(false);
+	}, [router.pathname]);
 
 	return (
 		<styles.Header>
@@ -76,7 +89,7 @@ const Header = () => {
 							/>
 						</div>
 					) : (
-						<PurpleButton>Login</PurpleButton>
+						<Profile/>
 					)}
 				</styles.navItem>
 			</styles.nav>
@@ -88,7 +101,41 @@ const Header = () => {
 						initial={{ x: 900, opacity: 0 }}
 						animate={{ x: 0, opacity: 1 }}
 						transition={{ duration: 0.25 }}
-					></styles.sidebar>
+					>
+						<>
+							<styles.navItem>
+								<Link href="/apps/download">
+									<a>Chat Manager</a>
+								</Link>
+							</styles.navItem>
+							<styles.navItem>
+								<Link href="/bot">
+									<a>Discord Bot</a>
+								</Link>
+							</styles.navItem>
+							<styles.navItem>
+								<Link href="/community">
+									<a>Community</a>
+								</Link>
+							</styles.navItem>
+							<styles.navItem>
+								<Anchor
+									newTab
+									href="https://www.patreon.com/disstreamchat?fan_landing=true"
+								>
+									Support Us
+								</Anchor>
+							</styles.navItem>
+							<styles.navItem>
+								<Link href="/dashboard">
+									<a>Dashboard</a>
+								</Link>
+							</styles.navItem>
+							<styles.navItem>
+								<Profile/>
+							</styles.navItem>
+						</>
+					</styles.sidebar>
 				)}
 			</AnimatePresence>
 		</styles.Header>
