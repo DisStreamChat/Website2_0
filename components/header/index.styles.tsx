@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion";
+import { H2 } from "../shared/styles/headings";
 
 const Header = styled(motion.header)`
 	padding: 0 1rem;
@@ -50,14 +51,63 @@ const sidebar = styled(motion.nav)`
 	justify-content: center;
 	padding: 2rem;
 	button {
-		margin-right: .5rem;
+		margin-right: 0.5rem;
 	}
-`
+`;
+
+const loginModal = styled.div`
+	form {
+		width: 215px;
+		padding: 50px;
+		box-sizing: content-box;
+		justify-content: center;
+		flex-direction: column;
+		color: #fff;
+		background: radial-gradient(var(--disstreamchat-blue), #214d69);
+		border-radius: 0.25rem;
+		border: none;
+		outline: none;
+		display: flex;
+		align-items: center;
+	}
+	button {
+		width: 100%;
+		margin: 0.5rem 0;
+	}
+`;
+
+const modalHeading = styled.h1`
+	font-size: 18px;
+	font-weight: 700;
+	text-align: center;
+	margin: 6px 0;
+`;
+
+const modalSubHeading = styled(H2)`
+	margin: 6px 0;
+	font-size: 14px;
+`;
+
+const legal = styled.div`
+	display: flex;
+	margin-top: 1rem;
+	input {
+		margin-top: 0.4rem;
+		margin-right: 0.5rem;
+	}
+	a {
+		text-decoration: underline;
+	}
+`;
 
 export default {
 	Header,
 	nav,
 	logo,
 	navItem,
-	sidebar
+	sidebar,
+	loginModal,
+	modalHeading,
+	modalSubHeading,
+	legal,
 };

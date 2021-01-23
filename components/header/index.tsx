@@ -1,16 +1,21 @@
 import styles from "./index.styles";
 import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
-import { useMediaQuery } from "@material-ui/core";
+import { createStyles, makeStyles, Theme, useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
-import { useEffect, useState } from "react";
-import { PurpleButton } from "../shared/ui-components/Button";
+import React, { useEffect, useState } from "react";
+import {
+	BlueButton,
+	PurpleButton,
+	TwitchButton,
+	DiscordButton,
+} from "../shared/ui-components/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useWindowScroll } from "react-use";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
-import Fade from "@material-ui/core/Fade";
+import Zoom from "@material-ui/core/Zoom";
 import { useHeaderContext } from "./context";
 
 const Profile = () => {
@@ -38,6 +43,22 @@ const headerVariants = {
 	},
 };
 
+const useStyles = makeStyles((theme: Theme) =>
+	createStyles({
+		modal: {
+			display: "flex",
+			alignItems: "center",
+			justifyContent: "center",
+		},
+		paper: {
+			backgroundColor: theme.palette.background.paper,
+			border: "2px solid #000",
+			boxShadow: theme.shadows[5],
+			padding: theme.spacing(2, 4, 3),
+		},
+	})
+);
+
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
@@ -53,6 +74,7 @@ const Header = () => {
 
 	useEffect(() => {
 		setMenuOpen(false);
+		setLoginModalOpen(false);
 	}, [router.pathname]);
 
 	const links = (
@@ -85,6 +107,8 @@ const Header = () => {
 		</>
 	);
 
+	const classes = useStyles();
+
 	return (
 		<styles.Header
 		// variants={headerVariants}
@@ -96,13 +120,36 @@ const Header = () => {
 				aria-describedby="login-modal"
 				open={loginModalOpen}
 				onClose={() => setLoginModalOpen(false)}
+				BackdropComponent={Backdrop}
+				className={classes.modal}
 			>
-				<Fade in={loginModalOpen}>
-					<div>
-						<h2 id="transition-modal-title">Transition modal</h2>
-						<p id="transition-modal-description">react-transition-group animates me.</p>
-					</div>
-				</Fade>
+				<Zoom in={loginModalOpen}>
+					<styles.loginModal>
+						<form
+							onSubmit={e => {
+								e.preventDefault();
+							}}
+						>
+							<styles.modalHeading>Login to DisStreamChat</styles.modalHeading>
+							<styles.modalSubHeading>Connect with:</styles.modalSubHeading>
+							<TwitchButton type="submit">Twitch</TwitchButton>
+							<DiscordButton type="submit">Discord</DiscordButton>
+							<styles.legal>
+								<input type="checkbox" name="terms" required />
+								<span>
+									I accept the{" "}
+									<Link href="/terms">
+										<a>terms and conditions</a>
+									</Link>{" "}
+									and{" "}
+									<Link href="/privacy">
+										<a>privacy policy</a>
+									</Link>
+								</span>
+							</styles.legal>
+						</form>
+					</styles.loginModal>
+				</Zoom>
 			</Modal>
 			<styles.logo>
 				<Link href="/">

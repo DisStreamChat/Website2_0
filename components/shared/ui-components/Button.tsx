@@ -37,6 +37,26 @@ export const BlueButton = withStyles((theme: Theme) => ({
 	},
 }))(PaddingButton);
 
+export const DiscordButton = withStyles((theme: Theme) => ({
+	root: {
+		color: theme.palette.getContrastText("#6f86d4"),
+		background: "#6f86d4",
+		"&:hover": {
+			background: chroma("#6f86d4").darken(0.25).hex(),
+		},
+	},
+}))(PaddingButton);
+
+export const TwitchButton = withStyles((theme: Theme) => ({
+	root: {
+		color: theme.palette.getContrastText("#923dbd"),
+		background: "#923dbd",
+		"&:hover": {
+			background: chroma("#923dbd").darken(0.25).hex(),
+		},
+	},
+}))(PaddingButton);
+
 export const OrangeButton = withStyles((theme: Theme) => ({
 	root: {
 		color: theme.palette.getContrastText("#f95515"),
