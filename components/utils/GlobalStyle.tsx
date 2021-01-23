@@ -23,6 +23,8 @@ const GlobalStyle = createGlobalStyle`
 		font-family: 'Poppins', sans-serif;
         /* overflow: hidden; */
 		color: white;
+		min-height: 100vh;
+		background: var(--background-light-gray);
         box-sizing: border-box !important;
     }
 
@@ -55,7 +57,7 @@ const GlobalStyle = createGlobalStyle`
 
 	/* Handle on hover */
 	::-webkit-scrollbar-thumb:hover {
-		background: ${chroma("#2d688d").darken(.1).hex()}
+		background: ${chroma("#2d688d").darken(0.1).hex()}
 	}
 
 	.MuiFormHelperText-contained{
