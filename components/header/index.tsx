@@ -63,7 +63,7 @@ const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
 	const { y } = useWindowScroll();
-
+	const [acceptedTerms, setAcceptedTerms] = useState(false);
 	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
 	const router = useRouter();
@@ -132,10 +132,36 @@ const Header = () => {
 						>
 							<styles.modalHeading>Login to DisStreamChat</styles.modalHeading>
 							<styles.modalSubHeading>Connect with:</styles.modalSubHeading>
-							<TwitchButton type="submit">Twitch</TwitchButton>
-							<DiscordButton type="submit">Discord</DiscordButton>
+							<TwitchButton type="submit">
+								<Anchor
+									href={
+										acceptedTerms
+											? "https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=https://www.disstreamchat.com&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions"
+											: null
+									}
+								>
+									Twitch
+								</Anchor>
+							</TwitchButton>
+							<DiscordButton type="submit">
+								<Anchor
+									href={
+										acceptedTerms
+											? "https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=https://www.disstreamchat.com%2F%3Fdiscord%3Dtrue&response_type=code&scope=identify%20guilds"
+											: null
+									}
+								>
+									Discord
+								</Anchor>
+							</DiscordButton>
 							<styles.legal>
-								<input type="checkbox" name="terms" required />
+								<input
+									checked={acceptedTerms}
+									onChange={e => setAcceptedTerms(e.target.checked)}
+									type="checkbox"
+									name="terms"
+									required
+								/>
 								<span>
 									I accept the{" "}
 									<Link href="/terms">
