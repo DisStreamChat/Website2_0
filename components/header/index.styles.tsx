@@ -10,6 +10,7 @@ const Header = styled(motion.header)`
 	position: fixed;
 	top: 0;
 	width: 100%;
+	z-index: 10000000;
 `;
 
 const nav = styled.nav`

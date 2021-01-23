@@ -131,7 +131,7 @@ const Bot = () => {
 							</Link>
 							<Anchor
 								newTab
-								href="https://api.disstreamchat.com/invite"
+								href="https://invite.disstreamchat.com"
 								className="main-button dashboard-button"
 							>
 								<OrangeButton>Add to Discord</OrangeButton>
