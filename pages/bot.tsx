@@ -11,6 +11,7 @@ const BotHero = styled(Hero)`
 	text-align: left;
 	flex-direction: row;
 	box-sizing: border-box;
+	min-height: calc(100vh - 80px);
 	width: 100%;
 	display: flex;
 	padding: 1rem 8rem;
