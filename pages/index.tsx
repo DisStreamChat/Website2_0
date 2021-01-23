@@ -1,11 +1,11 @@
 import Head from "next/head";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Main, Hero } from "../components/shared/styles";
 import { H1, H3 } from "../components/shared/styles/headings";
+import Anchor from "../components/shared/ui-components/Anchor";
 import { OrangeButton } from "../components/shared/ui-components/Button";
-
-
 
 const Subheading = styled(H3)`
 	font-style: normal;
@@ -15,7 +15,7 @@ const Subheading = styled(H3)`
 	margin-top: 1rem;
 	text-align: center;
 	color: #aaa;
-	@media screen and (max-width: 425px){
+	@media screen and (max-width: 425px) {
 		font-size: 1.5rem;
 	}
 `;
@@ -26,15 +26,15 @@ const Buttons = styled.div`
 	justify-content: center;
 	margin-top: 1rem;
 	max-width: 700px;
-	button{
-		margin: .5rem 2rem;
+	button {
+		margin: 0.5rem 2rem;
 		font-weight: bold;
 		font-size: 1.15rem;
-		@media screen and (max-width: 425px){
+		@media screen and (max-width: 425px) {
 			font-size: 1rem;
 		}
 	}
-`
+`;
 
 export default function Home() {
 	return (
@@ -46,9 +46,19 @@ export default function Home() {
 					Discord!
 				</Subheading>
 				<Buttons>
-					<OrangeButton>See Features</OrangeButton>
-					<OrangeButton>Add to Discord</OrangeButton>
-					<OrangeButton>My Dashboard</OrangeButton>
+					<OrangeButton>
+						<a href="#features">See Features</a>
+					</OrangeButton>
+					<OrangeButton>
+						<Anchor href="https://invite.disstreamchat.com" newTab>
+							Add to Discord
+						</Anchor>{" "}
+					</OrangeButton>
+					<OrangeButton>
+						<Link href="/dashboard">
+							<a>My Dashboard</a>
+						</Link>
+					</OrangeButton>
 				</Buttons>
 			</Hero>
 		</Main>
