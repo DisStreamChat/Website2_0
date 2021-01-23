@@ -29,6 +29,14 @@ const GlobalStyle = createGlobalStyle`
 		margin-top: 40px;
     }
 
+	#__next{
+		z-index: 1;
+	}
+
+	*[role="presentation"]{
+		z-index: 1000000000000000 !important;
+	}
+
 
     a {
     	color: inherit;

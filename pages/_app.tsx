@@ -14,6 +14,7 @@ import {
 import React, { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Error from "../components/shared/error";
+import { HeaderContextProvider } from "../components/header/context";
 
 Router.events.on("routeChangeStart", () => {
 	NProgress.start();
@@ -48,7 +49,9 @@ const App = ({ children }) => {
 		<ThemeProvider theme={theme}>
 			<GlobalStyle />
 			<SEO />
-			<Header />
+			<HeaderContextProvider>
+				<Header />
+			</HeaderContextProvider>
 			<ErrorBoundary
 				resetKeys={[error]}
 				FallbackComponent={({ error }) => (

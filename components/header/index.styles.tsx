@@ -11,6 +11,7 @@ const Header = styled(motion.header)`
 	top: 0;
 	width: 100%;
 	z-index: 10000000;
+	color: white;
 `;
 
 const nav = styled.nav`

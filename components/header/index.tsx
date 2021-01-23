@@ -8,9 +8,23 @@ import { PurpleButton } from "../shared/ui-components/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useWindowScroll } from "react-use";
+import Modal from "@material-ui/core/Modal";
+import Backdrop from "@material-ui/core/Backdrop";
+import Fade from "@material-ui/core/Fade";
+import { useHeaderContext } from "./context";
 
 const Profile = () => {
-	return <PurpleButton>Login</PurpleButton>;
+	const { setLoginModalOpen } = useHeaderContext();
+
+	return (
+		<PurpleButton
+			onClick={() => {
+				setLoginModalOpen(true);
+			}}
+		>
+			Login
+		</PurpleButton>
+	);
 };
 
 const headerVariants = {
@@ -28,6 +42,8 @@ const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
 	const { y } = useWindowScroll();
+
+	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
 	const router = useRouter();
 
@@ -71,10 +87,23 @@ const Header = () => {
 
 	return (
 		<styles.Header
-			// variants={headerVariants}
-			// transition={{ duration: 0.5, ease: "easeInOut" }}
-			// animate={y > 80 ? "scrolled" : "top"}
+		// variants={headerVariants}
+		// transition={{ duration: 0.5, ease: "easeInOut" }}
+		// animate={y > 80 ? "scrolled" : "top"}
 		>
+			<Modal
+				aria-labelledby="login-modal"
+				aria-describedby="login-modal"
+				open={loginModalOpen}
+				onClose={() => setLoginModalOpen(false)}
+			>
+				<Fade in={loginModalOpen}>
+					<div>
+						<h2 id="transition-modal-title">Transition modal</h2>
+						<p id="transition-modal-description">react-transition-group animates me.</p>
+					</div>
+				</Fade>
+			</Modal>
 			<styles.logo>
 				<Link href="/">
 					<a>
