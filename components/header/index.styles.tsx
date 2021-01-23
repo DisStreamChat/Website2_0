@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {motion} from "framer-motion"
 
-const Header = styled.header`
+const Header = styled(motion.header)`
 	padding: 0 1rem;
 	display: flex;
 	align-items: center;

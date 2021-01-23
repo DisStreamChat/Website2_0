@@ -7,14 +7,27 @@ import { useEffect, useState } from "react";
 import { PurpleButton } from "../shared/ui-components/Button";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useWindowScroll } from "react-use";
 
 const Profile = () => {
 	return <PurpleButton>Login</PurpleButton>;
 };
 
+const headerVariants = {
+	top: {
+		background: "rgba(23,24,27, 1)",
+		color: "rgb(255, 255, 255)",
+	},
+	scrolled: {
+		color: "rgb(255, 255, 255)",
+		background: "rgba(23,24,27, 0)",
+	},
+};
+
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
+	const { y } = useWindowScroll();
 
 	const router = useRouter();
 
@@ -57,7 +70,11 @@ const Header = () => {
 	);
 
 	return (
-		<styles.Header>
+		<styles.Header
+			// variants={headerVariants}
+			// transition={{ duration: 0.5, ease: "easeInOut" }}
+			// animate={y > 80 ? "scrolled" : "top"}
+		>
 			<styles.logo>
 				<Link href="/">
 					<a>
