@@ -26,7 +26,9 @@ const GlobalStyle = createGlobalStyle`
 		min-height: 100vh;
 		background: var(--background-light-gray);
         box-sizing: border-box !important;
+		margin-top: 40px;
     }
+
 
     a {
     	color: inherit;

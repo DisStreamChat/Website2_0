@@ -7,7 +7,9 @@ const Header = styled.header`
 	align-items: center;
 	height: 80px;
 	background: var(--background-dark-gray);
-	position: relative;
+	position: fixed;
+	top: 0;
+	width: 100%;
 `;
 
 const nav = styled.nav`
