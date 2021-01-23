@@ -9,24 +9,52 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 
 const Profile = () => {
-
-	return <PurpleButton>Login</PurpleButton>
-}
+	return <PurpleButton>Login</PurpleButton>;
+};
 
 const Header = () => {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const useHamburger = useMediaQuery("(max-width: 900px)");
-	
+
 	const router = useRouter();
-	
+
 	useEffect(() => {
 		setMenuOpen(prev => prev && useHamburger);
 	}, [useHamburger]);
 
-
 	useEffect(() => {
 		setMenuOpen(false);
 	}, [router.pathname]);
+
+	const links = (
+		<>
+			<styles.navItem>
+				<Link href="/apps/download">
+					<a>Chat Manager</a>
+				</Link>
+			</styles.navItem>
+			<styles.navItem>
+				<Link href="/bot">
+					<a>Discord Bot</a>
+				</Link>
+			</styles.navItem>
+			<styles.navItem>
+				<Anchor newTab href="https://discord.disstreamchat.com">
+					Community
+				</Anchor>
+			</styles.navItem>
+			<styles.navItem>
+				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
+					Support Us
+				</Anchor>
+			</styles.navItem>
+			<styles.navItem>
+				<Link href="/dashboard">
+					<a>Dashboard</a>
+				</Link>
+			</styles.navItem>
+		</>
+	);
 
 	return (
 		<styles.Header>
@@ -43,38 +71,7 @@ const Header = () => {
 				</Link>
 			</styles.logo>
 			<styles.nav>
-				{!useHamburger && (
-					<>
-						<styles.navItem>
-							<Link href="/apps/download">
-								<a>Chat Manager</a>
-							</Link>
-						</styles.navItem>
-						<styles.navItem>
-							<Link href="/bot">
-								<a>Discord Bot</a>
-							</Link>
-						</styles.navItem>
-						<styles.navItem>
-							<Link href="/community">
-								<a>Community</a>
-							</Link>
-						</styles.navItem>
-						<styles.navItem>
-							<Anchor
-								newTab
-								href="https://www.patreon.com/disstreamchat?fan_landing=true"
-							>
-								Support Us
-							</Anchor>
-						</styles.navItem>
-						<styles.navItem>
-							<Link href="/dashboard">
-								<a>Dashboard</a>
-							</Link>
-						</styles.navItem>
-					</>
-				)}
+				{!useHamburger && links}
 				<styles.navItem>
 					{useHamburger ? (
 						<div className="hamburger-holder">
@@ -89,7 +86,7 @@ const Header = () => {
 							/>
 						</div>
 					) : (
-						<Profile/>
+						<Profile />
 					)}
 				</styles.navItem>
 			</styles.nav>
@@ -102,39 +99,7 @@ const Header = () => {
 						animate={{ x: 0, opacity: 1 }}
 						transition={{ duration: 0.25 }}
 					>
-						<>
-							<styles.navItem>
-								<Link href="/apps/download">
-									<a>Chat Manager</a>
-								</Link>
-							</styles.navItem>
-							<styles.navItem>
-								<Link href="/bot">
-									<a>Discord Bot</a>
-								</Link>
-							</styles.navItem>
-							<styles.navItem>
-								<Link href="/community">
-									<a>Community</a>
-								</Link>
-							</styles.navItem>
-							<styles.navItem>
-								<Anchor
-									newTab
-									href="https://www.patreon.com/disstreamchat?fan_landing=true"
-								>
-									Support Us
-								</Anchor>
-							</styles.navItem>
-							<styles.navItem>
-								<Link href="/dashboard">
-									<a>Dashboard</a>
-								</Link>
-							</styles.navItem>
-							<styles.navItem>
-								<Profile/>
-							</styles.navItem>
-						</>
+						{links}
 					</styles.sidebar>
 				)}
 			</AnimatePresence>
