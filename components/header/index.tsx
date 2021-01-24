@@ -73,6 +73,10 @@ const Header = () => {
 	}, [useHamburger]);
 
 	useEffect(() => {
+		document.body.style.overflowY = menuOpen ? "hidden" : "auto";
+	}, [menuOpen]);
+
+	useEffect(() => {
 		setMenuOpen(false);
 		setLoginModalOpen(false);
 	}, [router.pathname]);
@@ -219,7 +223,7 @@ const Header = () => {
 						transition={{ duration: 0.25 }}
 					>
 						{links}
-						<Profile/>
+						<Profile />
 					</styles.sidebar>
 				)}
 			</AnimatePresence>
