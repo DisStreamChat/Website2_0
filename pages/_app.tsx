@@ -15,6 +15,7 @@ import React, { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Error from "../components/shared/error";
 import { HeaderContextProvider } from "../components/header/context";
+import { AuthContextProvider } from "../auth/authContext";
 
 Router.events.on("routeChangeStart", () => {
 	NProgress.start();
@@ -74,9 +75,11 @@ const App = ({ children }) => {
 
 function MyApp({ Component, pageProps }) {
 	return (
-		<App>
-			<Component {...pageProps} />
-		</App>
+		<AuthContextProvider>
+			<App>
+				<Component {...pageProps} />
+			</App>
+		</AuthContextProvider>
 	);
 }
 

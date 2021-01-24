@@ -19,10 +19,12 @@ class Firebase {
 	db: app.firestore.Firestore;
 	auth: app.auth.Auth;
 	app: typeof app;
-	perf: app.performance.Performance
+	perf: app.performance.Performance;
 
 	constructor() {
-		app.initializeApp(firebaseConfig);
+		if (!app.apps.length) {
+			app.initializeApp(firebaseConfig);
+		}
 		app.analytics();
 		this.auth = app.auth();
 		this.db = app.firestore();
@@ -52,15 +54,15 @@ class Firebase {
 		return this.app.firestore.FieldValue.delete();
 	}
 
-	updateDoc(path: string, data: any){
-		return this.db.doc(path).update(data)
+	updateDoc(path: string, data: any) {
+		return this.db.doc(path).update(data);
 	}
 
-	async setDoc(path: string, data: any){
-		try{
-			await this.db.doc(path).set(data)
-		}catch(err){
-			this.updateDoc(path, data)
+	async setDoc(path: string, data: any) {
+		try {
+			await this.db.doc(path).set(data);
+		} catch (err) {
+			this.updateDoc(path, data);
 		}
 	}
 }
