@@ -133,6 +133,7 @@ const Dashboard = ({ type, session }) => {
 
 export const getServerSideProps = async context => {
 	const { res, params } = context;
+	const { referer } = context.req.headers;
 	let session;
 	try {
 		const cookies = nookies.get(context);
@@ -144,16 +145,12 @@ export const getServerSideProps = async context => {
 			session = { uid, email };
 		}
 	} catch (err) {
-		res.writeHead(302, { location: "/" });
-		res.end();
+		res.writeHead(307, { location: "/" }).end();
 		return { props: {} };
 	}
 
 	if (!params.type) {
-		try {
-			res.writeHead(302, { location: "/dashboard/app" });
-			res.end();
-		} catch (err) {}
+		res.writeHead(307, { location: "/dashboard/app" }).end();
 		return { props: {} };
 	}
 	if (!["app", "discord", "account"].includes(params.type[0])) {
