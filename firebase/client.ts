@@ -25,11 +25,13 @@ class Firebase {
 		if (!app.apps.length) {
 			app.initializeApp(firebaseConfig);
 		}
-		app.analytics();
+		if (typeof window !== "undefined") {
+			app.analytics();
+			this.perf = app.performance();
+		}
 		this.auth = app.auth();
 		this.db = app.firestore();
 		this.app = app;
-		this.perf = app.performance();
 	}
 
 	get documentId() {

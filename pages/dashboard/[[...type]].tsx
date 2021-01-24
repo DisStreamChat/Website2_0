@@ -2,6 +2,10 @@ import { AnimateSharedLayout, motion } from "framer-motion";
 import Link from "next/link";
 import styled from "styled-components";
 import { Main } from "../../components/shared/styles";
+import nookies from "nookies";
+import { verifyIdToken } from "../../firebase/admin";
+import firebaseClient from "../../firebase/client";
+import { auth } from "firebase-admin";
 
 const DashboardContainer = styled(Main)`
 	display: flex;
@@ -55,7 +59,7 @@ const ContentArea = styled.div`
 
 		min-width: 80%;
 	}
-	@media screen and (max-width: 320px){
+	@media screen and (max-width: 320px) {
 		min-width: 90%;
 	}
 `;
@@ -70,7 +74,7 @@ const Background = styled(motion.div)`
 	border-radius: 0.25rem;
 `;
 
-const Dashboard = ({ type }) => {
+const Dashboard = ({ type, session }) => {
 	return (
 		<DashboardContainer>
 			<SideBar>
@@ -129,6 +133,22 @@ const Dashboard = ({ type }) => {
 
 export const getServerSideProps = async context => {
 	const { res, params } = context;
+	let session;
+	try {
+		const cookies = nookies.get(context);
+		const token = await verifyIdToken(cookies.token);
+		if (!token) throw new Error("no token");
+		if (typeof token === "boolean") session = token;
+		else {
+			const { uid, email } = token;
+			session = { uid, email };
+		}
+	} catch (err) {
+		res.writeHead(302, { location: "/" });
+		res.end();
+		return { props: {} };
+	}
+
 	if (!params.type) {
 		try {
 			res.writeHead(302, { location: "/dashboard/app" });
@@ -139,7 +159,7 @@ export const getServerSideProps = async context => {
 	if (!["app", "discord", "account"].includes(params.type[0])) {
 		return { notFound: true };
 	}
-	return { props: { type: params.type } };
+	return { props: { type: params.type, session } };
 };
 
 export default Dashboard;
