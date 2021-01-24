@@ -3,16 +3,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Main, Hero } from "../components/shared/styles";
-import { H1, H3 } from "../components/shared/styles/headings";
+import { H1, H2 } from "../components/shared/styles/headings";
 import Anchor from "../components/shared/ui-components/Anchor";
 import { OrangeButton } from "../components/shared/ui-components/Button";
 
-const Subheading = styled(H3)`
+const Subheading = styled(H2)`
 	font-style: normal;
 	font-weight: 400;
 	font-size: 2rem;
 	line-height: 170%;
 	margin-top: 1rem;
+	margin-bottom: 0;
 	text-align: center;
 	color: #aaa;
 	@media screen and (max-width: 425px) {
