@@ -219,6 +219,7 @@ const Header = () => {
 						transition={{ duration: 0.25 }}
 					>
 						{links}
+						<Profile/>
 					</styles.sidebar>
 				)}
 			</AnimatePresence>
