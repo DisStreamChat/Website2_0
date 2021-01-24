@@ -17,11 +17,13 @@ import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import { useHeaderContext } from "./context";
+import { useAuth } from "../../auth/authContext";
 
 const Profile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
+	const { user } = useAuth();
 
-	return (
+	return !user ? (
 		<PurpleButton
 			onClick={() => {
 				setLoginModalOpen(true);
@@ -29,6 +31,8 @@ const Profile = () => {
 		>
 			Login
 		</PurpleButton>
+	) : (
+		<></>
 	);
 };
 
