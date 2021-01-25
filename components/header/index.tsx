@@ -75,7 +75,11 @@ const Profile = () => {
 								when: "beforeChildren",
 							}}
 						>
-							<styles.menuItem>My Dashboard</styles.menuItem>
+							<styles.menuItem>
+								<Link href="/dashboard">
+									<a>My Dashboard</a>
+								</Link>
+							</styles.menuItem>
 							<styles.menuItem>Edit my personal rank card</styles.menuItem>
 							<styles.menuItem
 								onClick={async () => {
@@ -117,6 +121,8 @@ const Header = () => {
 	const [acceptedTerms, setAcceptedTerms] = useState(false);
 	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
+	const {isLoggedIn} = useAuth()
+
 	const router = useRouter();
 
 	useEffect(() => {
@@ -154,11 +160,11 @@ const Header = () => {
 					Support Us
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem>
+			{isLoggedIn && <styles.navItem>
 				<Link href="/dashboard">
 					<a>Dashboard</a>
 				</Link>
-			</styles.navItem>
+			</styles.navItem>}
 		</>
 	);
 

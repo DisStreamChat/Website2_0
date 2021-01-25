@@ -137,7 +137,9 @@ const menuDropDown = styled(motion.div)`
 
 const menuItem = styled(motion.div)`
 	border-radius: 0.25rem;
-
+	a{
+		padding: 0;
+	}
 	color: ${({ warn }: { warn?: boolean }): any =>
 		warn ? chroma("#bb3535").brighten().saturate(2) : "white"};
 	padding: 0.5rem;
