@@ -16,8 +16,31 @@ const BotHero = styled(Hero)`
 	display: flex;
 	padding: 1rem 8rem;
 	justify-content: space-around;
-	& > * {
-		max-width: 45%;
+	@media screen and (max-width: 1024px) {
+		padding: 1rem 3rem;
+		flex-direction: column-reverse;
+		align-items: center;
+		.description {
+			margin-top: 1rem;
+			text-align: center;
+			max-width: 90%;
+			width: 90%;
+		}
+		.buttons {
+			/* flex-direction: column; */
+			align-items: center;
+			justify-content: center;
+		}
+	}
+	@media screen and (min-width: 1025px) {
+		& > * {
+			max-width: 55%;
+		}
+	}
+	@media screen and (max-width: 800px){
+		.text p{
+			font-size: 1rem;
+		}
 	}
 	p {
 		line-height: 170%;
@@ -38,7 +61,17 @@ const BotHero = styled(Hero)`
 	}
 	.image {
 		position: relative;
+		img {
+			max-width: 100%;
+			height: auto;
+		}
+		max-width: 45%;
+		@media screen and (max-width: 1024px) {
+			margin-top: 1rem;
+			max-width: 80%;
+		}
 		&:before {
+			opacity: 0;
 			position: absolute;
 			width: 100%;
 			height: 130%;
@@ -51,15 +84,16 @@ const BotHero = styled(Hero)`
 			background-repeat: no-repeat;
 		}
 	}
-	button{
-		margin-top: 1rem;
+	button {
+		/* margin-top: 1rem; */
 		font-size: 1.15rem;
 		font-weight: bold;
 	}
 	.hero-buttons {
-		& > * + * {
-			margin-left: 3rem;
-		}
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 1rem;
+		gap: 1.5rem;
 	}
 `;
 
