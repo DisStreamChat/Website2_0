@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import { H2 } from "../shared/styles/headings";
+import chroma from "chroma-js";
 
 const Header = styled(motion.header)`
 	padding: 0 1rem;
@@ -100,6 +101,71 @@ const legal = styled.div`
 	}
 `;
 
+const UserProfile = styled.div`
+	display: flex;
+	align-items: center;
+	position: relative;
+	&,
+	& * {
+		cursor: pointer;
+	}
+	& > * + * {
+		margin-left: 0.5rem;
+	}
+`;
+
+const Username = styled.span`
+	display: inline-block;
+`;
+
+const Chevron = styled(motion.div)`
+	transform-origin: center;
+	height: 24px;
+	width: 24px;
+`;
+
+const menuDropDown = styled(motion.div)`
+	border-radius: 0.25rem;
+	position: absolute;
+	top: 100%;
+	right: 0;
+	padding: 0.5rem;
+	width: 200px;
+	z-index: 10000;
+	background: #121212;
+`;
+
+const menuItem = styled(motion.div)`
+	border-radius: 0.25rem;
+
+	color: ${({ warn }: { warn?: boolean }): any =>
+		warn ? chroma("#bb3535").brighten().saturate(2) : "white"};
+	padding: 0.5rem;
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+	position: relative;
+	z-index: 100;
+	gap: 0.5rem;
+	&:hover::before {
+		opacity: 1;
+	}
+	&::before {
+		border-radius: 0.25rem;
+
+		transition: opacity 0.25s;
+		z-index: -1;
+		position: absolute;
+		content: "";
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		opacity: 0;
+		background: rgba(226, 226, 226, 0.055);
+	}
+`;
+
 export default {
 	Header,
 	nav,
@@ -110,4 +176,9 @@ export default {
 	modalHeading,
 	modalSubHeading,
 	legal,
+	Username,
+	Chevron,
+	UserProfile,
+	menuDropDown,
+	menuItem,
 };

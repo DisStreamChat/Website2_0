@@ -1,7 +1,14 @@
 import styles from "./index.styles";
 import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
-import { createStyles, makeStyles, Theme, useMediaQuery } from "@material-ui/core";
+import {
+	Avatar,
+	ClickAwayListener,
+	createStyles,
+	makeStyles,
+	Theme,
+	useMediaQuery,
+} from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
 import React, { useEffect, useState } from "react";
 import {
@@ -10,7 +17,7 @@ import {
 	TwitchButton,
 	DiscordButton,
 } from "../shared/ui-components/Button";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useWindowScroll } from "react-use";
 import Modal from "@material-ui/core/Modal";
@@ -18,10 +25,20 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import { useHeaderContext } from "./context";
 import { useAuth } from "../../auth/authContext";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 
 const Profile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
-	const { user } = useAuth();
+	const { user } = {
+		user: {
+			name: "David",
+			profilePicture:
+				"https://static-cdn.jtvnw.net/jtv_user_pictures/b308a27a-1b9f-413a-b22b-3c9b2815a81a-profile_image-300x300.png",
+		},
+	};
+
+	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
 	return !user ? (
 		<PurpleButton
@@ -32,19 +49,35 @@ const Profile = () => {
 			Login
 		</PurpleButton>
 	) : (
-		<></>
+		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
+			<Avatar src={user.profilePicture}>
+				<AccountCircleIcon />
+			</Avatar>
+			<styles.Username>{user.name}</styles.Username>
+			<styles.Chevron animate={profileMenuOpen ? { rotate: 180 } : { rotate: 0 }}>
+				<KeyboardArrowDownIcon />
+			</styles.Chevron>
+			<AnimatePresence>
+				{profileMenuOpen && (
+					<ClickAwayListener onClickAway={() => setProfileMenuOpen(false)}>
+						<styles.menuDropDown
+							exit={{ y: -50, opacity: 0 }}
+							initial={{ y: -50, opacity: 0 }}
+							animate={{ y: 15, opacity: 1 }}
+							transition={{
+								staggerChildren: 0.1,
+								when: "beforeChildren",
+							}}
+						>
+							<styles.menuItem>My Dashboard</styles.menuItem>
+							<styles.menuItem>Edit my personal rank card</styles.menuItem>
+							<styles.menuItem warn>Logout</styles.menuItem>
+						</styles.menuDropDown>
+					</ClickAwayListener>
+				)}
+			</AnimatePresence>
+		</styles.UserProfile>
 	);
-};
-
-const headerVariants = {
-	top: {
-		background: "rgba(23,24,27, 1)",
-		color: "rgb(255, 255, 255)",
-	},
-	scrolled: {
-		color: "rgb(255, 255, 255)",
-		background: "rgba(23,24,27, 0)",
-	},
 };
 
 const useStyles = makeStyles((theme: Theme) =>
