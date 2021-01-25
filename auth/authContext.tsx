@@ -5,6 +5,7 @@ import firebase from "firebase";
 
 interface authType {
 	user: firebase.User;
+	isLoggedIn: boolean
 }
 
 export const authContext = createContext<authType>(null);
@@ -25,7 +26,7 @@ export const AuthContextProvider = ({ children }) => {
 		});
 	}, []);
 
-	return <authContext.Provider value={{ user }}>{children}</authContext.Provider>;
+	return <authContext.Provider value={{ user, isLoggedIn: !!user }}>{children}</authContext.Provider>;
 };
 
 export const useAuth = () => {
