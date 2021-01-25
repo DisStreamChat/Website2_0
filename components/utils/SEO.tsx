@@ -5,7 +5,7 @@ const SEO = () => {
 		<Head>
 			<meta charSet="utf-8" />
 			<link rel="icon" href="/logo.png" />
-			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" />
+			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" as="style" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
 			<meta name="title" content="DisStreamChat" />
