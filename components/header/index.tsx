@@ -29,6 +29,17 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import firebaseClient from "../../firebase/client";
 
+const headerVariants = {
+	top: {
+		background: "rgba(0, 0, 0, 1)",
+		color: "rgb(255, 255, 255)",
+	},
+	scrolled: {
+		color: "rgb(255, 255, 255)",
+		background: "rgba(0, 0, 0, 0)",
+	},
+};
+
 const Profile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
 	const { user, isLoggedIn } = {
@@ -121,7 +132,7 @@ const Header = () => {
 	const [acceptedTerms, setAcceptedTerms] = useState(false);
 	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
-	const {isLoggedIn} = useAuth()
+	const { isLoggedIn } = useAuth();
 
 	const router = useRouter();
 
@@ -160,11 +171,13 @@ const Header = () => {
 					Support Us
 				</Anchor>
 			</styles.navItem>
-			{isLoggedIn && <styles.navItem>
-				<Link href="/dashboard">
-					<a>Dashboard</a>
-				</Link>
-			</styles.navItem>}
+			{isLoggedIn && (
+				<styles.navItem>
+					<Link href="/dashboard">
+						<a>Dashboard</a>
+					</Link>
+				</styles.navItem>
+			)}
 		</>
 	);
 
