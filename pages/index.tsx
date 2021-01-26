@@ -47,19 +47,17 @@ export default function Home() {
 					Discord!
 				</Subheading>
 				<Buttons>
-					<OrangeButton>
-						<a href="#features">See Features</a>
-					</OrangeButton>
-					<OrangeButton>
-						<Anchor href="https://invite.disstreamchat.com" newTab>
-							Add to Discord
-						</Anchor>{" "}
-					</OrangeButton>
-					<OrangeButton>
-						<Link href="/dashboard">
-							<a>My Dashboard</a>
-						</Link>
-					</OrangeButton>
+					<a tabIndex={-1} href="#features">
+						<OrangeButton>See Features</OrangeButton>
+					</a>
+					<Anchor tabIndex={-1} href="https://invite.disstreamchat.com" newTab>
+						<OrangeButton>Add to Discord</OrangeButton>
+					</Anchor>{" "}
+					<Link href="/dashboard">
+						<a tabIndex={-1}>
+							<OrangeButton>My Dashboard</OrangeButton>
+						</a>
+					</Link>
 				</Buttons>
 			</Hero>
 		</Main>
