@@ -6,6 +6,11 @@ const footer = styled.footer`
 	flex-direction: column;
 	background: var(--background-dark-gray);
 	color: white;
+	a:focus{
+		outline: 1px solid !important;
+		opacity: 1;		
+		color: white;
+	}
 `;
 
 const top = styled.div`

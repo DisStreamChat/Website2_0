@@ -28,7 +28,10 @@ const nav = styled.nav`
 		margin-left: auto;
 	}
 `;
-const NavItem = styled(motion.div)`
+const NavItem = styled(motion.button)`
+	background: none;
+	outline: none;
+	border: none;
 	color: white;
 	position: relative;
 	display: flex;
@@ -36,7 +39,7 @@ const NavItem = styled(motion.div)`
 	align-items: center;
 	a {
 		padding: 0.5rem 1rem;
-		&:focus{
+		&:focus {
 			color: white;
 		}
 	}
@@ -49,9 +52,14 @@ const NavItem = styled(motion.div)`
 		width: 80%;
 		transform-origin: center;
 	}
+	&:not(.no-focus) {
+		&:focus {
+			outline: 1px solid;
+		}
+	}
 `;
 
-const navItem = props => {
+const navItem = ({children, ...props}) => {
 	const [focused, setFocused] = useState(false);
 	const [hovered, setHovered] = useState(false);
 
@@ -63,8 +71,10 @@ const navItem = props => {
 			onHoverEnd={() => setHovered(false)}
 			onFocus={() => setFocused(true)}
 			onBlur={() => setFocused(false)}
+			className="no-focus"
+			{...props}
 		>
-			{props.children}
+			{children}
 			<AnimatePresence>
 				{underlined && (
 					<motion.div
@@ -80,7 +90,11 @@ const navItem = props => {
 	);
 };
 
-const logo = styled.div``;
+const logo = styled.div`
+	&:focus-within{
+		outline: 1px solid;
+	}
+`;
 
 const sidebar = styled(motion.nav)`
 	position: fixed;
@@ -146,10 +160,20 @@ const legal = styled.div`
 	}
 `;
 
-const UserProfile = styled.div`
+const UserProfile = styled.button`
+	background: none;
+	color: white;
+	border: none;
+	text-align: left;
 	display: flex;
 	align-items: center;
 	position: relative;
+	&:focus {
+		outline: 1px solid;
+	}
+	a {
+		padding: 0 !important;
+	}
 	&,
 	& * {
 		cursor: pointer;
@@ -180,8 +204,13 @@ const menuDropDown = styled(motion.div)`
 	background: #121212;
 `;
 
-const menuItem = styled(motion.div)`
+const menuItem = styled(motion.button)`
+	background: none;
+	border: none;
+	outline: none;
+	text-align: left;
 	border-radius: 0.25rem;
+	width: 100%;
 	a {
 		padding: 0;
 	}
@@ -194,7 +223,9 @@ const menuItem = styled(motion.div)`
 	position: relative;
 	z-index: 100;
 	gap: 0.5rem;
-	&:hover::before {
+	&:hover::before,
+	&:focus::before,
+	&:focus-within::before {
 		opacity: 1;
 	}
 	&::before {

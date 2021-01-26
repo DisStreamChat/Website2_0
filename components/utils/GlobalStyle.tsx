@@ -31,6 +31,9 @@ const GlobalStyle = createGlobalStyle`
 
 	#__next{
 		z-index: 1;
+		button{
+			font-family: 'Poppins',sans-serif;
+		}
 	}
 
 	*[role="presentation"]{

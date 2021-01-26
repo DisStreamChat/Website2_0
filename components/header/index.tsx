@@ -66,7 +66,7 @@ const Profile = () => {
 			Login
 		</PurpleButton>
 	) : (
-		<styles.UserProfile tabIndex={6} onClick={() => setProfileMenuOpen(true)}>
+		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
 			<Avatar src={user.profilePicture}>
 				<AccountCircleIcon />
 			</Avatar>
@@ -86,7 +86,7 @@ const Profile = () => {
 								when: "beforeChildren",
 							}}
 						>
-							<styles.menuItem>
+							<styles.menuItem tabIndex={-1}>
 								<Link href="/dashboard">
 									<a>My Dashboard</a>
 								</Link>
@@ -151,34 +151,30 @@ const Header = () => {
 
 	const links = (
 		<>
-			<styles.navItem>
+			<styles.navItem tabIndex={-1}>
 				<Link href="/apps/download">
-					<a tabIndex={1}>Chat Manager</a>
+					<a>Chat Manager</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem>
+			<styles.navItem tabIndex={-1}>
 				<Link href="/bot">
-					<a tabIndex={2}>Discord Bot</a>
+					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem>
-				<Anchor tabIndex={3} newTab href="https://discord.disstreamchat.com">
+			<styles.navItem tabIndex={-1}>
+				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem>
-				<Anchor
-					tabIndex={4}
-					newTab
-					href="https://www.patreon.com/disstreamchat?fan_landing=true"
-				>
+			<styles.navItem tabIndex={-1}>
+				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
 					Support Us
 				</Anchor>
 			</styles.navItem>
 			{isLoggedIn && (
-				<styles.navItem>
+				<styles.navItem tabIndex={-1}>
 					<Link href="/dashboard">
-						<a tabIndex={5}>Dashboard</a>
+						<a>Dashboard</a>
 					</Link>
 				</styles.navItem>
 			)}
@@ -257,7 +253,7 @@ const Header = () => {
 			</Modal>
 			<styles.logo>
 				<Link href="/">
-					<a>
+					<a tabIndex={0}>
 						<img
 							width="50"
 							height="50"
@@ -269,7 +265,7 @@ const Header = () => {
 			</styles.logo>
 			<styles.nav>
 				{!useHamburger && links}
-				<styles.NavItem>
+				<styles.NavItem tabIndex={-1}>
 					{useHamburger ? (
 						<div className="hamburger-holder">
 							<HamburgerMenu
