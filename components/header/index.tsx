@@ -66,7 +66,7 @@ const Profile = () => {
 			Login
 		</PurpleButton>
 	) : (
-		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
+		<styles.UserProfile tabIndex={6} onClick={() => setProfileMenuOpen(true)}>
 			<Avatar src={user.profilePicture}>
 				<AccountCircleIcon />
 			</Avatar>
@@ -153,28 +153,32 @@ const Header = () => {
 		<>
 			<styles.navItem>
 				<Link href="/apps/download">
-					<a>Chat Manager</a>
+					<a tabIndex={1}>Chat Manager</a>
 				</Link>
 			</styles.navItem>
 			<styles.navItem>
 				<Link href="/bot">
-					<a>Discord Bot</a>
+					<a tabIndex={2}>Discord Bot</a>
 				</Link>
 			</styles.navItem>
 			<styles.navItem>
-				<Anchor newTab href="https://discord.disstreamchat.com">
+				<Anchor tabIndex={3} newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
 			<styles.navItem>
-				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
+				<Anchor
+					tabIndex={4}
+					newTab
+					href="https://www.patreon.com/disstreamchat?fan_landing=true"
+				>
 					Support Us
 				</Anchor>
 			</styles.navItem>
 			{isLoggedIn && (
 				<styles.navItem>
 					<Link href="/dashboard">
-						<a>Dashboard</a>
+						<a tabIndex={5}>Dashboard</a>
 					</Link>
 				</styles.navItem>
 			)}
@@ -265,7 +269,7 @@ const Header = () => {
 			</styles.logo>
 			<styles.nav>
 				{!useHamburger && links}
-				<styles.navItem>
+				<styles.NavItem>
 					{useHamburger ? (
 						<div className="hamburger-holder">
 							<HamburgerMenu
@@ -281,7 +285,7 @@ const Header = () => {
 					) : (
 						<Profile />
 					)}
-				</styles.navItem>
+				</styles.NavItem>
 			</styles.nav>
 			<AnimatePresence>
 				{menuOpen && (

@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { H2 } from "../shared/styles/headings";
 import chroma from "chroma-js";
+import React, { useState } from "react";
 
 const Header = styled(motion.header)`
 	padding: 0 1rem;
@@ -27,13 +28,57 @@ const nav = styled.nav`
 		margin-left: auto;
 	}
 `;
-
-const navItem = styled.div`
+const NavItem = styled(motion.div)`
 	color: white;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	a {
 		padding: 0.5rem 1rem;
+		&:focus{
+			color: white;
+		}
+	}
+	.underline {
+		position: absolute;
+		border: 1px solid white;
+		/* left: 0;
+		right: 0; */
+		bottom: 10%;
+		width: 80%;
+		transform-origin: center;
 	}
 `;
+
+const navItem = props => {
+	const [focused, setFocused] = useState(false);
+	const [hovered, setHovered] = useState(false);
+
+	const underlined = focused || hovered;
+
+	return (
+		<NavItem
+			onHoverStart={() => setHovered(true)}
+			onHoverEnd={() => setHovered(false)}
+			onFocus={() => setFocused(true)}
+			onBlur={() => setFocused(false)}
+		>
+			{props.children}
+			<AnimatePresence>
+				{underlined && (
+					<motion.div
+						initial={{ scaleX: 0 }}
+						exit={{ scaleX: 0 }}
+						animate={{ scaleX: 1 }}
+						key="underline"
+						className="underline"
+					></motion.div>
+				)}
+			</AnimatePresence>
+		</NavItem>
+	);
+};
 
 const logo = styled.div``;
 
@@ -137,7 +182,7 @@ const menuDropDown = styled(motion.div)`
 
 const menuItem = styled(motion.div)`
 	border-radius: 0.25rem;
-	a{
+	a {
 		padding: 0;
 	}
 	color: ${({ warn }: { warn?: boolean }): any =>
@@ -183,4 +228,5 @@ export default {
 	UserProfile,
 	menuDropDown,
 	menuItem,
+	NavItem,
 };
