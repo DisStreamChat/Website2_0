@@ -6,6 +6,7 @@ const SEO = () => {
 			<meta charSet="utf-8" />
 			<link rel="icon" href="/logo.png" />
 			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" as="style" />
+			<link rel="stylesheet" href="https://api.disstreamchat.com/public/fonts.css" />
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
 			<meta name="title" content="DisStreamChat" />
@@ -88,7 +89,7 @@ const SEO = () => {
 				integrity="sha512-DanfxWBasQtq+RtkNAEDTdX4Q6BPCJQ/kexi/RftcP0BcA4NIJPSi7i31Vl+Yl5OCfgZkdJmCqz+byTOIIRboQ=="
 				crossOrigin="anonymous"
 			/>
-			<link
+			{/* <link
 				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
 				rel="preload"
 				as="style"
@@ -96,7 +97,7 @@ const SEO = () => {
 			<link
 				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
 				rel="stylesheet"
-			/>
+			/> */}
 			<title>DisStreamChat</title>
 		</Head>
 	);
