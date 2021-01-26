@@ -60,6 +60,7 @@ export default function Home() {
 					</Link>
 				</Buttons>
 			</Hero>
+			<div id="features"></div>
 		</Main>
 	);
 }

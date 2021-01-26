@@ -67,7 +67,9 @@ const Profile = () => {
 		</PurpleButton>
 	) : (
 		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
-			<Avatar src={user.profilePicture}>
+			<Avatar imgProps={{
+				alt: "avatar"
+			}} src={user.profilePicture}>
 				<AccountCircleIcon />
 			</Avatar>
 			<styles.Username>{user.name}</styles.Username>
@@ -258,7 +260,7 @@ const Header = () => {
 							width="50"
 							height="50"
 							src="https://www.disstreamchat.com/logo.png"
-							alt="logo"
+							alt="DisStreamChat Logo"
 						/>
 					</a>
 				</Link>
