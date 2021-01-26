@@ -91,7 +91,7 @@ const Profile = () => {
 								when: "beforeChildren",
 							}}
 						>
-							<styles.menuItem tabIndex={-1}>
+							<styles.menuItem >
 								<Link href="/dashboard">
 									<a>My Dashboard</a>
 								</Link>
@@ -156,28 +156,28 @@ const Header = () => {
 
 	const links = (
 		<>
-			<styles.navItem name="Chat Manager" tabIndex={-1}>
+			<styles.navItem name="Chat Manager" >
 				<Link href="/apps/download">
 					<a>Chat Manager</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem name="Discord Bot" tabIndex={-1}>
+			<styles.navItem name="Discord Bot" >
 				<Link href="/bot">
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem name="Community" tabIndex={-1}>
+			<styles.navItem name="Community" >
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem tabIndex={-1} name="Support Us">
+			<styles.navItem  name="Support Us">
 				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
 					Support Us
 				</Anchor>
 			</styles.navItem>
 			{isLoggedIn && (
-				<styles.navItem name="Dashboard" tabIndex={-1}>
+				<styles.navItem name="Dashboard" >
 					<Link href="/dashboard">
 						<a>Dashboard</a>
 					</Link>
@@ -270,7 +270,7 @@ const Header = () => {
 			</styles.logo>
 			<styles.nav>
 				{!useHamburger && links}
-				<styles.NavItem tabIndex={-1}>
+				<styles.NavItem >
 					{useHamburger ? (
 						<div className="hamburger-holder">
 							<HamburgerMenu
