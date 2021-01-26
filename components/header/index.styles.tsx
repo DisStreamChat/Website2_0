@@ -28,7 +28,7 @@ const nav = styled.nav`
 		margin-left: auto;
 	}
 `;
-const NavItem = styled(motion.button)`
+const NavItem = styled(motion.div)`
 	background: none;
 	outline: none;
 	border: none;

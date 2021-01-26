@@ -67,9 +67,12 @@ const Profile = () => {
 		</PurpleButton>
 	) : (
 		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
-			<Avatar imgProps={{
-				alt: "avatar"
-			}} src={user.profilePicture}>
+			<Avatar
+				imgProps={{
+					alt: "avatar",
+				}}
+				src={user.profilePicture}
+			>
 				<AccountCircleIcon />
 			</Avatar>
 			<styles.Username>{user.name}</styles.Username>
@@ -153,28 +156,28 @@ const Header = () => {
 
 	const links = (
 		<>
-			<styles.navItem tabIndex={-1}>
+			<styles.navItem name="Chat Manager" tabIndex={-1}>
 				<Link href="/apps/download">
 					<a>Chat Manager</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem tabIndex={-1}>
+			<styles.navItem name="Discord Bot" tabIndex={-1}>
 				<Link href="/bot">
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem tabIndex={-1}>
+			<styles.navItem name="Community" tabIndex={-1}>
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem tabIndex={-1}>
+			<styles.navItem tabIndex={-1} name="Support Us">
 				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
 					Support Us
 				</Anchor>
 			</styles.navItem>
 			{isLoggedIn && (
-				<styles.navItem tabIndex={-1}>
+				<styles.navItem name="Dashboard" tabIndex={-1}>
 					<Link href="/dashboard">
 						<a>Dashboard</a>
 					</Link>
