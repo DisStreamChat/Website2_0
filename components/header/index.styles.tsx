@@ -81,6 +81,10 @@ const navItem = ({children, ...props}) => {
 						initial={{ scaleX: 0 }}
 						exit={{ scaleX: 0 }}
 						animate={{ scaleX: 1 }}
+						transition={{
+							ease: "easeInOut",
+							duration: .25,
+						}}
 						key="underline"
 						className="underline"
 					></motion.div>
