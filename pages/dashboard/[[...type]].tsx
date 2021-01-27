@@ -1,4 +1,4 @@
-import { AnimateSharedLayout} from "framer-motion";
+import { AnimateSharedLayout } from "framer-motion";
 import Link from "next/link";
 import nookies from "nookies";
 import { verifyIdToken } from "../../firebase/admin";
@@ -7,8 +7,12 @@ import {
 	SideBar,
 	SideBarItem,
 	Background,
-	ContentArea
-} from "../../components/dashboard/styles"
+	ContentArea,
+} from "../../components/dashboard/styles";
+import dynamic from "next/dynamic";
+const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
+const App = dynamic(() => import("../../components/dashboard/App"));
+const Account = dynamic(() => import("../../components/dashboard/Account"));
 
 const Dashboard = ({ type, session }) => {
 	return (
@@ -62,7 +66,11 @@ const Dashboard = ({ type, session }) => {
 					</SideBarItem>
 				</AnimateSharedLayout>
 			</SideBar>
-			<ContentArea></ContentArea>
+			<ContentArea>
+				{type[0] === "discord" && <Discord />}
+				{type[0] === "app" && <App />}
+				{type[0] === "account" && <Account />}
+			</ContentArea>
 		</DashboardContainer>
 	);
 };
@@ -70,7 +78,7 @@ const Dashboard = ({ type, session }) => {
 export const getServerSideProps = async context => {
 	const { res, params } = context;
 	const { referer } = context.req.headers;
-	let session;
+	let session = null;
 	try {
 		const cookies = nookies.get(context);
 		const token = await verifyIdToken(cookies.token);
@@ -81,8 +89,8 @@ export const getServerSideProps = async context => {
 			session = { uid, email };
 		}
 	} catch (err) {
-		res.writeHead(307, { location: "/" }).end();
-		return { props: {} };
+		// res.writeHead(307, { location: "/" }).end();
+		// return { props: {} };
 	}
 
 	if (!params.type) {

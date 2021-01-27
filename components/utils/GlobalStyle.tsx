@@ -87,6 +87,10 @@ const GlobalStyle = createGlobalStyle`
 	.MuiOutlinedInput-adornedStart {
 		overflow: hidden !important;
 	}
+
+	.css-fac07y-container, .css-fac07y-container *{
+		color: white !important;
+	}
 `;
 
 export default GlobalStyle;

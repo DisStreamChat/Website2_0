@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Main } from "../../components/shared/styles";
 import { motion } from "framer-motion";
+import { H1 } from "../shared/styles/headings";
 
 export const DashboardContainer = styled(Main)`
 	display: flex;
@@ -47,15 +48,27 @@ export const SideBarItem = styled(motion.div)`
 
 export const ContentArea = styled.div`
 	margin: 0 0 0 2rem;
+	max-width: 60%;
 	min-width: 60%;
-	outline: solid;
+	/* max-width: 80%; */
+	display: flex;
+	flex-direction: column;
+	white-space: pre-wrap;
 	@media screen and (max-width: 1024px) {
 		margin: 2rem 0 0 0;
-
 		min-width: 80%;
+	}
+	@media screen and (max-width: 425px) {
+		${H1} {
+			font-size: 1.75rem;
+		}
 	}
 	@media screen and (max-width: 320px) {
 		min-width: 90%;
+	}
+	hr {
+		width: 100%;
+		border-color: grey;
 	}
 `;
 
@@ -68,3 +81,10 @@ export const Background = styled(motion.div)`
 	background: var(--disstreamchat-blue);
 	border-radius: 0.25rem;
 `;
+
+export const SmallTitle = styled.div`
+	text-transform: uppercase;
+    padding: 0;
+    font-size: 12px;
+    font-weight: 600;
+`
