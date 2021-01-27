@@ -1,22 +1,10 @@
 import styles from "./index.styles";
 import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
-import {
-	Avatar,
-	ClickAwayListener,
-	createStyles,
-	makeStyles,
-	Theme,
-	useMediaQuery,
-} from "@material-ui/core";
+import { createStyles, makeStyles, Theme, useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
 import React, { useEffect, useState } from "react";
-import {
-	BlueButton,
-	PurpleButton,
-	TwitchButton,
-	DiscordButton,
-} from "../shared/ui-components/Button";
+import { TwitchButton, DiscordButton } from "../shared/ui-components/Button";
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { useWindowScroll } from "react-use";
@@ -25,9 +13,9 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import { useHeaderContext } from "./context";
 import { useAuth } from "../../auth/authContext";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import firebaseClient from "../../firebase/client";
+import dynamic from "next/dynamic"
+const Profile = dynamic(() => import("./Profile"))
+const Sidebar = dynamic(() => import("./sidebar"))
 
 const headerVariants = {
 	top: {
@@ -38,80 +26,6 @@ const headerVariants = {
 		color: "rgb(255, 255, 255)",
 		background: "rgba(0, 0, 0, 0)",
 	},
-};
-
-const Profile = () => {
-	const { setLoginModalOpen } = useHeaderContext();
-	const { user, isLoggedIn } = {
-		user: {
-			name: "David",
-			profilePicture:
-				"https://static-cdn.jtvnw.net/jtv_user_pictures/b308a27a-1b9f-413a-b22b-3c9b2815a81a-profile_image-300x300.png",
-		},
-		isLoggedIn: true,
-	};
-
-	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-
-	useEffect(() => {
-		setProfileMenuOpen(prev => prev && !!isLoggedIn);
-	}, [isLoggedIn]);
-
-	return !user ? (
-		<PurpleButton
-			onClick={() => {
-				setLoginModalOpen(true);
-			}}
-		>
-			Login
-		</PurpleButton>
-	) : (
-		<styles.UserProfile onClick={() => setProfileMenuOpen(true)}>
-			<Avatar
-				imgProps={{
-					alt: "avatar",
-				}}
-				src={user.profilePicture}
-			>
-				<AccountCircleIcon />
-			</Avatar>
-			<styles.Username>{user.name}</styles.Username>
-			<styles.Chevron animate={profileMenuOpen ? { rotate: 180 } : { rotate: 0 }}>
-				<KeyboardArrowDownIcon />
-			</styles.Chevron>
-			<AnimatePresence>
-				{profileMenuOpen && (
-					<ClickAwayListener onClickAway={() => setProfileMenuOpen(false)}>
-						<styles.menuDropDown
-							exit={{ y: -50, opacity: 0 }}
-							initial={{ y: -50, opacity: 0 }}
-							animate={{ y: 15, opacity: 1 }}
-							transition={{
-								staggerChildren: 0.1,
-								when: "beforeChildren",
-							}}
-						>
-							<styles.menuItem >
-								<Link href="/dashboard">
-									<a>My Dashboard</a>
-								</Link>
-							</styles.menuItem>
-							<styles.menuItem>Edit my personal rank card</styles.menuItem>
-							<styles.menuItem
-								onClick={async () => {
-									await firebaseClient.logout();
-									setProfileMenuOpen(false);
-								}}
-								warn
-							>
-								Logout
-							</styles.menuItem>
-						</styles.menuDropDown>
-					</ClickAwayListener>
-				)}
-			</AnimatePresence>
-		</styles.UserProfile>
-	);
 };
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -156,28 +70,28 @@ const Header = () => {
 
 	const links = (
 		<>
-			<styles.navItem name="Chat Manager" >
+			<styles.navItem name="Chat Manager">
 				<Link href="/apps/download">
 					<a>Chat Manager</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem name="Discord Bot" >
+			<styles.navItem name="Discord Bot">
 				<Link href="/bot">
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem name="Community" >
+			<styles.navItem name="Community">
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem  name="Support Us">
+			<styles.navItem name="Support Us">
 				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
 					Support Us
 				</Anchor>
 			</styles.navItem>
 			{isLoggedIn && (
-				<styles.navItem name="Dashboard" >
+				<styles.navItem name="Dashboard">
 					<Link href="/dashboard">
 						<a>Dashboard</a>
 					</Link>
@@ -270,7 +184,7 @@ const Header = () => {
 			</styles.logo>
 			<styles.nav>
 				{!useHamburger && links}
-				<styles.NavItem >
+				<styles.NavItem>
 					{useHamburger ? (
 						<div className="hamburger-holder">
 							<HamburgerMenu
@@ -288,20 +202,7 @@ const Header = () => {
 					)}
 				</styles.NavItem>
 			</styles.nav>
-			<AnimatePresence>
-				{menuOpen && (
-					<styles.sidebar
-						key="sidebar"
-						exit={{ x: 900, opacity: 0 }}
-						initial={{ x: 900, opacity: 0 }}
-						animate={{ x: 0, opacity: 1 }}
-						transition={{ duration: 0.25 }}
-					>
-						{links}
-						<Profile />
-					</styles.sidebar>
-				)}
-			</AnimatePresence>
+			<AnimatePresence>{menuOpen && <Sidebar>{links}</Sidebar>}</AnimatePresence>
 		</styles.Header>
 	);
 };
