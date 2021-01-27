@@ -3,18 +3,23 @@ import nookies from "nookies";
 import firebaseClient from "../firebase/client";
 import firebase from "firebase";
 
+
+interface User extends firebase.User {
+	profilePicture: string,
+	name: string,
+}
 interface authType {
-	user: firebase.User;
+	user: User;
 	isLoggedIn: boolean
 }
 
 export const authContext = createContext<authType>(null);
 
 export const AuthContextProvider = ({ children }) => {
-	const [user, setUser] = useState(null);
+	const [user, setUser] = useState<User>(null);
 
 	useEffect(() => {
-		return firebaseClient.auth.onIdTokenChanged(async user => {
+		return firebaseClient.auth.onIdTokenChanged(async (user: User) => {
 			if (!user) {
 				setUser(null);
 				nookies.set(undefined, "token", "");
