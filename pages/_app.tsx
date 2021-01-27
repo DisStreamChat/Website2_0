@@ -1,15 +1,14 @@
 import Router from "next/router";
 import NProgress from "nprogress";
-import Footer from "../components/footer";
+import dynamic from "next/dynamic"
+const Footer = dynamic(() => import("../components/footer"))
+// import Footer from "../components/footer";
 import Header from "../components/header";
 import GlobalStyle from "../components/utils/GlobalStyle";
 import SEO from "../components/utils/SEO";
 import {
-	Avatar,
 	createMuiTheme,
-	InputAdornment,
 	ThemeProvider,
-	useMediaQuery,
 } from "@material-ui/core";
 import React, { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
