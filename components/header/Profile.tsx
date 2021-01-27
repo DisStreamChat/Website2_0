@@ -13,17 +13,11 @@ import { useHeaderContext } from "./context";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import firebaseClient from "../../firebase/client";
+import { useAuth } from "../../auth/authContext";
 
 const Profile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
-	const { user, isLoggedIn } = {
-		user: {
-			name: "David",
-			profilePicture:
-				"https://static-cdn.jtvnw.net/jtv_user_pictures/b308a27a-1b9f-413a-b22b-3c9b2815a81a-profile_image-300x300.png",
-		},
-		isLoggedIn: true,
-	};
+	const { user, isLoggedIn } = useAuth();
 
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
