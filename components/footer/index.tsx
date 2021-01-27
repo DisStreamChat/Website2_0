@@ -42,7 +42,7 @@ const Footer = () => {
 					<styles.column>
 						<styles.heading>Resources</styles.heading>
 						<Anchor
-							href="https://www.patreon.com/disstreamchat?fan_landing=true"
+							href="https://discord.disstreamchat.com"
 							newTab
 						>
 							Join the Discord
