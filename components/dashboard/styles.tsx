@@ -41,6 +41,9 @@ export const SideBarItem = styled(motion.div)`
 		text-transform: capitalize;
 		z-index: 10;
 		position: relative;
+		&:focus {
+			outline: 1px solid !important;
+		}
 	}
 	position: relative;
 	/* overflow: hidden; */
@@ -87,7 +90,7 @@ export const Background = styled(motion.div)`
 
 export const SmallTitle = styled.div`
 	text-transform: uppercase;
-    padding: 0;
-    font-size: 12px;
-    font-weight: 600;
-`
+	padding: 0;
+	font-size: 12px;
+	font-weight: 600;
+`;
