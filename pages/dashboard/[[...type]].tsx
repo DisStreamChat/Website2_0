@@ -36,7 +36,7 @@ const Dashboard = ({ type, session }) => {
 					</SideBarItem>
 					<SideBarItem>
 						<Link href="discord">
-							<a>Discord Settings</a>
+							<a>Discord Dashboard</a>
 						</Link>
 						{type?.[0] === "discord" && (
 							<Background
