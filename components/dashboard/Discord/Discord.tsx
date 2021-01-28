@@ -1,6 +1,7 @@
 import { H1, H2 } from "../../shared/styles/headings";
 import styled from "styled-components";
 import dynamic from "next/dynamic"
+import { useRouter } from "next/router";
 const ServerSelect = dynamic(() => import("./ServerSelect"))
 
 const Description = styled.p`
@@ -14,6 +15,11 @@ const Description = styled.p`
 const ServerArea = styled.div``;
 
 const Discord = () => {
+
+	const router = useRouter()
+
+	const [, serverId] = router.query.type as string[]
+
 	return (
 		<>
 			<H1>Discord Dashboard</H1>
@@ -22,7 +28,7 @@ const Discord = () => {
 				client/overlay during stream and manage DisStreamBot in your server.
 			</Description>
 			<hr />
-			<ServerSelect/>
+			{!serverId && <ServerSelect/>}
 		</>
 	);
 };

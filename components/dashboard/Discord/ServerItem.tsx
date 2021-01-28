@@ -23,7 +23,7 @@ const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 			<div>
 				<H2>{name}</H2>
 				<BlueButton>
-					<Link href="">
+					<Link href={`discord/${id}`}>
 						<a>Manage</a>
 					</Link>{" "}
 				</BlueButton>

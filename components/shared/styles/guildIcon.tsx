@@ -11,7 +11,7 @@ const NoIcon = styled.span`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: ${({size}: {size: number}) => `${size/2}px`};
+	font-size: ${({ size, name }: { size: number; name: string }) => `${size / name.length}px`};
 	text-transform: uppercase;
 `;
 
@@ -29,6 +29,7 @@ const GuildIcon = (props: iconProps) => {
 		></img>
 	) : (
 		<NoIcon
+			name={props.name.split(" ").map(w => w[0]).join("")}
 			size={Number(props.size)}
 			style={{
 				maxWidth: props.size,

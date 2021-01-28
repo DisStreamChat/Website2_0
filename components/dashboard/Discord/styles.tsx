@@ -20,7 +20,7 @@ export const Title = styled(H2)`
 `;
 
 export const ServerItemBody = styled.div`
-	flex: 1 1 45%;
+	flex: 1 1 49%;
 	align-items: center;
 	background: #17181b;
 	padding: 1rem;
