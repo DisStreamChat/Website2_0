@@ -63,3 +63,10 @@ export const OrangeButton = withStyles((theme: Theme) => ({
 		background: "linear-gradient(283deg,#f9af15,#f95515)",
 	},
 }))(PaddingButton);
+
+export const RedButton = withStyles((theme: Theme) => ({
+	root: {
+		color: theme.palette.getContrastText("#9b0e11"),
+		background: "#9b0e11",
+	},
+}))(PaddingButton);

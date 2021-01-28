@@ -1,7 +1,7 @@
 import { H1, H2 } from "../../shared/styles/headings";
 import styled from "styled-components";
-import { SmallTitle } from "../styles";
-import StyledSelect from "../../shared/styles/styled-select";
+import dynamic from "next/dynamic"
+const ServerSelect = dynamic(() => import("./ServerSelect"))
 
 const Description = styled.p`
 	font-weight: 400;
@@ -10,20 +10,6 @@ const Description = styled.p`
 	opacity: 0.8;
 `;
 
-const ServerSelect = styled.div`
-	/* margin: 0.5rem 0; */
-	margin-bottom: 0.5rem;
-`;
-
-const ServerTitle = styled(H2)`
-	margin-top: 0;
-	margin-bottom: 0.5rem;
-	text-transform: uppercase;
-`;
-
-const Title = styled(H2)`
-	margin: 0.5rem 0;
-`;
 
 const ServerArea = styled.div``;
 
@@ -36,17 +22,7 @@ const Discord = () => {
 				client/overlay during stream and manage DisStreamBot in your server.
 			</Description>
 			<hr />
-			<ServerSelect>
-				<ServerTitle>Server</ServerTitle>
-				<StyledSelect placeholder="Select a Server" />
-			</ServerSelect>
-			<hr />
-			<ServerArea>
-				<Title>Command Prefix</Title>
-				<Description>
-					Set the prefix used to run DisStreamBot commands in this discord server
-				</Description>
-			</ServerArea>
+			<ServerSelect/>
 		</>
 	);
 };
