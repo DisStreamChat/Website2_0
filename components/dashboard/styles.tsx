@@ -20,6 +20,9 @@ export const SideBar = styled.div`
 	flex-direction: column;
 	width: 25%;
 	max-width: 300px;
+	position: sticky;
+	top: 80px;
+	height: fit-content;
 	@media screen and (max-width: 1024px) {
 		flex-direction: row;
 		justify-content: space-around;
