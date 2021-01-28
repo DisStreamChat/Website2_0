@@ -5,8 +5,12 @@ const SEO = () => {
 		<Head>
 			<meta charSet="utf-8" />
 			<link rel="icon" href="/logo.png" />
-			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" as="style" />
-			<link rel="stylesheet" href="https://api.disstreamchat.com/public/fonts.css" />
+			<link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" as="style" />
+			<link rel="preconnect" href="https://fonts.gstatic.com" />
+			<link
+				href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+				rel="stylesheet"
+			/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
 			<meta name="title" content="DisStreamChat" />
