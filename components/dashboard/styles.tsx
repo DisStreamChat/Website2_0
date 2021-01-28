@@ -22,8 +22,12 @@ export const SideBar = styled.div`
 	max-width: 300px;
 	position: sticky;
 	top: 80px;
+	padding: 0 1rem 1rem 1rem;
 	height: fit-content;
+	z-index: 10;
 	@media screen and (max-width: 1024px) {
+		background: var(--background-light-gray);
+		padding: 1rem;
 		flex-direction: row;
 		justify-content: space-around;
 		width: 80%;
