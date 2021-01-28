@@ -3,10 +3,11 @@ import { H2 } from "../../shared/styles/headings";
 
 export const ServerSelectBody = styled.div`
 	/* margin: 0.5rem 0; */
-	margin-bottom: 0.5rem;
+	margin-bottom: 2rem;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 1rem;
+
 `;
 
 export const ServerTitle = styled(H2)`
