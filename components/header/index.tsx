@@ -176,7 +176,7 @@ const Header = () => {
 						<img
 							width="50"
 							height="50"
-							src="/small_logo.png"
+							src="/medium_logo.png"
 							alt="DisStreamChat Logo"
 						/>
 					</a>
