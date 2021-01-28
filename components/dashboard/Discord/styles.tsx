@@ -20,11 +20,15 @@ export const Title = styled(H2)`
 `;
 
 export const ServerItemBody = styled.div`
-	width: calc(50% - 1rem);
+	flex: 1 1 45%;
+	align-items: center;
 	background: #17181b;
 	padding: 1rem;
 	border-radius: 0.25rem;
 	display: flex;
+	@media screen and (max-width: 425px){
+		font-size: .75rem;
+	}
 	& > * + * {
 		margin-left: 0.5rem;
 	}
