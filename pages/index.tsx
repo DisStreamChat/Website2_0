@@ -37,10 +37,18 @@ const Buttons = styled.div`
 	}
 `;
 
+const BG = styled.img`
+	position: absolute;
+	width: 100%;
+	opacity: .5;
+	pointer-events: none;
+`
+
 export default function Home() {
 	return (
 		<Main>
 			<Hero>
+				<BG src="/bg-1.svg" alt=""/>
 				<H1>Integrate your Discord server with Twitch</H1>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
