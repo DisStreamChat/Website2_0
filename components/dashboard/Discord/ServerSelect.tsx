@@ -3,7 +3,7 @@ import ServerItem from "./ServerItem";
 
 const servers = [
 	{
-		id: "711238743213998091",
+		id: "276096133695143936",
 		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
 		name: "The Coding Train",
 		botIn: true,
@@ -15,9 +15,9 @@ const servers = [
 		botIn: true,
 	},
 	{
-		id: "711238743213998091",
-		icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
-		name: "DisStreamChat Community",
+		id: "702522791018102855",
+		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
+		name: "Saint Streams",
 		botIn: false,
 	},
 ];
@@ -28,7 +28,7 @@ const ServerSelect = () => {
 			<ServerTitle>Select a Server</ServerTitle>
 			<ServerSelectBody>
 				{servers.map(server => (
-					<ServerItem {...server} />
+					<ServerItem key={server.id} {...server} />
 				))}
 			</ServerSelectBody>
 		</>
