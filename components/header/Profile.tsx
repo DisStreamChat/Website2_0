@@ -43,7 +43,7 @@ const Profile = () => {
 			>
 				<AccountCircleIcon />
 			</Avatar>
-			<styles.Username>{user.name}</styles.Username>
+			<styles.Username>{user.displayName}</styles.Username>
 			<styles.Chevron animate={profileMenuOpen ? { rotate: 180 } : { rotate: 0 }}>
 				<KeyboardArrowDownIcon />
 			</styles.Chevron>

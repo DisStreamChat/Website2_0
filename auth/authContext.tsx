@@ -1,10 +1,10 @@
 import { useState, useEffect, useContext, createContext } from "react";
-import nookies from "nookies";
+import nookies, {parseCookies, destroyCookie} from "nookies";
 import firebaseClient from "../firebase/client";
 import firebase from "firebase";
 
 
-interface User extends firebase.User {
+interface User extends firebase.User, firebase.firestore.DocumentData {
 	profilePicture: string,
 	name: string,
 }
@@ -19,15 +19,29 @@ export const AuthContextProvider = ({ children }) => {
 	const [user, setUser] = useState<User>(null);
 
 	useEffect(() => {
+		const cookies = parseCookies()
+		if(cookies["temp-token"]){
+			const signInToken = cookies["temp-token"]
+			firebaseClient.auth.signInWithCustomToken(signInToken)
+			destroyCookie(null, "temp-token")
+		}
+	}, [])
+
+	useEffect(() => {
 		return firebaseClient.auth.onIdTokenChanged(async (user: User) => {
 			if (!user) {
 				setUser(null);
 				nookies.set(undefined, "token", "");
 				return;
 			}
+			const userId = user.uid
+			const userDbRef = firebaseClient.db.collection("Streamers").doc(userId)
+			const userDbObject = await userDbRef.get()
+			const userDbData = userDbObject.data()
+			setUser({...user, ...userDbData});
+			
 			const token = await user.getIdToken();
-			setUser(user);
-			nookies.set(undefined, "token", token);
+			nookies.set(undefined, "token", token, {sameSite: "Lax"});
 		});
 	}, []);
 

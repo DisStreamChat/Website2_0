@@ -13,9 +13,11 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import { useHeaderContext } from "./context";
 import { useAuth } from "../../auth/authContext";
-import dynamic from "next/dynamic"
-const Profile = dynamic(() => import("./Profile"))
-const Sidebar = dynamic(() => import("./sidebar"))
+import dynamic from "next/dynamic";
+import { redirect_uri } from "../../utils/constants";
+import { redirect } from "next/dist/next-server/server/api-utils";
+const Profile = dynamic(() => import("./Profile"));
+const Sidebar = dynamic(() => import("./sidebar"));
 
 const headerVariants = {
 	top: {
@@ -129,7 +131,7 @@ const Header = () => {
 								<Anchor
 									href={
 										acceptedTerms
-											? "https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=https://www.disstreamchat.com&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions"
+											? `https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions`
 											: null
 									}
 								>
@@ -140,7 +142,7 @@ const Header = () => {
 								<Anchor
 									href={
 										acceptedTerms
-											? "https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=https://www.disstreamchat.com%2F%3Fdiscord%3Dtrue&response_type=code&scope=identify%20guilds"
+											? `https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${redirect_uri}%2F%3Fdiscord%3Dtrue&response_type=code&scope=identify%20guilds`
 											: null
 									}
 								>

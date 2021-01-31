@@ -9,6 +9,7 @@ import {
 	Background,
 	ContentArea,
 } from "../../components/dashboard/styles";
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import dynamic from "next/dynamic";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
@@ -75,22 +76,22 @@ const Dashboard = ({ type, session }) => {
 	);
 };
 
-export const getServerSideProps = async context => {
+export const getServerSideProps: GetServerSideProps  = async context => {
 	const { res, params } = context;
 	const { referer } = context.req.headers;
 	let session = null;
+	const cookies = nookies.get(context);
 	try {
-		const cookies = nookies.get(context);
 		const token = await verifyIdToken(cookies.token);
 		if (!token) throw new Error("no token");
 		if (typeof token === "boolean") session = token;
 		else {
-			const { uid, email } = token;
-			session = { uid, email };
+			const { uid } = token;
+			session = { uid };
 		}
 	} catch (err) {
-		// res.writeHead(307, { location: "/" }).end();
-		// return { props: {} };
+		res.writeHead(307, { location: "/" }).end();
+		return { props: {} };
 	}
 
 	if (!params.type) {

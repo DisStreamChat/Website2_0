@@ -10,6 +10,7 @@
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",
+    "@types/nookies": "^2.0.3",
     "chroma-js": "^2.1.0",
     "firebase": "^8.2.4",
     "firebase-admin": "^9.4.2",
