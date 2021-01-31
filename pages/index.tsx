@@ -10,7 +10,7 @@ import { OrangeButton } from "../components/shared/ui-components/Button";
 const Subheading = styled(H2)`
 	font-style: normal;
 	font-weight: 400;
-	font-size: 2rem;
+	font-size: 1.25rem;
 	line-height: 170%;
 	margin-top: 1rem;
 	margin-bottom: 0;
@@ -44,12 +44,16 @@ const BG = styled.img`
 	pointer-events: none;
 `
 
+const Heading = styled(H1)`
+	max-width: 50%;
+`
+
 export default function Home() {
 	return (
 		<Main>
 			<Hero>
 				<BG src="/bg-1.svg" alt=""/>
-				<H1>Integrate your Discord server with Twitch</H1>
+				<Heading>Integrate your Discord server with Twitch</Heading>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
 					Discord!
