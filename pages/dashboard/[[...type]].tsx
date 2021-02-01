@@ -9,7 +9,8 @@ import {
 	Background,
 	ContentArea,
 } from "../../components/dashboard/styles";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import cookie from "cookie";
 import dynamic from "next/dynamic";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
@@ -76,11 +77,26 @@ const Dashboard = ({ type, session }) => {
 	);
 };
 
-export const getServerSideProps: GetServerSideProps  = async context => {
-	const { res, params } = context;
+const parseCookies = (
+	cookieString: string
+): {
+	[key: string]: string;
+} => {
+	const cookieStrings = cookieString.split(";").map(cookie => cookie.trim());
+	const parsedCookieStrings = cookieStrings.map(cookie => cookie.split("="));
+	const parsedCookies = parsedCookieStrings.reduce((acc, cur) => {
+		const [key, value] = cur;
+		if (!acc[key] || acc[key]?.length < value.length) acc[key] = value;
+		return acc;
+	}, {});
+	return parsedCookies;
+};
+
+export const getServerSideProps: GetServerSideProps = async context => {
+	const { req, res, params } = context;
 	const { referer } = context.req.headers;
 	let session = null;
-	const cookies = nookies.get(context);
+	const cookies = parseCookies(req.headers.cookie);
 	try {
 		const token = await verifyIdToken(cookies.token);
 		if (!token) throw new Error("no token");
@@ -95,7 +111,7 @@ export const getServerSideProps: GetServerSideProps  = async context => {
 	}
 
 	if (!params.type) {
-		res.writeHead(307, { location: "/dashboard/app" }).end();
+		res.writeHead(307, { location: "/dashboard/app", Authentication: cookies.token }).end();
 		return { props: {} };
 	}
 	if (!["app", "discord", "account"].includes(params.type[0])) {
