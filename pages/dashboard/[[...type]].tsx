@@ -98,7 +98,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	let session = null;
 	const cookies = parseCookies(req.headers.cookie);
 	try {
-		const token = await verifyIdToken(cookies.token);
+		const token = await verifyIdToken(cookies["dsc-auth-token"]);
 		if (!token) throw new Error("no token");
 		if (typeof token === "boolean") session = token;
 		else {

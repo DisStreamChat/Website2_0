@@ -23,7 +23,7 @@ export const getServerSideProps = async context => {
 			nookies.set(context, "temp-token", json.token, { maxAge: 60 });
 			// const user = await firebaseClient.auth.signInWithCustomToken(json.token)
 			// console.log(user)
-			nookies.set(context, "token", json.token);
+			nookies.set(context, "dsc-auth-token", json.token);
 		}
 		// res.writeHead(307, { location: "/dashboard/app" }).end();
 	} catch (err) {}
