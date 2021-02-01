@@ -17,6 +17,9 @@ const Subheading = styled(H2)`
 	text-align: center;
 	color: #aaa;
 	max-width: 45%;
+	@media screen and (max-width: 725px){
+		font-size: 1.25rem;
+	}
 `;
 
 const Buttons = styled.div`
@@ -43,9 +46,14 @@ const BG = styled.img`
 `
 
 const Heading = styled(H1)`
-	max-width: 50%;
-	font-size: 5.625rem;
-	line-height: 5.625rem;
+	/* max-width: 50%; */
+	--size: 5.625rem;
+	font-size: var(--size);
+	line-height: var(--size);
+	@media screen and (max-width: 725px){
+		--size: 3.25rem;
+	}
+	text-align: center;
 `
 
 export default function Home() {
@@ -53,7 +61,7 @@ export default function Home() {
 		<Main>
 			<Hero>
 				<BG src="/bg-1.svg" alt=""/>
-				<Heading>DisStreamChat</Heading>
+				<Heading>DisStream<span dangerouslySetInnerHTML={{__html: "&#8203"}}></span>Chat</Heading>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
 					Discord!
