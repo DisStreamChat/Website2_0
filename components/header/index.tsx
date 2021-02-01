@@ -130,6 +130,8 @@ const Header = () => {
 							<TwitchButton
 								type="submit"
 								onClick={() => {
+									if (!acceptedTerms) return;
+
 									window.open(
 										`https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions`,
 										"twitch",
@@ -143,8 +145,13 @@ const Header = () => {
 							<DiscordButton
 								type="submit"
 								onClick={() => {
+									if (!acceptedTerms) return;
 									window.open(
-										`https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${encodeURIComponent(redirect_uri)}${encodeURIComponent("?discord=true")}&response_type=code&scope=identify%20guilds`,
+										`https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${encodeURIComponent(
+											redirect_uri
+										)}${encodeURIComponent(
+											"?discord=true"
+										)}&response_type=code&scope=identify%20guilds`,
 										"discord",
 										"height=775,width=500"
 									);
