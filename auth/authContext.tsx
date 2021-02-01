@@ -41,7 +41,7 @@ export const AuthContextProvider = ({ children }) => {
 			setUser({...user, ...userDbData});
 			
 			const token = await user.getIdToken();
-			nookies.set(undefined, "token", token, {sameSite: "Lax"});
+			nookies.set(undefined, "token", token, {sameSite: "lax"});
 		});
 	}, []);
 
