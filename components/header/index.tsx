@@ -127,28 +127,24 @@ const Header = () => {
 						>
 							<styles.modalHeading>Login to DisStreamChat</styles.modalHeading>
 							<styles.modalSubHeading>Connect with:</styles.modalSubHeading>
-							<TwitchButton type="submit">
-								<Anchor
-									href={
-										acceptedTerms
-											? `https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions`
-											: null
-									}
-								>
-									Twitch
-								</Anchor>
-							</TwitchButton>
-							<DiscordButton type="submit">
-								<Anchor
-									href={
-										acceptedTerms
-											? `https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${redirect_uri}%2F%3Fdiscord%3Dtrue&response_type=code&scope=identify%20guilds`
-											: null
-									}
-								>
-									Discord
-								</Anchor>
-							</DiscordButton>
+							<Anchor
+								href={
+									acceptedTerms
+										? `https://id.twitch.tv/oauth2/authorize?client_id=ip3igc72c6wu7j00nqghb24duusmbr&redirect_uri=${redirect_uri}&response_type=code&scope=openid%20moderation:read%20chat:edit%20chat:read%20channel:moderate%20channel:read:redemptions%20user_subscriptions`
+										: null
+								}
+							>
+								<TwitchButton type="submit">Twitch</TwitchButton>
+							</Anchor>
+							<Anchor
+								href={
+									acceptedTerms
+										? `https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${redirect_uri}%2F%3Fdiscord%3Dtrue&response_type=code&scope=identify%20guilds`
+										: null
+								}
+							>
+								<DiscordButton type="submit">Discord</DiscordButton>
+							</Anchor>
 							<styles.legal>
 								<input
 									checked={acceptedTerms}

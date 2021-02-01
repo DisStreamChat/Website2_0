@@ -59,7 +59,7 @@ const NavItem = styled(motion.div)`
 	}
 `;
 
-const navItem = ({children, ...props}) => {
+const navItem = ({ children, ...props }) => {
 	const [focused, setFocused] = useState(false);
 	const [hovered, setHovered] = useState(false);
 
@@ -83,7 +83,7 @@ const navItem = ({children, ...props}) => {
 						animate={{ scaleX: 1 }}
 						transition={{
 							ease: "easeInOut",
-							duration: .25,
+							duration: 0.25,
 						}}
 						key="underline"
 						className="underline"
@@ -95,7 +95,7 @@ const navItem = ({children, ...props}) => {
 };
 
 const logo = styled.div`
-	&:focus-within{
+	&:focus-within {
 		outline: 1px solid;
 	}
 `;
@@ -134,8 +134,11 @@ const loginModal = styled.div`
 		display: flex;
 		align-items: center;
 	}
+	a,
 	button {
 		width: 100%;
+	}
+	button {
 		margin: 0.5rem 0;
 	}
 `;
