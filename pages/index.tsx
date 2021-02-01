@@ -10,15 +10,13 @@ import { OrangeButton } from "../components/shared/ui-components/Button";
 const Subheading = styled(H2)`
 	font-style: normal;
 	font-weight: 400;
-	font-size: 1.25rem;
+	font-size: 1.5rem;
 	line-height: 170%;
 	margin-top: 1rem;
 	margin-bottom: 0;
 	text-align: center;
 	color: #aaa;
-	@media screen and (max-width: 425px) {
-		font-size: 1.5rem;
-	}
+	max-width: 45%;
 `;
 
 const Buttons = styled.div`
@@ -30,7 +28,7 @@ const Buttons = styled.div`
 	button {
 		margin: 0.5rem 2rem;
 		font-weight: bold;
-		font-size: 1.15rem;
+		font-size: 2.15rem;
 		@media screen and (max-width: 425px) {
 			font-size: 1rem;
 		}
@@ -46,6 +44,8 @@ const BG = styled.img`
 
 const Heading = styled(H1)`
 	max-width: 50%;
+	font-size: 5.625rem;
+	line-height: 5.625rem;
 `
 
 export default function Home() {
@@ -53,23 +53,23 @@ export default function Home() {
 		<Main>
 			<Hero>
 				<BG src="/bg-1.svg" alt=""/>
-				<Heading>Integrate your Discord server with Twitch</Heading>
+				<Heading>DisStreamChat</Heading>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
 					Discord!
 				</Subheading>
 				<Buttons>
-					<a tabIndex={-1} href="#features">
+					{/* <a tabIndex={-1} href="#features">
 						<OrangeButton>See Features</OrangeButton>
-					</a>
+					</a> */}
 					<Anchor tabIndex={-1} href="https://invite.disstreamchat.com" newTab>
 						<OrangeButton>Add to Discord</OrangeButton>
 					</Anchor>{" "}
-					<Link href="/dashboard">
+					{/* <Link href="/dashboard">
 						<a tabIndex={-1}>
 							<OrangeButton>My Dashboard</OrangeButton>
 						</a>
-					</Link>
+					</Link> */}
 				</Buttons>
 			</Hero>
 			<div id="features"></div>
