@@ -1,15 +1,12 @@
 import Router from "next/router";
 import NProgress from "nprogress";
-import dynamic from "next/dynamic"
-const Footer = dynamic(() => import("../components/footer"))
+import dynamic from "next/dynamic";
+const Footer = dynamic(() => import("../components/footer"));
 // import Footer from "../components/footer";
 import Header from "../components/header";
 import GlobalStyle from "../components/utils/GlobalStyle";
 import SEO from "../components/utils/SEO";
-import {
-	createMuiTheme,
-	ThemeProvider,
-} from "@material-ui/core";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core";
 import React, { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import Error from "../components/shared/error";
@@ -39,6 +36,7 @@ const App = ({ children }) => {
 		[]
 	);
 
+
 	const [error, setError] = useState(false);
 
 	Router.events.on("routeChangeStart", () => {
@@ -49,9 +47,11 @@ const App = ({ children }) => {
 		<ThemeProvider theme={theme}>
 			<GlobalStyle />
 			<SEO />
-			<HeaderContextProvider>
-				<Header />
-			</HeaderContextProvider>
+			{!Router.pathname.includes("dashboard") && (
+				<HeaderContextProvider>
+					<Header />
+				</HeaderContextProvider>
+			)}
 			<ErrorBoundary
 				resetKeys={[error]}
 				FallbackComponent={({ error }) => (
