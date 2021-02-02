@@ -13,14 +13,24 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import cookie from "cookie";
 import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
-import React from "react";
+import React, { useEffect } from "react";
 import { HeaderContextProvider } from "../../components/header/context";
 import admin from "firebase-admin"
+import { useRouter } from "next/router";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 const Account = dynamic(() => import("../../components/dashboard/Account"));
 
 const Dashboard = ({ type, session }) => {
+
+	const router = useRouter()
+
+	useEffect(() => {
+		if(!type?.[0]){
+			router.push("/dashboard/app")
+		}
+	}, [type])
+
 	return (
 		<>
 			{session && <HeaderContextProvider>
@@ -77,9 +87,9 @@ const Dashboard = ({ type, session }) => {
 					</AnimateSharedLayout>
 				</SideBar>
 				<ContentArea>
-					{type[0] === "discord" && <Discord />}
-					{type[0] === "app" && <App />}
-					{type[0] === "account" && <Account />}
+					{type?.[0] === "discord" && <Discord />}
+					{type?.[0] === "app" && <App />}
+					{type?.[0] === "account" && <Account />}
 				</ContentArea>
 			</DashboardContainer>
 		</>
@@ -103,7 +113,6 @@ const parseCookies = (
 
 export const getServerSideProps: GetServerSideProps = async context => {
 	const { req, res, params } = context;
-	const { referer } = context.req.headers;
 	let session = null;
 	const cookies = parseCookies(req.headers.cookie);
 	try {
@@ -119,18 +128,15 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			session.user = userData
 		}
 	} catch (err) {
+		console.log("error: ", err.message)
 		res.writeHead(307, { location: "/" }).end();
 		return { props: {} };
 	}
 
-	if (!params.type) {
-		res.writeHead(307, { location: "/dashboard/app", Authentication: cookies.token }).end();
-		return { props: {} };
-	}
-	if (!["app", "discord", "account"].includes(params.type[0])) {
+	if (params.type && !["app", "discord", "account"].includes(params.type[0])) {
 		return { notFound: true };
 	}
-	return { props: { type: params.type, session } };
+	return { props: { type: params.type || null, session } };
 };
 
 export default Dashboard;
