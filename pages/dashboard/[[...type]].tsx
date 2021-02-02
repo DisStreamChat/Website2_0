@@ -87,9 +87,9 @@ const Dashboard = ({ type, session }) => {
 					</AnimateSharedLayout>
 				</SideBar>
 				<ContentArea>
-					{type?.[0] === "discord" && <Discord />}
-					{type?.[0] === "app" && <App />}
-					{type?.[0] === "account" && <Account />}
+					{type?.[0] === "discord" && <Discord session={session}/>}
+					{type?.[0] === "app" && <App session={session}/>}
+					{type?.[0] === "account" && <Account session={session}/>}
 				</ContentArea>
 			</DashboardContainer>
 		</>
@@ -123,9 +123,12 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			const { uid } = token;
 			session = { uid };
 			const userRef = admin.firestore().collection("Streamers").doc(uid)
+			const userDisordRef = userRef.collection("discord").doc("data")
 			const userDoc = await userRef.get()
+			const userDiscordDoc = await userDisordRef.get()
 			const userData = userDoc.data()
-			session.user = userData
+			const userDiscordData = userDiscordDoc.data()
+			session.user = {...userData, ...userDiscordData}
 		}
 	} catch (err) {
 		console.log("error: ", err.message)

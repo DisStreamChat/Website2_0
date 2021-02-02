@@ -1,4 +1,6 @@
-const Account = () => {
+import {dashboardProps} from "./types"
+
+const Account = (props: dashboardProps) => {
 	return <></>;
 };
 

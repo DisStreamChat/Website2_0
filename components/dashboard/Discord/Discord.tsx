@@ -2,6 +2,8 @@ import { H1, H2 } from "../../shared/styles/headings";
 import styled from "styled-components";
 import dynamic from "next/dynamic"
 import { useRouter } from "next/router";
+import { useAuth } from "../../../auth/authContext";
+import { dashboardProps } from "../types";
 const ServerSelect = dynamic(() => import("./ServerSelect"))
 
 const Description = styled.p`
@@ -14,7 +16,7 @@ const Description = styled.p`
 
 const ServerArea = styled.div``;
 
-const Discord = () => {
+const Discord = ({session}: dashboardProps) => {
 
 	const router = useRouter()
 
