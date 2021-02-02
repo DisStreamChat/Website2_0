@@ -12,68 +12,72 @@ import {
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import cookie from "cookie";
 import dynamic from "next/dynamic";
+import DashboardHeader from "../../components/header/dashboard";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 const Account = dynamic(() => import("../../components/dashboard/Account"));
 
 const Dashboard = ({ type, session }) => {
 	return (
-		<DashboardContainer>
-			<SideBar>
-				<AnimateSharedLayout>
-					<SideBarItem>
-						<Link href="app">
-							<a>App Settings</a>
-						</Link>
-						{type?.[0] === "app" && (
-							<Background
-								transition={{
-									type: "spring",
-									stiffness: 500,
-									damping: 30,
-								}}
-								layoutId="background"
-							/>
-						)}
-					</SideBarItem>
-					<SideBarItem>
-						<Link href="discord">
-							<a>Discord Dashboard</a>
-						</Link>
-						{type?.[0] === "discord" && (
-							<Background
-								transition={{
-									type: "spring",
-									stiffness: 500,
-									damping: 30,
-								}}
-								layoutId="background"
-							/>
-						)}
-					</SideBarItem>
-					<SideBarItem>
-						<Link href="account">
-							<a>Account Settings</a>
-						</Link>
-						{type?.[0] === "account" && (
-							<Background
-								transition={{
-									type: "spring",
-									stiffness: 500,
-									damping: 30,
-								}}
-								layoutId="background"
-							/>
-						)}
-					</SideBarItem>
-				</AnimateSharedLayout>
-			</SideBar>
-			<ContentArea>
-				{type[0] === "discord" && <Discord />}
-				{type[0] === "app" && <App />}
-				{type[0] === "account" && <Account />}
-			</ContentArea>
-		</DashboardContainer>
+		<>
+			<DashboardHeader />
+			<DashboardContainer>
+				<SideBar>
+					<AnimateSharedLayout>
+						<SideBarItem>
+							<Link href="app">
+								<a>App Settings</a>
+							</Link>
+							{type?.[0] === "app" && (
+								<Background
+									transition={{
+										type: "spring",
+										stiffness: 500,
+										damping: 30,
+									}}
+									layoutId="background"
+								/>
+							)}
+						</SideBarItem>
+						<SideBarItem>
+							<Link href="discord">
+								<a>Discord Dashboard</a>
+							</Link>
+							{type?.[0] === "discord" && (
+								<Background
+									transition={{
+										type: "spring",
+										stiffness: 500,
+										damping: 30,
+									}}
+									layoutId="background"
+								/>
+							)}
+						</SideBarItem>
+						<SideBarItem>
+							<Link href="account">
+								<a>Account Settings</a>
+							</Link>
+							{type?.[0] === "account" && (
+								<Background
+									transition={{
+										type: "spring",
+										stiffness: 500,
+										damping: 30,
+									}}
+									layoutId="background"
+								/>
+							)}
+						</SideBarItem>
+					</AnimateSharedLayout>
+				</SideBar>
+				<ContentArea>
+					{type[0] === "discord" && <Discord />}
+					{type[0] === "app" && <App />}
+					{type[0] === "account" && <Account />}
+				</ContentArea>
+			</DashboardContainer>
+		</>
 	);
 };
 

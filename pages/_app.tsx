@@ -1,4 +1,4 @@
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import NProgress from "nprogress";
 import dynamic from "next/dynamic";
 const Footer = dynamic(() => import("../components/footer"));
@@ -35,7 +35,7 @@ const App = ({ children }) => {
 			}),
 		[]
 	);
-
+	const router = useRouter()
 
 	const [error, setError] = useState(false);
 
@@ -47,7 +47,7 @@ const App = ({ children }) => {
 		<ThemeProvider theme={theme}>
 			<GlobalStyle />
 			<SEO />
-			{!Router.pathname.includes("dashboard") && (
+			{!router.pathname.includes("dashboard") && (
 				<HeaderContextProvider>
 					<Header />
 				</HeaderContextProvider>
