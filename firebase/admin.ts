@@ -15,3 +15,4 @@ export const verifyIdToken = async token => {
 		.verifyIdToken(token)
 		.catch(err => false);
 };
+

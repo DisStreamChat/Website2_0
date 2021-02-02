@@ -15,6 +15,7 @@ import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
 import React from "react";
 import { HeaderContextProvider } from "../../components/header/context";
+import admin from "firebase-admin"
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 const Account = dynamic(() => import("../../components/dashboard/Account"));
@@ -23,7 +24,7 @@ const Dashboard = ({ type, session }) => {
 	return (
 		<>
 			{session && <HeaderContextProvider>
-				<DashboardHeader user={session} />
+				<DashboardHeader user={session.user} />
 			</HeaderContextProvider>}
 			<DashboardContainer>
 				<SideBar>
@@ -112,6 +113,10 @@ export const getServerSideProps: GetServerSideProps = async context => {
 		else {
 			const { uid } = token;
 			session = { uid };
+			const userRef = admin.firestore().collection("Streamers").doc(uid)
+			const userDoc = await userRef.get()
+			const userData = userDoc.data()
+			session.user = userData
 		}
 	} catch (err) {
 		res.writeHead(307, { location: "/" }).end();
