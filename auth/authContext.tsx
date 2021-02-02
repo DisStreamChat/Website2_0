@@ -31,7 +31,7 @@ export const AuthContextProvider = ({ children }) => {
 		return firebaseClient.auth.onIdTokenChanged(async (user: User) => {
 			if (!user) {
 				setUser(null);
-				nookies.set(undefined, "dsc-auth-token", "");
+				destroyCookie(null, "auth-token")
 				return;
 			}
 			const userId = user.uid
@@ -41,7 +41,7 @@ export const AuthContextProvider = ({ children }) => {
 			setUser({...user, ...userDbData});
 			
 			const token = await user.getIdToken();
-			nookies.set(undefined, "dsc-auth-token", token, {sameSite: "lax"});
+			nookies.set(undefined, "auth-token", token, {sameSite: "lax", path: "/"});
 		});
 	}, []);
 

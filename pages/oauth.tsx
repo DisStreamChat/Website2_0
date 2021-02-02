@@ -20,10 +20,10 @@ export const getServerSideProps = async context => {
 		const response = await fetch("https://api.disstreamchat.com/token?code=" + code);
 		const json = await response.json();
 		if (response.ok) {
-			nookies.set(context, "temp-token", json.token, { maxAge: 60 });
+			nookies.set(context, "temp-token", json.token, { maxAge: 60, path: "/" });
 			// const user = await firebaseClient.auth.signInWithCustomToken(json.token)
 			// console.log(user)
-			nookies.set(context, "dsc-auth-token", json.token);
+			nookies.set(context, "auth-token", json.token, {sameSite: "lax", path: "/"});
 		}
 		// res.writeHead(307, { location: "/dashboard/app" }).end();
 	} catch (err) {}
