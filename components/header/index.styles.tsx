@@ -19,7 +19,6 @@ const Header = styled(motion.header)`
 
 const nav = styled.nav`
 	flex: 1;
-	height: 100%;
 	margin-left: 1rem;
 	display: flex;
 	align-items: center;
@@ -28,6 +27,7 @@ const nav = styled.nav`
 		margin-left: auto;
 	}
 `;
+
 const NavItem = styled(motion.div)`
 	background: none;
 	outline: none;
@@ -95,6 +95,7 @@ const navItem = ({ children, ...props }) => {
 };
 
 const logo = styled.div`
+	width: 50px;
 	&:focus-within {
 		outline: 1px solid;
 	}

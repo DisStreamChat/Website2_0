@@ -26,3 +26,7 @@ export const DiscordMention = styled.span`
 	margin-left: 0.5rem;
 	transition: 0.1s;
 `;
+
+export const Vr = styled.div`
+	border-left: 1px solid currentColor;
+`

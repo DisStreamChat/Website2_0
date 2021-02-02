@@ -4,7 +4,7 @@ import firebaseClient from "../firebase/client";
 import firebase from "firebase";
 
 
-interface User extends firebase.User, firebase.firestore.DocumentData {
+export interface User extends firebase.User, firebase.firestore.DocumentData {
 	profilePicture: string,
 	name: string,
 }

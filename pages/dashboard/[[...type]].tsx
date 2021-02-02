@@ -13,6 +13,8 @@ import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
 import cookie from "cookie";
 import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
+import React from "react";
+import { HeaderContextProvider } from "../../components/header/context";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 const Account = dynamic(() => import("../../components/dashboard/Account"));
@@ -20,7 +22,9 @@ const Account = dynamic(() => import("../../components/dashboard/Account"));
 const Dashboard = ({ type, session }) => {
 	return (
 		<>
-			<DashboardHeader />
+			{session && <HeaderContextProvider>
+				<DashboardHeader user={session} />
+			</HeaderContextProvider>}
 			<DashboardContainer>
 				<SideBar>
 					<AnimateSharedLayout>

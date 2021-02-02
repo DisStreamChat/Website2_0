@@ -1,30 +1,35 @@
 import styles from "./index.styles";
 import Link from "next/link";
-import {
-	Avatar,
-	ClickAwayListener,
-} from "@material-ui/core";
+import { Avatar, ClickAwayListener } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import {
-	PurpleButton,
-} from "../shared/ui-components/Button";
+import { PurpleButton } from "../shared/ui-components/Button";
 import { AnimatePresence } from "framer-motion";
 import { useHeaderContext } from "./context";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import firebaseClient from "../../firebase/client";
-import { useAuth } from "../../auth/authContext";
+import { useAuth, User } from "../../auth/authContext";
 
-const Profile = () => {
+export const useProfile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
 	const { user, isLoggedIn } = useAuth();
-
 	const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+	return { setLoginModalOpen, user, isLoggedIn, profileMenuOpen, setProfileMenuOpen };
+};
 
-	useEffect(() => {
-		setProfileMenuOpen(prev => prev && !!isLoggedIn);
-	}, [isLoggedIn]);
+interface profileProps {
+	user: User;
+	setProfileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	profileMenuOpen: boolean;
+	setLoginModalOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
+export const StyledProfile = ({
+	user,
+	profileMenuOpen,
+	setProfileMenuOpen,
+	setLoginModalOpen,
+}: profileProps) => {
 	return !user ? (
 		<PurpleButton
 			onClick={() => {
@@ -79,6 +84,41 @@ const Profile = () => {
 				)}
 			</AnimatePresence>
 		</styles.UserProfile>
+	);
+};
+
+export const DashboardProfile = ({ user }) => {
+	const { profileMenuOpen, setProfileMenuOpen } = useProfile();
+
+	return (
+		<StyledProfile
+			user={user}
+			profileMenuOpen={profileMenuOpen}
+			setProfileMenuOpen={setProfileMenuOpen}
+		/>
+	);
+};
+
+const Profile = () => {
+	const {
+		setLoginModalOpen,
+		user,
+		isLoggedIn,
+		profileMenuOpen,
+		setProfileMenuOpen,
+	} = useProfile();
+
+	useEffect(() => {
+		setProfileMenuOpen(prev => prev && !!isLoggedIn);
+	}, [isLoggedIn]);
+
+	return (
+		<StyledProfile
+			user={user}
+			profileMenuOpen={profileMenuOpen}
+			setProfileMenuOpen={setProfileMenuOpen}
+			setLoginModalOpen={setLoginModalOpen}
+		/>
 	);
 };
 
