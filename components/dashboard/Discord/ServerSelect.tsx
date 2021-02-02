@@ -1,28 +1,28 @@
 import { ServerSelectBody, ServerTitle } from "./styles";
 import ServerItem from "./ServerItem";
 
-const servers = [
-	{
-		id: "276096133695143936",
-		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
-		name: "The Coding Train",
-		botIn: true,
-	},
-	{
-		id: "711238743213998091",
-		icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
-		name: "DisStreamChat Community",
-		botIn: true,
-	},
-	{
-		id: "702522791018102855",
-		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
-		name: "Saint Streams",
-		botIn: false,
-	},
-];
+// const servers = [
+// 	{
+// 		id: "276096133695143936",
+// 		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
+// 		name: "The Coding Train",
+// 		botIn: true,
+// 	},
+// 	{
+// 		id: "711238743213998091",
+// 		icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
+// 		name: "DisStreamChat Community",
+// 		botIn: true,
+// 	},
+// 	{
+// 		id: "702522791018102855",
+// 		// icon: "0abf1a3a68c1be1c4ccde1e208d1e2db",
+// 		name: "Saint Streams",
+// 		botIn: false,
+// 	},
+// ];
 
-const ServerSelect = () => {
+const ServerSelect = ({servers}) => {
 	return (
 		<>
 			<ServerTitle>Select a Server</ServerTitle>
