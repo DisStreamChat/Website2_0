@@ -22,8 +22,6 @@ const Discord = ({ session }: dashboardProps) => {
 
 	const user = session.user;
 
-	console.log(user.guilds)
-	
 	const servers = user.guilds.filter(server => server.permissions.includes("MANAGE_SERVER") || server.owner || server.permissions.includes("ADMINISTRATOR"));
 
 	return (

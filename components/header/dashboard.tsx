@@ -11,7 +11,7 @@ const Header = styled(styles.Header)`
 `;
 
 const HeaderContent = styled.div`
-	width: 77.5%;
+	width: 80%;
 	display: flex;
 `;
 

@@ -37,55 +37,6 @@ const Dashboard = ({ type, session }) => {
 				</HeaderContextProvider>
 			)}
 			<DashboardContainer>
-				<SideBar>
-					<AnimateSharedLayout>
-						<SideBarItem>
-							<Link href="app">
-								<a>App Settings</a>
-							</Link>
-							{type?.[0] === "app" && (
-								<Background
-									transition={{
-										type: "spring",
-										stiffness: 500,
-										damping: 30,
-									}}
-									layoutId="background"
-								/>
-							)}
-						</SideBarItem>
-						<SideBarItem>
-							<Link href="discord">
-								<a>Discord Dashboard</a>
-							</Link>
-							{type?.[0] === "discord" && (
-								<Background
-									transition={{
-										type: "spring",
-										stiffness: 500,
-										damping: 30,
-									}}
-									layoutId="background"
-								/>
-							)}
-						</SideBarItem>
-						<SideBarItem>
-							<Link href="account">
-								<a>Account Settings</a>
-							</Link>
-							{type?.[0] === "account" && (
-								<Background
-									transition={{
-										type: "spring",
-										stiffness: 500,
-										damping: 30,
-									}}
-									layoutId="background"
-								/>
-							)}
-						</SideBarItem>
-					</AnimateSharedLayout>
-				</SideBar>
 				<ContentArea>
 					{type?.[0] === "discord" && <Discord session={session} />}
 					{type?.[0] === "app" && <App session={session} />}

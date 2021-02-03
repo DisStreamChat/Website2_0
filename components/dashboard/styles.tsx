@@ -58,8 +58,9 @@ export const SideBarItem = styled(motion.div)`
 
 export const ContentArea = styled.div`
 	margin: 0 0 0 2rem;
-	max-width: 60%;
-	min-width: 60%;
+	--width: 80%;
+	max-width: var(--width);
+	min-width: var(--width);
 	/* max-width: 80%; */
 	display: flex;
 	flex-direction: column;
