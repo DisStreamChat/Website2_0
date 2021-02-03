@@ -70,6 +70,11 @@ export const StyledProfile = ({
 								</Link>
 							</styles.menuItem>
 							<styles.menuItem>Edit my personal rank card</styles.menuItem>
+							<styles.menuItem>
+								<Link href="/account">
+									<a>My Account</a>
+								</Link>
+							</styles.menuItem>
 							<styles.menuItem
 								onClick={async () => {
 									await firebaseClient.logout();

@@ -19,7 +19,6 @@ import admin from "firebase-admin";
 import { useRouter } from "next/router";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
-const Account = dynamic(() => import("../../components/dashboard/Account"));
 
 const Dashboard = ({ type, session }) => {
 	const router = useRouter();
@@ -90,7 +89,6 @@ const Dashboard = ({ type, session }) => {
 				<ContentArea>
 					{type?.[0] === "discord" && <Discord session={session} />}
 					{type?.[0] === "app" && <App session={session} />}
-					{type?.[0] === "account" && <Account session={session} />}
 				</ContentArea>
 			</DashboardContainer>
 		</>
@@ -143,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 		return { props: {} };
 	}
 
-	if (params.type && !["app", "discord", "account"].includes(params.type[0])) {
+	if (params.type && !["app", "discord"].includes(params.type[0])) {
 		return { notFound: true };
 	}
 	return { props: { type: params.type || null, session } };
