@@ -38,7 +38,11 @@ const Buttons = styled.div`
 	}
 `;
 
-const BG = styled.img`
+const BG = styled.div`
+	height: 600px;
+	background-image: url("/bg-1.svg");
+	background-size: cover;
+	background-position: center;
 	position: absolute;
 	width: 100%;
 	opacity: .5;
@@ -60,7 +64,7 @@ export default function Home() {
 	return (
 		<Main>
 			<Hero>
-				<BG src="/bg-1.svg" alt=""/>
+				<BG/>
 				<Heading>DisStream<span dangerouslySetInnerHTML={{__html: "&#8203"}}></span>Chat</Heading>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
