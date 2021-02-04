@@ -6,9 +6,15 @@ const footer = styled.footer`
 	flex-direction: column;
 	background: var(--background-dark-gray);
 	color: white;
-	a:focus{
+	a:hover,
+	a:focus {
+		text-underline-position: under;
+		text-decoration: underline;
+	}
+	a[aria-label]:focus,
+	a[aria-label]:hover {
 		outline: 1px solid !important;
-		opacity: 1;		
+		opacity: 1;
 		color: white;
 	}
 `;
@@ -24,8 +30,8 @@ const top = styled.div`
 
 const right = styled.div`
 	display: flex;
-	a{
-		opacity: .9;
+	a {
+		opacity: 0.9;
 		margin: 3px 0;
 	}
 	@media screen and (max-width: 1250px) {
@@ -64,7 +70,7 @@ const column = styled.div`
 	&:last-child {
 		margin-right: 0;
 	}
-	@media screen and (max-width: 800px){
+	@media screen and (max-width: 800px) {
 		margin-top: 2rem;
 	}
 `;
