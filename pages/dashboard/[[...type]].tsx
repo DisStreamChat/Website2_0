@@ -33,7 +33,7 @@ const Dashboard = ({ type, session }) => {
 		<>
 			{session && (
 				<HeaderContextProvider>
-					<DashboardHeader user={session.user} />
+					<DashboardHeader user={session.user} serverId={type[1]}/>
 				</HeaderContextProvider>
 			)}
 			<DashboardContainer>

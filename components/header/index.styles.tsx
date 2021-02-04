@@ -59,7 +59,7 @@ const NavItem = styled(motion.div)`
 	}
 `;
 
-const navItem = ({ children, ...props }) => {
+const navItem = ({ children, overrideUnderline=false, ...props }) => {
 	const [focused, setFocused] = useState(false);
 	const [hovered, setHovered] = useState(false);
 
@@ -76,7 +76,7 @@ const navItem = ({ children, ...props }) => {
 		>
 			{children}
 			<AnimatePresence>
-				{underlined && (
+				{(underlined || overrideUnderline) && (
 					<motion.div
 						initial={{ scaleX: 0 }}
 						exit={{ scaleX: 0 }}
