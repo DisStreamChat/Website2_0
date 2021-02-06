@@ -57,7 +57,6 @@ export const SideBarItem = styled(motion.div)`
 `;
 
 export const ContentArea = styled.div`
-	margin: 0 0 0 2rem;
 	--width: 80%;
 	max-width: var(--width);
 	min-width: var(--width);
@@ -66,7 +65,6 @@ export const ContentArea = styled.div`
 	flex-direction: column;
 	white-space: pre-wrap;
 	@media screen and (max-width: 1024px) {
-		margin: 2rem 0 0 0;
 		min-width: 80%;
 	}
 	@media screen and (max-width: 425px) {
