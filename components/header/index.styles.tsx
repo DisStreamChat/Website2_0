@@ -39,8 +39,7 @@ const NavItem = styled(motion.div)`
 	align-items: center;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
-	&:focus,
-	&:focus-within {
+	button:focus-within {
 		color: white;
 		outline: 1px solid white;
 	}

@@ -102,6 +102,10 @@ const Header = () => {
 		</>
 	);
 
+	useEffect(() => {
+		if(isLoggedIn) setLoginModalOpen(false)
+	}, [isLoggedIn])
+
 	const classes = useStyles();
 
 	return (
