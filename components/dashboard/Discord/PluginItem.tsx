@@ -52,7 +52,8 @@ const PluginBody = styled.div`
 	font-weight: 400;
 	color: #aaa;
 	margin-top: 0.25rem;
-	line-height: 1.5rem;
+	line-height: 1.5;
+	font-size: .85rem;
 `;
 
 const PluginSwitch = styled.div`
