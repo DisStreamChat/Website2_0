@@ -6,6 +6,7 @@ import React from "react";
 import Anchor from "../shared/ui-components/Anchor";
 import { DashboardProfile } from "./Profile";
 import { useRouter } from "next/router";
+import DropdownSelect from "./dropdownSelect";
 const Header = styled(styles.Header)`
 	display: flex;
 	justify-content: center;
@@ -66,7 +67,7 @@ const DashboardHeader = ({ user, serverId="" }) => {
 							<a>Leaderboard</a>
 						</Link>
 					</styles.navItem>
-					<Drop
+					<DropdownSelect title="Plugins"/>
 					<DashboardProfile user={user} />
 				</styles.nav>
 			</HeaderContent>

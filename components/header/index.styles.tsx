@@ -37,8 +37,9 @@ const NavItem = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	padding: 0.5rem 1rem;
+	cursor: pointer;
 	a {
-		padding: 0.5rem 1rem;
 		&:focus {
 			color: white;
 		}
@@ -59,7 +60,7 @@ const NavItem = styled(motion.div)`
 	}
 `;
 
-const navItem = ({ children, overrideUnderline=false, ...props }) => {
+const navItem = ({ children, overrideUnderline = false, ...props }) => {
 	const [focused, setFocused] = useState(false);
 	const [hovered, setHovered] = useState(false);
 
