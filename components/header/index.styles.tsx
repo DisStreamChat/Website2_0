@@ -39,9 +39,15 @@ const NavItem = styled(motion.div)`
 	align-items: center;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
+	&:focus,
+	&:focus-within {
+		color: white;
+		outline: 1px solid white;
+	}
 	a {
 		&:focus {
 			color: white;
+			outline: 1px solid white;
 		}
 	}
 	.underline {
@@ -60,7 +66,7 @@ const NavItem = styled(motion.div)`
 	}
 `;
 
-const navItem = ({ children, overrideUnderline = false, ...props }) => {
+const navItem = ({ children, overrideUnderline = false, noUnderline = false, ...props }) => {
 	const [focused, setFocused] = useState(false);
 	const [hovered, setHovered] = useState(false);
 
@@ -77,18 +83,22 @@ const navItem = ({ children, overrideUnderline = false, ...props }) => {
 		>
 			{children}
 			<AnimatePresence>
-				{(underlined || overrideUnderline) && (
-					<motion.div
-						initial={{ scaleX: 0 }}
-						exit={{ scaleX: 0 }}
-						animate={{ scaleX: 1 }}
-						transition={{
-							ease: "easeInOut",
-							duration: 0.25,
-						}}
-						key="underline"
-						className="underline"
-					></motion.div>
+				{!noUnderline ? (
+					(underlined || overrideUnderline) && (
+						<motion.div
+							initial={{ scaleX: 0 }}
+							exit={{ scaleX: 0 }}
+							animate={{ scaleX: 1 }}
+							transition={{
+								ease: "easeInOut",
+								duration: 0.25,
+							}}
+							key="underline"
+							className="underline"
+						></motion.div>
+					)
+				) : (
+					<></>
 				)}
 			</AnimatePresence>
 		</NavItem>
