@@ -230,12 +230,14 @@ const menuItem = styled(motion.button)`
 	text-align: left;
 	border-radius: 0.25rem;
 	width: 100%;
+	padding: 0.5rem;
 	a {
-		padding: 0;
+		/* padding: 0; */
+		width: 100%;
+		display: inline-block;
 	}
 	color: ${({ warn }: { warn?: boolean }): any =>
 		warn ? chroma("#bb3535").brighten().saturate(2) : "white"};
-	padding: 0.5rem;
 	display: flex;
 	align-items: center;
 	cursor: pointer;
