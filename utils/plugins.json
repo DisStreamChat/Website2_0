@@ -35,9 +35,9 @@
 	},
 	{
 		"id": "streamislive",
-		"title": "Stream Notifications",
+		"title": "Twitch",
 		"image": "twitch.svg",
-		"description": "Let your viewers when you go live",
+		"description": "Notify your server when your favorite streamers go live",
 		"comingSoon": true
 	},
 	{
