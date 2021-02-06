@@ -24,10 +24,10 @@ const VerticalRule = styled(Vr)`
 	margin: 0.5rem 0;
 `;
 
-const DashboardHeader = ({ user, serverId="" }) => {
+const DashboardHeader = ({ user, serverId = "" }) => {
 	const router = useRouter();
 
-	console.log(serverId)
+	console.log(serverId);
 
 	return (
 		<Header>
@@ -55,19 +55,27 @@ const DashboardHeader = ({ user, serverId="" }) => {
 						</Link>
 					</styles.navItem>
 					<styles.navItem
-						overrideUnderline={router.query?.type[0] === "discord" && router.query?.type?.length == 1}
+						overrideUnderline={
+							router.query?.type[0] === "discord" && router.query?.type?.length == 1
+						}
 						name="Discord Bot"
 					>
 						<Link href="discord">
 							<a>Discord</a>
 						</Link>
 					</styles.navItem>
-					<styles.navItem overrideUnderline={router.asPath.includes("leaderboard")} name="Community">
+					<styles.navItem
+						overrideUnderline={router.asPath.includes("leaderboard")}
+						name="Community"
+					>
 						<Link href={`${router.asPath}/leaderboard`}>
 							<a>Leaderboard</a>
 						</Link>
 					</styles.navItem>
-					<DropdownSelect title="Plugins"/>
+					<DropdownSelect
+						title="Plugins"
+						items={[{ name: "leveling", link: "/leveling", local: true }]}
+					/>
 					<DashboardProfile user={user} />
 				</styles.nav>
 			</HeaderContent>
