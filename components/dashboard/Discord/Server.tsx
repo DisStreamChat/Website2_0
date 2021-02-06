@@ -1,0 +1,24 @@
+import React from "react";
+import PluginItem from "./PluginItem";
+import plugins from "../../../utils/plugins.json";
+import styled from "styled-components";
+
+const ServerBody = styled.div`
+	display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 25px;
+    -webkit-box-pack: center;
+    justify-content: center;
+`;
+
+const Server = () => {
+	return (
+		<ServerBody>
+			{plugins.map(plugin => (
+				<PluginItem {...plugin} active={false} />
+			))}
+		</ServerBody>
+	);
+};
+
+export default Server;

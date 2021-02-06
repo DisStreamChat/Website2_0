@@ -3,6 +3,7 @@ import styled from "styled-components";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../auth/authContext";
+import Server from "./Server"
 import { dashboardProps } from "../types";
 const ServerSelect = dynamic(() => import("./ServerSelect"));
 
@@ -33,6 +34,7 @@ const Discord = ({ session }: dashboardProps) => {
 			</Description>
 			<hr />
 			{!serverId && <ServerSelect servers={servers}/>}
+			{serverId && <Server></Server>}
 		</>
 	);
 };
