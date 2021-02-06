@@ -31,6 +31,12 @@ const App = ({ children }) => {
 			createMuiTheme({
 				palette: {
 					type: "dark",
+					primary: {
+						light: "#a6d4fa",
+						main: "#90caf9",
+						dark: "#648dae",
+						contrastText: "#ffffff"
+					}
 				},
 			}),
 		[]
@@ -42,6 +48,8 @@ const App = ({ children }) => {
 	Router.events.on("routeChangeStart", () => {
 		setError(false);
 	});
+
+	
 
 	return (
 		<ThemeProvider theme={theme}>
