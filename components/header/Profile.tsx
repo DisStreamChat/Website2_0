@@ -9,6 +9,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import firebaseClient from "../../firebase/client";
 import { useAuth, User } from "../../auth/authContext";
+import { useRouter } from "next/router";
 
 export const useProfile = () => {
 	const { setLoginModalOpen } = useHeaderContext();
@@ -30,6 +31,9 @@ export const StyledProfile = ({
 	setProfileMenuOpen,
 	setLoginModalOpen,
 }: profileProps) => {
+
+	const router = useRouter()
+
 	return !user ? (
 		<PurpleButton
 			onClick={() => {
@@ -79,6 +83,9 @@ export const StyledProfile = ({
 								onClick={async () => {
 									await firebaseClient.logout();
 									setProfileMenuOpen(false);
+									if(router.asPath.includes("dashboard")){
+										router.push("/")
+									}
 								}}
 								warn
 							>
