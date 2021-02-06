@@ -18,7 +18,8 @@ const PluginCard = styled.div`
 	transition: 0.25s;
 	cursor: pointer;
 	position: relative;
-	display: flex;
+	display: grid;
+	grid-template-columns: 50px 1fr 10px;
 	min-width: 350px;
 	min-height: 120px;
 	padding: 20px;
@@ -52,6 +53,12 @@ const PluginBody = styled.div`
 	line-height: 1.5rem;
 `;
 
+const PluginSwitch = styled.div`
+	position: absolute;
+	/* top: 25px; */
+	right: 0;
+`;
+
 const PluginItem = (props: pluginProps) => {
 	const [checked, setChecked] = useState(props.active);
 
@@ -64,13 +71,15 @@ const PluginItem = (props: pluginProps) => {
 				<PluginTitle>{props.title}</PluginTitle>
 				<PluginBody>{props.description}</PluginBody>
 			</div>
-			<Switch
-				checked={checked}
-				onChange={e => setChecked(e.target.checked)}
-				color="primary"
-				name="checkedB"
-				inputProps={{ "aria-label": "primary checkbox" }}
-			/>
+			<PluginSwitch>
+				<Switch
+					checked={checked}
+					onChange={e => setChecked(e.target.checked)}
+					color="primary"
+					name="checkedB"
+					inputProps={{ "aria-label": "primary checkbox" }}
+				/>
+			</PluginSwitch>
 		</PluginCard>
 	);
 };
