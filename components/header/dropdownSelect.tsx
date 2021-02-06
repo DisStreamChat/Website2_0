@@ -27,6 +27,9 @@ const DropDownMain = styled(styles.NavItem).attrs({ as: "button" })`
 const DropDownMenu = styled(motion.div)`
 	position: absolute;
 	overflow: hidden;
+	background: #121212;
+	padding: .5rem;
+	left: .75rem;
 `;
 
 const DropdownSelect = (props: dropdownProps) => {
@@ -44,24 +47,24 @@ const DropdownSelect = (props: dropdownProps) => {
 			</styles.Chevron>
 			<AnimatePresence>
 				{isOpen && (
-					<DropDownMenu
-						initial={{ y: 0, opacity: 0 }}
-						animate={{
-							y: 25,
-							opacity: 1,
-						}}
-						exit={{ y: 0, opacity: 0 }}
+					<styles.menuDropDown
+					exit={{ y: -50, opacity: 0 }}
+					initial={{ y: -50, opacity: 0 }}
+					animate={{ y: 15, opacity: 1 }}
 					>
 						{props.items.map(item =>
-							item.local ? (
-								<Link href={item.link}>
-									<a>{item.name}</a>
-								</Link>
-							) : (
-								<Anchor href={item.link}>{item.name}</Anchor>
-							)
+							<styles.menuItem>
+
+								{item.local ? (
+									<Link href={item.link}>
+										<a>{item.name}</a>
+									</Link>
+								) : (
+									<Anchor href={item.link}>{item.name}</Anchor>
+								)}
+							</styles.menuItem>
 						)}
-					</DropDownMenu>
+					</styles.menuDropDown>
 				)}
 			</AnimatePresence>
 		</DropDownMain>
