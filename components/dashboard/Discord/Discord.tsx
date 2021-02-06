@@ -34,7 +34,7 @@ const Discord = ({ session }: dashboardProps) => {
 			</Description>
 			<hr />
 			{!serverId && <ServerSelect servers={servers}/>}
-			{serverId && <Server></Server>}
+			{serverId && <Server serverId={serverId}></Server>}
 		</>
 	);
 };

@@ -11,11 +11,11 @@ const ServerBody = styled.div`
     justify-content: center;
 `;
 
-const Server = () => {
+const Server = ({serverId=""}) => {
 	return (
 		<ServerBody>
 			{plugins.map(plugin => (
-				<PluginItem {...plugin} active={false} />
+				<PluginItem serverId={serverId} {...plugin} active={false} />
 			))}
 		</ServerBody>
 	);

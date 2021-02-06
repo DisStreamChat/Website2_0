@@ -10,9 +10,11 @@ interface pluginProps {
 	comingSoon?: boolean;
 	active: boolean;
 	setActive?: (value: boolean) => void;
+	serverId?: string
 }
 
-const PluginCard = styled.div`
+const PluginCard = styled.a`
+	display: block;
 	background: #ffffff10;
 	border-radius: 0.25rem;
 	transition: 0.25s;
@@ -63,7 +65,7 @@ const PluginItem = (props: pluginProps) => {
 	const [checked, setChecked] = useState(props.active);
 
 	return (
-		<PluginCard>
+		<PluginCard href={checked ? `${props.serverId}/${props.id}` : null}>
 			<div>
 				<img src={`/${props.image}`} alt="" width={50} height={50} />
 			</div>
