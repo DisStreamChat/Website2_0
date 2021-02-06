@@ -23,7 +23,7 @@ const MaterialWrapper = ({ children }) => {
 	return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 
-const customRender = (ui, options) =>
+const customRender = (ui, options={}) =>
 	render(ui, {
 		wrapper: MaterialWrapper,
 		...options,

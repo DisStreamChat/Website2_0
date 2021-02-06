@@ -2,7 +2,7 @@ import styled from "styled-components";
 import Switch from "@material-ui/core/Switch";
 import { useState } from "react";
 
-interface pluginProps {
+export interface pluginProps {
 	id: string;
 	title: string;
 	image: string;
@@ -67,7 +67,7 @@ const PluginItem = (props: pluginProps) => {
 	return (
 		<PluginCard href={checked ? `${props.serverId}/${props.id}` : null}>
 			<div>
-				<img src={`/${props.image}`} alt="" width={50} height={50} />
+				<img alt={props.title} src={`/${props.image}`}  width={50} height={50} />
 			</div>
 			<div>
 				<PluginTitle>{props.title}</PluginTitle>
@@ -79,7 +79,8 @@ const PluginItem = (props: pluginProps) => {
 					onChange={e => setChecked(e.target.checked)}
 					color="primary"
 					name="checkedB"
-					inputProps={{ "aria-label": "primary checkbox" }}
+					disabled={props.comingSoon}
+					inputProps={{ "aria-label": `${props.title} activity switch` }}
 				/>
 			</PluginSwitch>
 		</PluginCard>
