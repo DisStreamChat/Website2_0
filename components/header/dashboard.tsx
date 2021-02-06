@@ -27,8 +27,6 @@ const VerticalRule = styled(Vr)`
 const DashboardHeader = ({ user, serverId = "" }) => {
 	const router = useRouter();
 
-	console.log(serverId);
-
 	return (
 		<Header>
 			<HeaderContent>
@@ -46,10 +44,7 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 				</Logo>
 				<VerticalRule />
 				<styles.nav>
-					<styles.navItem
-						overrideUnderline={router.query?.type[0] === "app"}
-						name="Chat Manager"
-					>
+					<styles.navItem overrideUnderline={router.query?.type[0] === "app"} name="app">
 						<Link href="app">
 							<a>app</a>
 						</Link>
@@ -58,30 +53,34 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 						overrideUnderline={
 							router.query?.type[0] === "discord" && router.query?.type?.length == 1
 						}
-						name="Discord Bot"
+						name="Discord"
 					>
 						<Link href="discord">
 							<a>Discord</a>
 						</Link>
 					</styles.navItem>
-					<styles.navItem
-						overrideUnderline={router.asPath.includes("leaderboard")}
-						name="Community"
-					>
-						<Link href={`${router.asPath}/leaderboard`}>
-							<a>Leaderboard</a>
-						</Link>
-					</styles.navItem>
-					<DropdownSelect
-						title="Plugins"
-						items={[
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-						]}
-					/>
+					{router.query?.type?.[0] === "discord" && serverId && (
+						<>
+							<styles.navItem
+								overrideUnderline={router.asPath.includes("leaderboard")}
+								name="Leaderboard"
+							>
+								<Link href={`${router.asPath}/leaderboard`}>
+									<a>Leaderboard</a>
+								</Link>
+							</styles.navItem>
+							<DropdownSelect
+								title="Plugins"
+								items={[
+									{ name: "leveling", link: "/leveling", local: true },
+									{ name: "leveling", link: "/leveling", local: true },
+									{ name: "leveling", link: "/leveling", local: true },
+									{ name: "leveling", link: "/leveling", local: true },
+									{ name: "leveling", link: "/leveling", local: true },
+								]}
+							/>
+						</>
+					)}
 					<DashboardProfile user={user} />
 				</styles.nav>
 			</HeaderContent>
