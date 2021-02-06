@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useAuth } from "../../../auth/authContext";
 import Server from "./Server"
 import { dashboardProps } from "../types";
+import Plugins from "./Plugins";
 const ServerSelect = dynamic(() => import("./ServerSelect"));
 
 const Description = styled.p`
@@ -19,7 +20,7 @@ const ServerArea = styled.div``;
 const Discord = ({ session }: dashboardProps) => {
 	const router = useRouter();
 
-	const [, serverId] = router.query.type as string[];
+	const [, serverId, pluginName] = router.query.type as string[];
 
 	const user = session.user;
 
@@ -34,7 +35,8 @@ const Discord = ({ session }: dashboardProps) => {
 			</Description>
 			<hr />
 			{!serverId && <ServerSelect servers={servers}/>}
-			{serverId && <Server serverId={serverId}></Server>}
+			{serverId && !pluginName && <Server serverId={serverId}></Server>}
+			{pluginName && <Plugins/>}
 		</>
 	);
 };

@@ -15,7 +15,7 @@ const Server = ({serverId=""}) => {
 	return (
 		<ServerBody>
 			{plugins.map(plugin => (
-				<PluginItem serverId={serverId} {...plugin} active={false} />
+				<PluginItem key={plugin.id} serverId={serverId} {...plugin} active={false} />
 			))}
 		</ServerBody>
 	);
