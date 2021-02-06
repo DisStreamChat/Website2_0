@@ -74,7 +74,13 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 					</styles.navItem>
 					<DropdownSelect
 						title="Plugins"
-						items={[{ name: "leveling", link: "/leveling", local: true }]}
+						items={[
+							{ name: "leveling", link: "/leveling", local: true },
+							{ name: "leveling", link: "/leveling", local: true },
+							{ name: "leveling", link: "/leveling", local: true },
+							{ name: "leveling", link: "/leveling", local: true },
+							{ name: "leveling", link: "/leveling", local: true },
+						]}
 					/>
 					<DashboardProfile user={user} />
 				</styles.nav>
