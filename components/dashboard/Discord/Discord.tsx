@@ -3,7 +3,7 @@ import styled from "styled-components";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useAuth } from "../../../auth/authContext";
-import Server from "./Server"
+import Server from "./Server";
 import { dashboardProps } from "../types";
 import Plugins from "./Plugins";
 const ServerSelect = dynamic(() => import("./ServerSelect"));
@@ -24,19 +24,28 @@ const Discord = ({ session }: dashboardProps) => {
 
 	const user = session.user;
 
-	const servers = user.guilds.filter(server => server.permissions.includes("MANAGE_SERVER") || server.owner || server.permissions.includes("ADMINISTRATOR"));
+	const servers = user.guilds.filter(
+		server =>
+			server.permissions.includes("MANAGE_SERVER") ||
+			server.owner ||
+			server.permissions.includes("ADMINISTRATOR")
+	);
 
 	return (
 		<>
-			<H1>Discord Dashboard</H1>
-			<Description>
-				Connect your discord account to DisStreamChat to get discord messages in your
-				client/overlay during stream and manage DisStreamBot in your server.
-			</Description>
-			<hr />
-			{!serverId && <ServerSelect servers={servers}/>}
-			{serverId && !pluginName && <Server serverId={serverId}></Server>}
-			{pluginName && <Plugins/>}
+			{!serverId ? (
+				<>
+					<H1>Discord Dashboard</H1>
+					<Description>
+						Connect your discord account to DisStreamChat to get discord messages in
+						your client/overlay during stream and manage DisStreamBot in your server.
+					</Description>
+					<hr />
+					<ServerSelect servers={servers} />
+				</>
+			) : (
+				<Server serverId={serverId} />
+			)}
 		</>
 	);
 };
