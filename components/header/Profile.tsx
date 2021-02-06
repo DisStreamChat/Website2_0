@@ -64,13 +64,13 @@ export const StyledProfile = ({
 								when: "beforeChildren",
 							}}
 						>
-							<styles.menuItem>
+							<styles.menuItem tabIndex={-1}>
 								<Link href="/dashboard">
 									<a>My Dashboard</a>
 								</Link>
 							</styles.menuItem>
 							<styles.menuItem>Edit my personal rank card</styles.menuItem>
-							<styles.menuItem>
+							<styles.menuItem tabIndex={-1}>
 								<Link href="/account">
 									<a>My Account</a>
 								</Link>
