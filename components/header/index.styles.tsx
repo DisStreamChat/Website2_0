@@ -237,6 +237,7 @@ const menuItem = styled(motion.button)`
 	position: relative;
 	z-index: 100;
 	gap: 0.5rem;
+	outline: none !important;
 	&:hover::before,
 	&:focus::before,
 	&:focus-within::before {
