@@ -13,6 +13,8 @@ import chroma from "chroma-js";
 
 export const PaddingButton = withStyles((theme: Theme) => ({
 	root: {
+		color: theme.palette.getContrastText("#333333"),
+		background: "#333333",
 		padding: ".5rem 1.5rem",
 	},
 }))(Button);

@@ -1,6 +1,6 @@
 import GuildIcon from "../../shared/styles/guildIcon";
 import { H3, H2 } from "../../shared/styles/headings";
-import { BlueButton } from "../../shared/ui-components/Button";
+import { BlueButton, PaddingButton } from "../../shared/ui-components/Button";
 import { ServerItemBody } from "./styles";
 import Link from "next/link";
 import { useMediaQuery } from "@material-ui/core";
@@ -16,12 +16,14 @@ interface ServerProps {
 const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 	const smallScreen = useMediaQuery("(max-width: 425px)");
 
+	const Button = botIn ? BlueButton : PaddingButton
+
 	return (
 		<ServerItemBody>
 			<GuildIcon size={smallScreen ? 64 : 128} id={id} icon={icon} name={name} />
 			<div>
 				<H2>{name}</H2>
-				<BlueButton tabIndex={-1}>
+				<Button tabIndex={-1}>
 					{botIn ? (
 						<Link href={`discord/${id}`}>
 							<a>Manage</a>
@@ -31,7 +33,7 @@ const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 							Invite
 						</Anchor>
 					)}
-				</BlueButton>
+				</Button>
 			</div>
 		</ServerItemBody>
 	);
