@@ -59,11 +59,6 @@ const NavItem = styled(motion.div)`
 		width: 80%;
 		transform-origin: center;
 	}
-	&:not(.no-focus) {
-		&:focus {
-			outline: 1px solid;
-		}
-	}
 `;
 
 const navItem = ({ children, overrideUnderline = false, noUnderline = false, ...props }) => {
@@ -78,7 +73,6 @@ const navItem = ({ children, overrideUnderline = false, noUnderline = false, ...
 			onHoverEnd={() => setHovered(false)}
 			onFocus={() => setFocused(true)}
 			onBlur={() => setFocused(false)}
-			className="no-focus"
 			{...props}
 		>
 			{children}
