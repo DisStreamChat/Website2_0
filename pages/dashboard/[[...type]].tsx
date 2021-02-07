@@ -10,7 +10,6 @@ import {
 	ContentArea,
 } from "../../components/dashboard/styles";
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
-import cookie from "cookie";
 import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
 import React, { useEffect } from "react";
