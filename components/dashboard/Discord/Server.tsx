@@ -21,12 +21,14 @@ const PluginBody = styled.div`
 const ServerHeader = styled.div`
 	display: flex;
 	align-items: center;
-	margin-bottom: 1rem;
+	margin-bottom: .5rem;
+	padding-bottom: .5rem;
 	justify-content: space-between;
 	h1{
 		font-size: 1.75rem;
 		font-weight: bold;
 	}
+	border-bottom: 1px solid grey;
 `;
 
 const ServerHeaderItem = styled.div`
