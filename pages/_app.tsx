@@ -12,6 +12,9 @@ import { ErrorBoundary } from "react-error-boundary";
 import Error from "../components/shared/error";
 import { HeaderContextProvider } from "../components/header/context";
 import { AuthContextProvider } from "../auth/authContext";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 Router.events.on("routeChangeStart", () => {
 	NProgress.start();
@@ -35,13 +38,13 @@ const App = ({ children }) => {
 						light: "#a6d4fa",
 						main: "#90caf9",
 						dark: "#648dae",
-						contrastText: "#ffffff"
-					}
+						contrastText: "#ffffff",
+					},
 				},
 			}),
 		[]
 	);
-	const router = useRouter()
+	const router = useRouter();
 
 	const [error, setError] = useState(false);
 
@@ -49,34 +52,34 @@ const App = ({ children }) => {
 		setError(false);
 	});
 
-	
-
 	return (
-		<ThemeProvider theme={theme}>
-			<GlobalStyle />
-			<SEO />
-			{!router.pathname.includes("dashboard") && (
-				<HeaderContextProvider>
-					<Header />
-				</HeaderContextProvider>
-			)}
-			<ErrorBoundary
-				resetKeys={[error]}
-				FallbackComponent={({ error }) => (
-					<Error
-						message={`An unexpected error occured: ${error.message}`}
-						title="Uncaught Exception"
-					/>
+		<QueryClientProvider client={queryClient}>
+			<ThemeProvider theme={theme}>
+				<GlobalStyle />
+				<SEO />
+				{!router.pathname.includes("dashboard") && (
+					<HeaderContextProvider>
+						<Header />
+					</HeaderContextProvider>
 				)}
-				onError={() => setError(true)}
-				onReset={() => {
-					// reset the state of your app so the error doesn't happen again
-				}}
-			>
-				{children}
-			</ErrorBoundary>
-			<Footer />
-		</ThemeProvider>
+				<ErrorBoundary
+					resetKeys={[error]}
+					FallbackComponent={({ error }) => (
+						<Error
+							message={`An unexpected error occured: ${error.message}`}
+							title="Uncaught Exception"
+						/>
+					)}
+					onError={() => setError(true)}
+					onReset={() => {
+						// reset the state of your app so the error doesn't happen again
+					}}
+				>
+					{children}
+				</ErrorBoundary>
+				<Footer />
+			</ThemeProvider>
+		</QueryClientProvider>
 	);
 };
 
