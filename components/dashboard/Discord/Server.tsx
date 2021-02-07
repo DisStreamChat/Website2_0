@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PluginItem from "./PluginItem";
 import plugins from "../../../utils/plugins.json";
 import styled from "styled-components";
@@ -21,10 +21,10 @@ const PluginBody = styled.div`
 const ServerHeader = styled.div`
 	display: flex;
 	align-items: center;
-	margin-bottom: .5rem;
-	padding-bottom: .5rem;
+	margin-bottom: 0.5rem;
+	padding-bottom: 0.5rem;
 	justify-content: space-between;
-	h1{
+	h1 {
 		font-size: 1.75rem;
 		font-weight: bold;
 	}
@@ -46,7 +46,6 @@ const ServerHeaderItem = styled.div`
 	}
 `;
 
-
 const LargeAvatar = withStyles((theme: Theme) =>
 	createStyles({
 		root: {
@@ -56,15 +55,32 @@ const LargeAvatar = withStyles((theme: Theme) =>
 	})
 )(Avatar);
 
+const ServerModals = ({
+	infoModalOpen,
+	setInfoModalOpen,
+	settingsModalOpen,
+	setSettingsModalOpen,
+}) => {
+	return <></>;
+};
+
 const Server = ({ server }) => {
 	const router = useRouter();
 
 	const [, serverId, pluginName] = router.query.type as string[];
 
 	const iconImage = getServerIconUrl(server.icon, server.id);
+	const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+	const [infoModalOpen, setInfoModalOpen] = useState(false);
 
 	return (
 		<>
+			<ServerModals
+				infoModalOpen={infoModalOpen}
+				setInfoModalOpen={setInfoModalOpen}
+				settingsModalOpen={settingsModalOpen}
+				setSettingsModalOpen={setSettingsModalOpen}
+			/>
 			<ServerHeader>
 				<ServerHeaderItem>
 					<LargeAvatar
@@ -97,13 +113,13 @@ const Server = ({ server }) => {
 					<h1>{server.name}</h1>
 				</ServerHeaderItem>
 				<ServerHeaderItem>
-					<BlueButton>Server Info</BlueButton>
-					<BlueButton>
+					<BlueButton onClick={() => setInfoModalOpen(true)}>Server Info</BlueButton>
+					<BlueButton onClick={() => setSettingsModalOpen(true)}>
 						<SettingsIcon /> Settings
 					</BlueButton>
 				</ServerHeaderItem>
 			</ServerHeader>
-			
+
 			{!pluginName ? (
 				<PluginBody>
 					{plugins.map(plugin => (
