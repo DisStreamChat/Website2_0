@@ -68,5 +68,12 @@
 		"image": "gift.svg",
 		"description": "Host giveaways within your server",
 		"comingSoon": true
+	},
+	{
+		"id": "utils",
+		"title": "Utilites",
+		"image": "gear.svg",
+		"description": "Manage utility functions built into DisStreamBot",
+		"comingSoon": true
 	}
 ]
