@@ -25,7 +25,7 @@ const Dashboard = ({ type, session }) => {
 
 	useEffect(() => {
 		if (!type?.[0]) {
-			router.push("/dashboard/app");
+			router.push("/dashboard/discord");
 		}
 	}, [type]);
 
