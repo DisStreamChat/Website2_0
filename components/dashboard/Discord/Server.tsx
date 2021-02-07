@@ -23,6 +23,10 @@ const ServerHeader = styled.div`
 	align-items: center;
 	margin-bottom: 1rem;
 	justify-content: space-between;
+	h1{
+		font-size: 1.75rem;
+		font-weight: bold;
+	}
 `;
 
 const ServerHeaderItem = styled.div`
@@ -58,7 +62,7 @@ const Server = ({ server }) => {
 
 	const [, serverId, pluginName] = router.query.type as string[];
 
-	const iconImage = "f" + getServerIconUrl(server.icon, server.id);
+	const iconImage = getServerIconUrl(server.icon, server.id);
 
 	return (
 		<>
@@ -100,6 +104,7 @@ const Server = ({ server }) => {
 					</BlueButton>
 				</ButtonContainer>
 			</ServerHeader>
+			
 			{!pluginName ? (
 				<PluginBody>
 					{plugins.map(plugin => (
