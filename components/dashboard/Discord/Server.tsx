@@ -34,7 +34,7 @@ const ServerHeader = styled.div`
 const ServerHeaderItem = styled.div`
 	display: flex;
 	align-items: center;
-	--gap: 0.5rem;
+	--gap: 1rem;
 	& > * + * {
 		margin-left: var(--gap);
 	}
@@ -46,15 +46,12 @@ const ServerHeaderItem = styled.div`
 	}
 `;
 
-const ButtonContainer = styled(ServerHeaderItem)`
-	--gap: 1rem !important;
-`
 
 const LargeAvatar = withStyles((theme: Theme) =>
 	createStyles({
 		root: {
-			width: 100,
-			height: 100,
+			width: 80,
+			height: 80,
 		},
 	})
 )(Avatar);
@@ -99,12 +96,12 @@ const Server = ({ server }) => {
 					</LargeAvatar>
 					<h1>{server.name}</h1>
 				</ServerHeaderItem>
-				<ButtonContainer>
+				<ServerHeaderItem>
 					<BlueButton>Server Info</BlueButton>
 					<BlueButton>
 						<SettingsIcon /> Settings
 					</BlueButton>
-				</ButtonContainer>
+				</ServerHeaderItem>
 			</ServerHeader>
 			
 			{!pluginName ? (
