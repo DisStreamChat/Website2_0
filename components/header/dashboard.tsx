@@ -44,11 +44,6 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 				</Logo>
 				<VerticalRule />
 				<styles.nav>
-					<styles.navItem overrideUnderline={router.query?.type[0] === "app"} name="app">
-						<Link href="app">
-							<a>app</a>
-						</Link>
-					</styles.navItem>
 					<styles.navItem
 						overrideUnderline={
 							router.query?.type[0] === "discord" && router.query?.type?.length == 1
@@ -57,6 +52,11 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 					>
 						<Link href="discord">
 							<a>Discord</a>
+						</Link>
+					</styles.navItem>
+					<styles.navItem overrideUnderline={router.query?.type[0] === "app"} name="app">
+						<Link href="app">
+							<a>app</a>
 						</Link>
 					</styles.navItem>
 					{router.query?.type?.[0] === "discord" && serverId && (
