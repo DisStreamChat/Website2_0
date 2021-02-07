@@ -7,7 +7,7 @@ interface iconProps {
 	name?: string;
 }
 
-const NoIcon = styled.span`
+export const NoIcon = styled.span`
 	display: flex;
 	align-items: center;
 	justify-content: center;
