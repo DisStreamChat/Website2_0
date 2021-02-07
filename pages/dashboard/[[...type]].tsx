@@ -88,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	}
 
 	if (!params.type) {
-		res.writeHead(307, { location: "/dashboard/app" }).end();
+		res.writeHead(307, { location: "/dashboard/discord" }).end();
 		return { props: {} };
 	}
 
