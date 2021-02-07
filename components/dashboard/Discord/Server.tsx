@@ -75,6 +75,13 @@ const useStyles = makeStyles((theme: Theme) =>
 	})
 );
 
+const ServerModal = styled.div`
+	width: 50vw;
+	height: 80vh;
+	background: var(--background-light-gray);
+	border-radius: .25rem;
+`
+
 const ServerModals = ({
 	infoModalOpen,
 	setInfoModalOpen,
@@ -100,7 +107,21 @@ const ServerModals = ({
 				BackdropComponent={Backdrop}
 				className={classes.modal}
 			>
-				<Zoom in={settingsModalOpen}></Zoom>
+				<Zoom in={settingsModalOpen}>
+					<ServerModal/>
+				</Zoom>
+			</Modal>
+			<Modal
+				aria-labelledby="settings-modal"
+				aria-describedby="settings-modal"
+				open={infoModalOpen}
+				onClose={() => setInfoModalOpen(false)}
+				BackdropComponent={Backdrop}
+				className={classes.modal}
+			>
+				<Zoom in={infoModalOpen}>
+					<ServerModal/>
+				</Zoom>
 			</Modal>
 		</>
 	);
