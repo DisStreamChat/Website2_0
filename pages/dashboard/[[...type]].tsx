@@ -1,15 +1,10 @@
-import { AnimateSharedLayout } from "framer-motion";
-import Link from "next/link";
 import nookies from "nookies";
 import { verifyIdToken } from "../../firebase/admin";
 import {
 	DashboardContainer,
-	SideBar,
-	SideBarItem,
-	Background,
 	ContentArea,
 } from "../../components/dashboard/styles";
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from "next";
+import {  GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
 import React, { useEffect } from "react";
