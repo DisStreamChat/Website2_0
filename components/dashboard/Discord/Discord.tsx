@@ -44,7 +44,7 @@ const Discord = ({ session }: dashboardProps) => {
 					<ServerSelect servers={servers} />
 				</>
 			) : (
-				<Server serverId={serverId} />
+				<Server server={servers.find(server => server.id === serverId)}/>
 			)}
 		</>
 	);
