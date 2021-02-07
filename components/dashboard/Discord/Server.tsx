@@ -13,6 +13,8 @@ import { useQuery } from "react-query";
 import Modal from "@material-ui/core/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
+import { H1, H2 } from "../../shared/styles/headings";
+import Select from "./Select";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -79,8 +81,25 @@ const ServerModal = styled.div`
 	width: 50vw;
 	height: 80vh;
 	background: var(--background-light-gray);
-	border-radius: .25rem;
-`
+	border-radius: 0.25rem;
+	padding: 1.5rem;
+`;
+
+const ModalTitle = styled(H1)`
+	font-size: 1.5rem;
+	text-transform: uppercase;
+`;
+
+const ModalSubTitle = styled(H2)`
+	font-size: 1rem;
+	text-transform: uppercase;
+	color: #ffffffa0;
+	margin: 0;
+`;
+
+const ModalInfo = styled.div`
+	color: #ffffffa0;
+`;
 
 const ServerModals = ({
 	infoModalOpen,
@@ -95,7 +114,7 @@ const ServerModals = ({
 		).then(res => res.json())
 	);
 
-	const classes = useStyles()
+	const classes = useStyles();
 
 	return (
 		<>
@@ -108,7 +127,18 @@ const ServerModals = ({
 				className={classes.modal}
 			>
 				<Zoom in={settingsModalOpen}>
-					<ServerModal/>
+					<ServerModal>
+						<ModalTitle>Bot Admins</ModalTitle>
+						<ModalSubTitle>Default Admins</ModalSubTitle>
+						<ModalInfo>
+							These are the roles that have permission to manage your server.
+						</ModalInfo>
+						<Select
+							onChange={() => {}}
+							value={[{ value: "david", label: "david" }, { value: "david", label: "david" }]}
+							options={[{ value: "david", label: "david" }]}
+						/>
+					</ServerModal>
 				</Zoom>
 			</Modal>
 			<Modal
@@ -120,7 +150,7 @@ const ServerModals = ({
 				className={classes.modal}
 			>
 				<Zoom in={infoModalOpen}>
-					<ServerModal/>
+					<ServerModal></ServerModal>
 				</Zoom>
 			</Modal>
 		</>
