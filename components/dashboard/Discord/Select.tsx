@@ -13,7 +13,7 @@ const SelectBody = styled.div`
 	-webkit-box-align: center;
 	align-items: center;
 	box-sizing: border-box;
-	padding: .75rem;
+	padding: 0.75rem;
 	min-height: 50px;
 	ul {
 		margin: 0px;
@@ -27,7 +27,7 @@ const SelectBody = styled.div`
 			& > * + * {
 				margin-left: 0 !important;
 			}
-			gap: .5rem;
+			gap: 0.5rem;
 		}
 	}
 `;
@@ -74,8 +74,22 @@ const SelectArea = styled(motion.div)`
 	background: rgb(39, 43, 46);
 	border-radius: 4px;
 	box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
-	height: 100px;
 	right: 0;
+	height: 264px;
+	overflow: auto;
+	/* padding: 1rem 0; */
+	cursor: pointer;
+	ul {
+		display: flex;
+		flex-direction: column;
+		gap: 0 !important;
+		li {
+			padding: 1rem;
+			&:hover {
+				background: #00000020;
+			}
+		}
+	}
 `;
 
 const inState = {
@@ -106,11 +120,13 @@ const Select = (props: selectProps) => {
 					<ClickAwayListener onClickAway={() => setOpen(false)}>
 						<AnimatePresence>
 							{open && (
-								<SelectArea
-									initial={outState}
-									exit={outState}
-									animate={inState}
-								></SelectArea>
+								<SelectArea initial={outState} exit={outState} animate={inState}>
+									<ul className="">
+										{props.options.map(option => (
+											<li>{option.label}</li>
+										))}
+									</ul>
+								</SelectArea>
 							)}
 						</AnimatePresence>
 					</ClickAwayListener>
