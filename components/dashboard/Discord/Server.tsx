@@ -84,6 +84,14 @@ const ServerModal = styled.div`
 	background: var(--background-light-gray);
 	border-radius: 0.25rem;
 	padding: 1.5rem;
+`;
+
+const InfoModal = styled(ServerModal)`
+	display: flex;
+	flex-wrap: wrap;
+`
+
+const SettingsModal = styled(ServerModal)`
 	& > * + * {
 		margin-top: 1.5rem;
 	}
@@ -117,13 +125,15 @@ const ServerModals = ({
 	setSettingsModalOpen,
 	serverId,
 }) => {
-	const { data } = useQuery("server-data", () =>
+	const { data, ...result } = useQuery("server-data", () =>
 		fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 		).then(res => res.json())
 	);
 
 	const classes = useStyles();
+
+	console.log(data);
 
 	return (
 		<>
@@ -136,7 +146,7 @@ const ServerModals = ({
 				className={classes.modal}
 			>
 				<Zoom in={settingsModalOpen}>
-					<ServerModal>
+					<SettingsModal>
 						<div>
 							<ModalTitle>Bot Nickname</ModalTitle>
 							<TextInput placeholder="DisStreamBot" />
@@ -160,7 +170,7 @@ const ServerModals = ({
 								options={[{ value: "david", label: "david" }]}
 							/>
 						</div>
-					</ServerModal>
+					</SettingsModal>
 				</Zoom>
 			</Modal>
 			<Modal
@@ -172,7 +182,13 @@ const ServerModals = ({
 				className={classes.modal}
 			>
 				<Zoom in={infoModalOpen}>
-					<ServerModal></ServerModal>
+					<InfoModal>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+						<div></div>
+					</InfoModal>
 				</Zoom>
 			</Modal>
 		</>
