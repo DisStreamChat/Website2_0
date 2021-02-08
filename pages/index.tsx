@@ -46,6 +46,7 @@ const BG = styled.div`
 	position: absolute;
 	width: 100%;
 	opacity: .5;
+	top: 15%;
 	pointer-events: none;
 `
 
