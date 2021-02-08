@@ -1,17 +1,41 @@
-import { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { useRouter } from "next/router";
+import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 
+type obj = { [key: string]: any };
 interface discordContextTpe {
-	loginModalOpen: boolean;
-	setLoginModalOpen: Dispatch<SetStateAction<boolean>>;
+	currentGuild: obj;
+	setCurrentGuild: Dispatch<SetStateAction<obj>>;
+	roles: obj[];
+	setRoles: Dispatch<SetStateAction<obj[]>>;
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
 
 export const DiscordContextProvider = ({ children }) => {
-	const [loginModalOpen, setLoginModalOpen] = useState(false);
+	const [currentGuild, setCurrentGuild] = useState({});
+	const [roles, setRoles] = useState([]);
+
+	const router = useRouter();
+
+	const [, serverId] = router.query.type as string[];
+
+	useEffect(() => {
+		(async () => {
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
+			);
+			const json = await response.json();
+			setCurrentGuild(json);
+			const roleResponse = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/getchannels?new=true&guild=${serverId}`
+			);
+			const roleJson = await roleResponse.json();
+			setRoles(roleJson.roles);
+		})();
+	}, [serverId]);
 
 	return (
-		<discordContext.Provider value={{ loginModalOpen, setLoginModalOpen }}>
+		<discordContext.Provider value={{ currentGuild, setCurrentGuild, roles, setRoles }}>
 			{children}
 		</discordContext.Provider>
 	);

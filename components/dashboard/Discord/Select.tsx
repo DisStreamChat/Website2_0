@@ -13,7 +13,7 @@ const SelectBody = styled.div`
 	-webkit-box-align: center;
 	align-items: center;
 	box-sizing: border-box;
-	padding: 6px;
+	padding: .75rem;
 	min-height: 50px;
 	ul {
 		margin: 0px;
@@ -22,6 +22,12 @@ const SelectBody = styled.div`
 		flex-wrap: wrap;
 		& > * + * {
 			margin-left: 0.5rem !important;
+		}
+		@supports (gap: 10px) {
+			& > * + * {
+				margin-left: 0 !important;
+			}
+			gap: .5rem;
 		}
 	}
 `;
@@ -63,20 +69,19 @@ const AddItem = styled.li`
 const SelectArea = styled(motion.div)`
 	position: absolute;
 	display: flex;
-    flex-direction: column;
-    width: 250px;
-    background: rgb(39, 43, 46);
-    border-radius: 4px;
-    box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
+	flex-direction: column;
+	width: 250px;
+	background: rgb(39, 43, 46);
+	border-radius: 4px;
+	box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
 	height: 100px;
 	right: 0;
-	
 `;
 
 const inState = {
 	y: 12,
 	opacity: 1,
-	x: "50%"
+	x: "50%",
 };
 
 const outState = {

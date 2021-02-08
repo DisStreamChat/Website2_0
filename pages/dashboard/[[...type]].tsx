@@ -1,10 +1,7 @@
 import nookies from "nookies";
 import { verifyIdToken } from "../../firebase/admin";
-import {
-	DashboardContainer,
-	ContentArea,
-} from "../../components/dashboard/styles";
-import {  GetServerSideProps } from "next";
+import { DashboardContainer, ContentArea } from "../../components/dashboard/styles";
+import { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import DashboardHeader from "../../components/header/dashboard";
 import React, { useEffect } from "react";
@@ -13,6 +10,7 @@ import admin from "firebase-admin";
 import { useRouter } from "next/router";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
+import { DiscordContextProvider } from "../../components/dashboard/Discord/discordContext";
 
 const Dashboard = ({ type, session }) => {
 	const router = useRouter();
@@ -27,12 +25,16 @@ const Dashboard = ({ type, session }) => {
 		<>
 			{session && (
 				<HeaderContextProvider>
-					<DashboardHeader user={session.user} serverId={type[1]}/>
+					<DashboardHeader user={session.user} serverId={type[1]} />
 				</HeaderContextProvider>
 			)}
 			<DashboardContainer>
 				<ContentArea>
-					{type?.[0] === "discord" && <Discord session={session} />}
+					{type?.[0] === "discord" && (
+						<DiscordContextProvider>
+							<Discord session={session} />
+						</DiscordContextProvider>
+					)}
 					{type?.[0] === "app" && <App session={session} />}
 				</ContentArea>
 			</DashboardContainer>

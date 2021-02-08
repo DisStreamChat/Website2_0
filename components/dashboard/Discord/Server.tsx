@@ -16,6 +16,8 @@ import Zoom from "@material-ui/core/Zoom";
 import { H1, H2 } from "../../shared/styles/headings";
 import Select from "./Select";
 import { TextInput } from "../../shared/ui-components/TextField";
+import { useDiscordContext } from "./discordContext";
+import RoleItem from "./RoleItem";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -133,6 +135,8 @@ const ServerModals = ({
 
 	const classes = useStyles();
 
+	const { roles } = useDiscordContext();
+
 	return (
 		<>
 			<Modal
@@ -161,11 +165,14 @@ const ServerModals = ({
 							</ModalInfo>
 							<Select
 								onChange={() => {}}
-								value={[
-									{ value: "david", label: "david" },
-									{ value: "david", label: "david" },
-								]}
-								options={[{ value: "david", label: "david" }]}
+								value={roles.map(role => ({
+									value: role.id,
+									label: <RoleItem {...role}>{role.name}</RoleItem>,
+								}))}
+								options={roles.map(role => ({
+									value: role.id,
+									label: <RoleItem {...role}>{role.name}</RoleItem>,
+								}))}
 							/>
 						</div>
 					</SettingsModal>
