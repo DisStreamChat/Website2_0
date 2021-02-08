@@ -99,7 +99,7 @@ const ModalSubTitle = styled(H2)`
 
 const ModalInfo = styled.div`
 	color: #ffffffa0;
-	margin-bottom: .25rem;
+	margin-bottom: 0.25rem;
 `;
 
 const ServerModals = ({
@@ -129,6 +129,8 @@ const ServerModals = ({
 			>
 				<Zoom in={settingsModalOpen}>
 					<ServerModal>
+						<ModalTitle>Bot Nickname</ModalTitle>
+						<ModalTitle>Command Prefix</ModalTitle>
 						<ModalTitle>Bot Admins</ModalTitle>
 						<ModalSubTitle>Default Admins</ModalSubTitle>
 						<ModalInfo>
@@ -136,7 +138,10 @@ const ServerModals = ({
 						</ModalInfo>
 						<Select
 							onChange={() => {}}
-							value={[{ value: "david", label: "david" }, { value: "david", label: "david" }]}
+							value={[
+								{ value: "david", label: "david" },
+								{ value: "david", label: "david" },
+							]}
 							options={[{ value: "david", label: "david" }]}
 						/>
 					</ServerModal>
