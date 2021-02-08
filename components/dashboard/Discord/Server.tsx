@@ -87,9 +87,9 @@ const ServerModal = styled.div`
 `;
 
 const InfoModal = styled(ServerModal)`
-	display: flex;
-	flex-wrap: wrap;
-`
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+`;
 
 const SettingsModal = styled(ServerModal)`
 	& > * + * {
@@ -125,7 +125,7 @@ const ServerModals = ({
 	setSettingsModalOpen,
 	serverId,
 }) => {
-	const { data, ...result } = useQuery("server-data", () =>
+	const { data, loading, ...result } = useQuery("server-data", () =>
 		fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 		).then(res => res.json())
@@ -183,11 +183,30 @@ const ServerModals = ({
 			>
 				<Zoom in={infoModalOpen}>
 					<InfoModal>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
-						<div></div>
+						{!loading && (
+							<>
+								<div>
+									<ModalSubTitle>Region</ModalSubTitle>
+									<ModalInfo>{data?.region}</ModalInfo>
+								</div>
+								<div>
+									<ModalSubTitle>Channels</ModalSubTitle>
+									<ModalInfo>{data?.channels?.length}</ModalInfo>
+								</div>
+								<div>
+									<ModalSubTitle>Roles</ModalSubTitle>
+									<ModalInfo>{data?.roles?.length}</ModalInfo>
+								</div>
+								<div>
+									<ModalSubTitle>Members</ModalSubTitle>
+									<ModalInfo>{data?.members?.length}</ModalInfo>
+								</div>
+								<div>
+									<ModalSubTitle>Custom Emojis</ModalSubTitle>
+									<ModalInfo>{data?.emojis?.length}</ModalInfo>
+								</div>
+							</>
+						)}
 					</InfoModal>
 				</Zoom>
 			</Modal>
