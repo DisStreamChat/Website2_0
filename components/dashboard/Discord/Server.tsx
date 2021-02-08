@@ -125,7 +125,7 @@ const ServerModals = ({
 	setSettingsModalOpen,
 	serverId,
 }) => {
-	const { data, loading, ...result } = useQuery("server-data", () =>
+	const { data } = useQuery("server-data", () =>
 		fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 		).then(res => res.json())
@@ -183,7 +183,7 @@ const ServerModals = ({
 			>
 				<Zoom in={infoModalOpen}>
 					<InfoModal>
-						{!loading && (
+						{!data && (
 							<>
 								<div>
 									<ModalSubTitle>Region</ModalSubTitle>
