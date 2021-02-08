@@ -133,8 +133,6 @@ const ServerModals = ({
 
 	const classes = useStyles();
 
-	console.log(data);
-
 	return (
 		<>
 			<Modal
