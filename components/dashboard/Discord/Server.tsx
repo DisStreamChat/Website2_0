@@ -17,7 +17,7 @@ import { H1, H2 } from "../../shared/styles/headings";
 import Select from "./Select";
 import { TextInput } from "../../shared/ui-components/TextField";
 import { useDiscordContext } from "./discordContext";
-import RoleItem from "./RoleItem";
+import RoleItem, {RoleOption} from "./RoleItem";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -171,7 +171,7 @@ const ServerModals = ({
 								}))}
 								options={roles.map(role => ({
 									value: role.id,
-									label: <RoleItem {...role}>{role.name}</RoleItem>,
+									label: <RoleOption {...role}>{role.name}</RoleOption>,
 								}))}
 							/>
 						</div>

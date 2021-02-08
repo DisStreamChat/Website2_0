@@ -27,4 +27,8 @@ const RoleItem = styled.div`
 	}
 `;
 
+export const RoleOption = styled.div`
+	color: ${props => colorify(props.color)}
+`
+
 export default RoleItem;
