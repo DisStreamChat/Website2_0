@@ -15,6 +15,7 @@ import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import { H1, H2 } from "../../shared/styles/headings";
 import Select from "./Select";
+import { TextInput } from "../../shared/ui-components/TextField";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -83,6 +84,13 @@ const ServerModal = styled.div`
 	background: var(--background-light-gray);
 	border-radius: 0.25rem;
 	padding: 1.5rem;
+	& > * + * {
+		margin-top: 1.5rem;
+	}
+	& > * {
+		border-bottom: 1px solid #66666690;
+		padding-bottom: 0.75rem;
+	}
 `;
 
 const ModalTitle = styled(H1)`
@@ -129,21 +137,29 @@ const ServerModals = ({
 			>
 				<Zoom in={settingsModalOpen}>
 					<ServerModal>
-						<ModalTitle>Bot Nickname</ModalTitle>
-						<ModalTitle>Command Prefix</ModalTitle>
-						<ModalTitle>Bot Admins</ModalTitle>
-						<ModalSubTitle>Default Admins</ModalSubTitle>
-						<ModalInfo>
-							These are the roles that have permission to manage your server.
-						</ModalInfo>
-						<Select
-							onChange={() => {}}
-							value={[
-								{ value: "david", label: "david" },
-								{ value: "david", label: "david" },
-							]}
-							options={[{ value: "david", label: "david" }]}
-						/>
+						<div>
+							<ModalTitle>Bot Nickname</ModalTitle>
+							<TextInput placeholder="DisStreamBot" />
+						</div>
+						<div>
+							<ModalTitle>Command Prefix</ModalTitle>
+							<TextInput value="!" />
+						</div>
+						<div>
+							<ModalTitle>Bot Admins</ModalTitle>
+							<ModalSubTitle>Default Admins</ModalSubTitle>
+							<ModalInfo>
+								These are the roles that have permission to manage your server.
+							</ModalInfo>
+							<Select
+								onChange={() => {}}
+								value={[
+									{ value: "david", label: "david" },
+									{ value: "david", label: "david" },
+								]}
+								options={[{ value: "david", label: "david" }]}
+							/>
+						</div>
 					</ServerModal>
 				</Zoom>
 			</Modal>

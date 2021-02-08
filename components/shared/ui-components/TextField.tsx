@@ -5,9 +5,7 @@ const TextInputBody = styled.div`
 	display: flex;
 	padding: 0px 15px;
 	width: 100%;
-	height: 100%;
 	color: rgb(255, 255, 255);
-	font-family: "Open Sans", sans-serif, Helvetica, arial, sans-serif;
 	background: rgb(43, 47, 51);
 	border: 1px solid rgb(26, 26, 26);
 	border-radius: 3px;
@@ -29,9 +27,7 @@ const InnerTextInput = styled.input`
 	width: 100%;
 `;
 
-export const TextInput = forwardRef<
-	DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
->((props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
+export const TextInput = forwardRef((props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
 	return (
 		<TextInputBody className={props.className}>
 			<InnerTextInput {...props} ref={ref as any} type="text" />
