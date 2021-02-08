@@ -99,6 +99,7 @@ const ModalSubTitle = styled(H2)`
 
 const ModalInfo = styled.div`
 	color: #ffffffa0;
+	margin-bottom: .25rem;
 `;
 
 const ServerModals = ({
