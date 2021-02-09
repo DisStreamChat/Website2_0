@@ -45,13 +45,13 @@ interface roleProps {
 	color: string;
 	name: string;
 	id: string;
-	onClick: (e: any) => void;
+	onClick?: (e: any) => void;
 }
 
 const RoleItem = (props: roleProps) => {
 	return (
 		<StyledRoleItem color={props.color}>
-			<div onClick={() => props.onClick(props.id)} className="button">x</div>
+			<div onClick={() => props?.onClick?.(props.id)} className="button">x</div>
 			{props.name}
 		</StyledRoleItem>
 	);

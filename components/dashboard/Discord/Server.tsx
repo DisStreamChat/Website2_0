@@ -136,8 +136,25 @@ const ServerModals = ({
 
 	const classes = useStyles();
 
-	const { roles } = useDiscordContext();
+	const { roles, adminRoles: defaultAdminRoles } = useDiscordContext();
 	const [adminRoles, setAdminRoles] = useState([]);
+
+	const mappedRoles = adminRoles.map(role => ({
+		value: transformObjectToSelectValue(role),
+		label: (
+			<RoleItem
+				onClick={id => setAdminRoles(prev => prev.filter(role => role.id !== id))}
+				{...role}
+			></RoleItem>
+		),
+	}));
+
+	const mappedDefaultRoles = defaultAdminRoles.map(
+		(role: { color: string; name: string; id: string }) => ({
+			value: transformObjectToSelectValue(role),
+			label: <RoleItem {...role} />,
+		})
+	);
 
 	return (
 		<>
@@ -174,21 +191,7 @@ const ServerModals = ({
 											roles.find(role => role.id === parsedValue),
 										]);
 									}}
-									value={adminRoles.map(role => ({
-										value: transformObjectToSelectValue(role),
-										label: (
-											<RoleItem
-												onClick={id =>
-													setAdminRoles(prev =>
-														prev.filter(role => role.id !== id)
-													)
-												}
-												{...role}
-											>
-												{role.name}
-											</RoleItem>
-										),
-									}))}
+									value={[...mappedDefaultRoles, ...mappedRoles]}
 									options={roles.map(role => ({
 										value: transformObjectToSelectValue(role),
 										label: <RoleOption {...role}>{role.name}</RoleOption>,

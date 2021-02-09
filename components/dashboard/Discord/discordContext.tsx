@@ -7,6 +7,8 @@ interface discordContextTpe {
 	setCurrentGuild: Dispatch<SetStateAction<obj>>;
 	roles: obj[];
 	setRoles: Dispatch<SetStateAction<obj[]>>;
+	adminRoles: obj[];
+	setAdminRoles: Dispatch<SetStateAction<obj[]>>;
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -15,14 +17,14 @@ export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
 	const [roles, setRoles] = useState([]);
 	const [adminRoles, setAdminRoles] = useState([]);
-	console.log(adminRoles)
+	console.log(adminRoles);
 	const router = useRouter();
 
 	const [, serverId] = router.query.type as string[];
 
 	useEffect(() => {
 		(async () => {
-			if(!serverId) return
+			if (!serverId) return;
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 			);
@@ -32,18 +34,21 @@ export const DiscordContextProvider = ({ children }) => {
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/getchannels?new=true&guild=${serverId}`
 			);
 			const roleJson = await roleResponse.json();
-			setRoles(roleJson.roles);
+			const allRoles = roleJson.roles.filter(role => role.name !== "@everyone")
+			setRoles(allRoles);
 			setAdminRoles(
-				roleJson.roles.filter(
+				allRoles.filter(
 					// I can do discord permission math 😊
-					role => ((role.permissions & 32) === 32 || (role.permissions & 8) === 8) && !role.managed
+					role =>
+						((role.permissions & 32) === 32 || (role.permissions & 8) === 8) &&
+						!role.managed
 				)
 			);
 		})();
 	}, [serverId]);
 
 	return (
-		<discordContext.Provider value={{ currentGuild, setCurrentGuild, roles, setRoles }}>
+		<discordContext.Provider value={{ currentGuild, setCurrentGuild, roles, setRoles, adminRoles, setAdminRoles }}>
 			{children}
 		</discordContext.Provider>
 	);
