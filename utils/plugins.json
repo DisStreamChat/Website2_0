@@ -24,7 +24,7 @@
 		"id": "roles",
 		"title": "Role Management",
 		"image": "aprove.png",
-		"description": "Let the bot manage members roles in different ways like reaction roles"
+		"description": "manage the roles in different ways like reaction roles"
 	},
 	{
 		"id": "welcome-message",
