@@ -63,7 +63,6 @@ const PluginSwitch = styled.div`
 `;
 
 const PluginItem = (props: pluginProps) => {
-	console.log(props)
 	return (
 		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
 			<div>

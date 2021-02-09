@@ -128,16 +128,28 @@ const ServerModals = ({
 	setSettingsModalOpen,
 	serverId,
 }) => {
+	const classes = useStyles();
+	const [adminRoles, setAdminRoles] = useState([]);
+	const [localPrefix, setLocalPrefix] = useState("");
+	const [localNickname, setLocalNickname] = useState("");
+
+	const {
+		roles,
+		adminRoles: defaultAdminRoles,
+		serverSettings: { prefix, nickname, adminRoles: dbAdminRoles },
+	} = useDiscordContext();
+
+	useEffect(() => {
+		setLocalNickname(nickname);
+		setLocalPrefix(prefix);
+		setAdminRoles(dbAdminRoles);
+	}, [nickname, prefix, dbAdminRoles]);
+
 	const { data } = useQuery("server-data", () =>
 		fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 		).then(res => res.json())
 	);
-
-	const classes = useStyles();
-
-	const { roles, adminRoles: defaultAdminRoles } = useDiscordContext();
-	const [adminRoles, setAdminRoles] = useState([]);
 
 	const mappedRoles = adminRoles.map(role => ({
 		value: transformObjectToSelectValue(role),
@@ -170,11 +182,18 @@ const ServerModals = ({
 					<SettingsModal>
 						<div>
 							<ModalTitle>Bot Nickname</ModalTitle>
-							<TextInput placeholder="DisStreamBot" />
+							<TextInput
+								placeholder="DisStreamBot"
+								value={localNickname}
+								onChange={e => setLocalNickname(e.target.value)}
+							/>
 						</div>
 						<div>
 							<ModalTitle>Command Prefix</ModalTitle>
-							<TextInput value="!" />
+							<TextInput
+								value={localPrefix}
+								onChange={e => setLocalPrefix(e.target.value)}
+							/>
 						</div>
 						<div>
 							<ModalTitle>Bot Admins</ModalTitle>
