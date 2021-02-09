@@ -1,10 +1,13 @@
 import { useRouter } from "next/router";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
+import firebaseClient from "../../../firebase/client";
 
-type obj = { [key: string]: any };
+interface obj<T = any> {
+	[key: string]: T;
+}
 
 interface settings {
-	commandPrefix: string;
+	prefix: string;
 	nickname: string;
 	adminRoles: obj[];
 }
@@ -18,6 +21,8 @@ interface discordContextTpe {
 	setAdminRoles: Dispatch<SetStateAction<obj[]>>;
 	serverSettings: settings;
 	setServerSettings: Dispatch<SetStateAction<settings>>;
+	activePlugins: obj<boolean>;
+	setActivePlugins: Dispatch<SetStateAction<obj<boolean>>>;
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -26,19 +31,24 @@ export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
 	const [roles, setRoles] = useState([]);
 	const [adminRoles, setAdminRoles] = useState([]);
-	const [serverSettings, setServerSettings] = useState<settings>(null);
+	const [serverSettings, setServerSettings] = useState<settings>({
+		prefix: "!",
+		nickname: "DisStreamBot",
+		adminRoles: [],
+	});
+	const [activePlugins, setActivePlugins] = useState<obj<boolean>>({});
 	const router = useRouter();
 
 	const [, serverId] = router.query.type as string[];
 
 	useEffect(() => {
-		(async () => {
-			if (!serverId) return;
+		if (!serverId) return;
+		const fetchFromApi = async () => {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 			);
 			const json = await response.json();
-			if(!json)return
+			if (!json) return;
 			setCurrentGuild(json);
 			const roleResponse = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/getchannels?new=true&guild=${serverId}`
@@ -54,7 +64,16 @@ export const DiscordContextProvider = ({ children }) => {
 						!role.managed
 				)
 			);
-		})();
+		};
+		const fetchFromFirebase = async () => {
+			const serverRef = firebaseClient.db.collection("DiscordSettings").doc(serverId);
+			const serverDoc = await serverRef.get();
+			const serverData = serverDoc.data();
+			const { activePlugins: plugins, ...settings } = serverData;
+			setActivePlugins(plugins);
+			setServerSettings(prev => ({...prev, ...settings}));
+		};
+		Promise.all([fetchFromApi(), fetchFromFirebase()]).then(() => console.log("done"));
 	}, [serverId]);
 
 	return (
@@ -68,6 +87,8 @@ export const DiscordContextProvider = ({ children }) => {
 				setAdminRoles,
 				serverSettings,
 				setServerSettings,
+				activePlugins,
+				setActivePlugins,
 			}}
 		>
 			{children}

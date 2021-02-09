@@ -1,4 +1,4 @@
-import { JSXElementConstructor, useMemo, useState } from "react";
+import { JSXElementConstructor, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import AddIcon from "@material-ui/icons/Add";
 import { ClickAwayListener } from "@material-ui/core";
@@ -114,6 +114,12 @@ const Select = (props: selectProps) => {
 			),
 		[props.options, props.value]
 	);
+
+	useEffect(() => {
+		if(!options?.length){
+			setOpen(false)
+		}
+	}, [options])
 
 	return (
 		<SelectBody>
