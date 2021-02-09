@@ -14,13 +14,15 @@ export const discordContext = createContext<discordContextTpe>(null);
 export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
 	const [roles, setRoles] = useState([]);
-
+	const [adminRoles, setAdminRoles] = useState([]);
+	console.log(adminRoles)
 	const router = useRouter();
 
 	const [, serverId] = router.query.type as string[];
 
 	useEffect(() => {
 		(async () => {
+			if(!serverId) return
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 			);
@@ -31,6 +33,12 @@ export const DiscordContextProvider = ({ children }) => {
 			);
 			const roleJson = await roleResponse.json();
 			setRoles(roleJson.roles);
+			setAdminRoles(
+				roleJson.roles.filter(
+					// I can do discord permission math 😊
+					role => ((role.permissions & 32) === 32 || (role.permissions & 8) === 8) && !role.managed
+				)
+			);
 		})();
 	}, [serverId]);
 
