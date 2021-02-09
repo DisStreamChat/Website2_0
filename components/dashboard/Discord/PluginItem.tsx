@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Switch from "@material-ui/core/Switch";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface pluginProps {
 	id: string;
@@ -63,6 +63,8 @@ const PluginSwitch = styled.div`
 `;
 
 const PluginItem = (props: pluginProps) => {
+
+
 	return (
 		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
 			<div>

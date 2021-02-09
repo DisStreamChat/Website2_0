@@ -337,7 +337,7 @@ const Server = ({ server }) => {
 
 	useEffect(() => {
 		setLocalActivePlugins(activePlugins);
-	}, []);
+	}, [activePlugins]);
 
 	return (
 		<>
