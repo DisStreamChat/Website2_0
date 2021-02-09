@@ -1,4 +1,4 @@
-import { JSXElementConstructor, useState } from "react";
+import { JSXElementConstructor, useMemo, useState } from "react";
 import styled from "styled-components";
 import AddIcon from "@material-ui/icons/Add";
 import { ClickAwayListener } from "@material-ui/core";
@@ -107,30 +107,53 @@ const outState = {
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
 
+	const options = useMemo(
+		() =>
+			props.options.filter(
+				option => !props.value.find(value => value.value === option.value)
+			),
+		[props.options, props.value]
+	);
+
 	return (
 		<SelectBody>
 			<ul className="">
 				{props.value.map(item => (
 					<li>{item.label}</li>
 				))}
-				<AddItem>
-					<AddButton onClick={() => setOpen(prev => !prev)}>
-						<AddIcon />
-					</AddButton>
-					<ClickAwayListener onClickAway={() => setOpen(false)}>
+				{!!options?.length && (
+					<AddItem>
+						<AddButton onClick={() => setOpen(prev => !prev)}>
+							<AddIcon />
+						</AddButton>
 						<AnimatePresence>
 							{open && (
-								<SelectArea initial={outState} exit={outState} animate={inState}>
-									<ul className="">
-										{props.options.map(option => (
-											<li>{option.label}</li>
-										))}
-									</ul>
-								</SelectArea>
+								<ClickAwayListener onClickAway={() => setOpen(false)}>
+									<SelectArea
+										initial={outState}
+										exit={outState}
+										animate={inState}
+									>
+										<ul className="">
+											{options.map(option => (
+												<li
+													onClick={() => {
+														props.onChange(option);
+														if (props.closeMenuOnSelect) {
+															setOpen(false);
+														}
+													}}
+												>
+													{option.label}
+												</li>
+											))}
+										</ul>
+									</SelectArea>
+								</ClickAwayListener>
 							)}
 						</AnimatePresence>
-					</ClickAwayListener>
-				</AddItem>
+					</AddItem>
+				)}
 			</ul>
 		</SelectBody>
 	);

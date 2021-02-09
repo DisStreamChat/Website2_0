@@ -17,7 +17,8 @@ import { H1, H2 } from "../../shared/styles/headings";
 import Select from "./Select";
 import { TextInput } from "../../shared/ui-components/TextField";
 import { useDiscordContext } from "./discordContext";
-import RoleItem, {RoleOption} from "./RoleItem";
+import RoleItem, { RoleOption } from "./RoleItem";
+import { transformObjectToSelectValue, parseSelectValue } from "../../../utils/functions";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -136,6 +137,7 @@ const ServerModals = ({
 	const classes = useStyles();
 
 	const { roles } = useDiscordContext();
+	const [adminRoles, setAdminRoles] = useState([]);
 
 	return (
 		<>
@@ -163,17 +165,36 @@ const ServerModals = ({
 							<ModalInfo>
 								These are the roles that have permission to manage your server.
 							</ModalInfo>
-							<Select
-								onChange={() => {}}
-								value={roles.map(role => ({
-									value: role.id,
-									label: <RoleItem {...role}>{role.name}</RoleItem>,
-								}))}
-								options={roles.map(role => ({
-									value: role.id,
-									label: <RoleOption {...role}>{role.name}</RoleOption>,
-								}))}
-							/>
+							{roles && (
+								<Select
+									onChange={value => {
+										const parsedValue = parseSelectValue(value);
+										setAdminRoles(prev => [
+											...prev,
+											roles.find(role => role.id === parsedValue),
+										]);
+									}}
+									value={adminRoles.map(role => ({
+										value: transformObjectToSelectValue(role),
+										label: (
+											<RoleItem
+												onClick={id =>
+													setAdminRoles(prev =>
+														prev.filter(role => role.id !== id)
+													)
+												}
+												{...role}
+											>
+												{role.name}
+											</RoleItem>
+										),
+									}))}
+									options={roles.map(role => ({
+										value: transformObjectToSelectValue(role),
+										label: <RoleOption {...role}>{role.name}</RoleOption>,
+									}))}
+								/>
+							)}
 						</div>
 					</SettingsModal>
 				</Zoom>

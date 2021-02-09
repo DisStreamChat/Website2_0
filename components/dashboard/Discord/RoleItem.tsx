@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
-const colorify = number => `#${number === 0 ? "99aab5" : number?.toString?.(16)?.padStart?.(6, "0") || "black"}`;
+const colorify = number =>
+	`#${number === 0 ? "99aab5" : number?.toString?.(16)?.padStart?.(6, "0") || "black"}`;
 
-const RoleItem = styled.div`
+const StyledRoleItem = styled.div`
 	border-radius: 22px;
 	padding: 0.25rem 0.5rem;
 	font-size: 12px;
@@ -15,20 +16,49 @@ const RoleItem = styled.div`
 	position: relative;
 	font-weight: 600;
 	color: #ccc;
-	&:before {
-		display: inline-block;
-		content: "";
+	&:hover {
+		.button {
+			color: white;
+		}
+	}
+	.button {
+		border: none;
+		outline: none;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 10px;
+		margin: 0;
+		text-align: center;
 		width: 12px;
 		height: 12px;
 		margin-left: -0.25rem;
 		margin-right: 0.25rem;
 		border-radius: 50%;
 		background: ${props => colorify(props.color)};
+		color: ${props => colorify(props.color)};
+		cursor: pointer;
 	}
 `;
 
+interface roleProps {
+	color: string;
+	name: string;
+	id: string;
+	onClick: (e: any) => void;
+}
+
+const RoleItem = (props: roleProps) => {
+	return (
+		<StyledRoleItem color={props.color}>
+			<div onClick={() => props.onClick(props.id)} className="button">x</div>
+			{props.name}
+		</StyledRoleItem>
+	);
+};
+
 export const RoleOption = styled.div`
-	color: ${props => colorify(props.color)}
-`
+	color: ${props => colorify(props.color)};
+`;
 
 export default RoleItem;
