@@ -152,7 +152,7 @@ const ServerModals = ({
 	const mappedDefaultRoles = defaultAdminRoles.map(
 		(role: { color: string; name: string; id: string }) => ({
 			value: transformObjectToSelectValue(role),
-			label: <RoleItem {...role} />,
+			label: <RoleItem disabled {...role} />,
 		})
 	);
 
