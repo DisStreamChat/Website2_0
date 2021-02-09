@@ -116,16 +116,16 @@ const Select = (props: selectProps) => {
 	);
 
 	useEffect(() => {
-		if(!options?.length){
-			setOpen(false)
+		if (!options?.length) {
+			setOpen(false);
 		}
-	}, [options])
+	}, [options]);
 
 	return (
 		<SelectBody>
 			<ul className="">
 				{props.value.map(item => (
-					<li>{item.label}</li>
+					<li key={item.value}>{item.label}</li>
 				))}
 				{!!options?.length && (
 					<AddItem>
@@ -143,6 +143,7 @@ const Select = (props: selectProps) => {
 										<ul className="">
 											{options.map(option => (
 												<li
+													key={option.value}
 													onClick={() => {
 														props.onChange(option);
 														if (props.closeMenuOnSelect) {

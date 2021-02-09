@@ -34,8 +34,8 @@ const PluginBody = styled.div`
 const ServerHeader = styled.div`
 	display: flex;
 	align-items: center;
-	margin-bottom: 0.5rem;
-	padding-bottom: 0.5rem;
+	margin-bottom: 1rem;
+	padding-bottom: 1rem;
 	justify-content: space-between;
 	h1 {
 		font-size: 1.75rem;
