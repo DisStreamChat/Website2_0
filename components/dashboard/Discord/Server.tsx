@@ -7,7 +7,7 @@ import Plugins from "./Plugins";
 import { getServerIconUrl } from "../../../utils/functions";
 import { Avatar, createStyles, makeStyles, Theme, withStyles } from "@material-ui/core";
 import { NoIcon } from "../../shared/styles/guildIcon";
-import { BlueButton } from "../../shared/ui-components/Button";
+import { BlueButton, GreenButton, RedButton } from "../../shared/ui-components/Button";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { useQuery } from "react-query";
 import Modal from "@material-ui/core/Modal";
@@ -19,6 +19,9 @@ import { TextInput } from "../../shared/ui-components/TextField";
 import { useDiscordContext } from "./discordContext";
 import RoleItem, { RoleOption } from "./RoleItem";
 import { transformObjectToSelectValue, parseSelectValue } from "../../../utils/functions";
+import { isEqual } from "lodash";
+import firebaseClient from "../../../firebase/client";
+import { AnimatePresence, motion } from "framer-motion";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -87,6 +90,7 @@ const ServerModal = styled.div`
 	background: var(--background-light-gray);
 	border-radius: 0.25rem;
 	padding: 1.5rem;
+	position: relative;
 `;
 
 const InfoModal = styled(ServerModal)`
@@ -121,6 +125,25 @@ const ModalInfo = styled.div`
 	margin-bottom: 0.25rem;
 `;
 
+const SaveSection = styled(motion.div)`
+	position: absolute;
+	width: 90%;
+	left: 50%;
+	bottom: 20px;
+	height: 50px;
+	border-radius: 0.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: var(--background-dark-gray);
+	padding: 0.5rem 1rem;
+	box-sizing: content-box;
+	border: none;
+	div:last-child > * + * {
+		margin-left: 0.5rem;
+	}
+`;
+
 const ServerModals = ({
 	infoModalOpen,
 	setInfoModalOpen,
@@ -137,12 +160,31 @@ const ServerModals = ({
 		roles,
 		adminRoles: defaultAdminRoles,
 		serverSettings: { prefix, nickname, adminRoles: dbAdminRoles },
+		setServerSettings,
 	} = useDiscordContext();
 
-	useEffect(() => {
+	const reset = () => {
 		setLocalNickname(nickname);
 		setLocalPrefix(prefix);
 		setAdminRoles(dbAdminRoles);
+	};
+
+	const save = () => {
+		firebaseClient.updateDoc(`DiscordSettings/${serverId}`, {
+			prefix: localPrefix,
+			nickname: localNickname,
+			adminRoles,
+		});
+		setServerSettings(prev => ({
+			...prev,
+			prefix: localPrefix,
+			nickname: localNickname,
+			adminRoles,
+		}));
+	};
+
+	useEffect(() => {
+		reset();
 	}, [nickname, prefix, dbAdminRoles]);
 
 	const { data } = useQuery("server-data", () =>
@@ -167,6 +209,9 @@ const ServerModals = ({
 			label: <RoleItem disabled {...role} />,
 		})
 	);
+
+	const changed =
+		localNickname !== nickname || localPrefix !== prefix || !isEqual(adminRoles, dbAdminRoles);
 
 	return (
 		<>
@@ -218,6 +263,22 @@ const ServerModals = ({
 								/>
 							)}
 						</div>
+						<AnimatePresence>
+							{changed && (
+								<SaveSection
+									initial={{ y: 20, x: "-50%", opacity: 0 }}
+									exit={{ y: 20, x: "-50%", opacity: 0 }}
+									animate={{ y: 0, x: "-50%", opacity: 1 }}
+									transition={{ type: "spring" }}
+								>
+									<div>You have unsaved Changes</div>
+									<div>
+										<RedButton onClick={reset}>Reset</RedButton>
+										<GreenButton onClick={save}>Save</GreenButton>
+									</div>
+								</SaveSection>
+							)}
+						</AnimatePresence>
 					</SettingsModal>
 				</Zoom>
 			</Modal>

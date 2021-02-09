@@ -65,7 +65,7 @@ export const OrangeButton = withStyles((theme: Theme) => ({
 		background: "linear-gradient(283deg,#f9af15,#f95515)",
 		"&:hover": {
 			boxShadow: "4px 4px 10px 0px #000000",
-		}
+		},
 	},
 }))(PaddingButton);
 
@@ -73,5 +73,18 @@ export const RedButton = withStyles((theme: Theme) => ({
 	root: {
 		color: theme.palette.getContrastText("#9b0e11"),
 		background: "#9b0e11",
+		"&:hover": {
+			background: chroma("#9b0e11").darken(0.5).hex(),
+		},
+	},
+}))(PaddingButton);
+
+export const GreenButton = withStyles((theme: Theme) => ({
+	root: {
+		color: theme.palette.getContrastText("#44b37f"),
+		background: "#44b37f",
+		"&:hover": {
+			background: chroma("#44b37f").darken(0.5).hex(),
+		},
 	},
 }))(PaddingButton);
