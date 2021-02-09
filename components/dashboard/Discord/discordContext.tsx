@@ -2,6 +2,13 @@ import { useRouter } from "next/router";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 
 type obj = { [key: string]: any };
+
+interface settings {
+	commandPrefix: string;
+	nickname: string;
+	adminRoles: obj[];
+}
+
 interface discordContextTpe {
 	currentGuild: obj;
 	setCurrentGuild: Dispatch<SetStateAction<obj>>;
@@ -9,6 +16,8 @@ interface discordContextTpe {
 	setRoles: Dispatch<SetStateAction<obj[]>>;
 	adminRoles: obj[];
 	setAdminRoles: Dispatch<SetStateAction<obj[]>>;
+	serverSettings: settings;
+	setServerSettings: Dispatch<SetStateAction<settings>>;
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -17,7 +26,7 @@ export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
 	const [roles, setRoles] = useState([]);
 	const [adminRoles, setAdminRoles] = useState([]);
-	console.log(adminRoles);
+	const [serverSettings, setServerSettings] = useState<settings>(null);
 	const router = useRouter();
 
 	const [, serverId] = router.query.type as string[];
@@ -29,12 +38,13 @@ export const DiscordContextProvider = ({ children }) => {
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 			);
 			const json = await response.json();
+			if(!json)return
 			setCurrentGuild(json);
 			const roleResponse = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/getchannels?new=true&guild=${serverId}`
 			);
 			const roleJson = await roleResponse.json();
-			const allRoles = roleJson.roles.filter(role => role.name !== "@everyone")
+			const allRoles = roleJson.roles.filter(role => role.name !== "@everyone");
 			setRoles(allRoles);
 			setAdminRoles(
 				allRoles.filter(
@@ -48,7 +58,18 @@ export const DiscordContextProvider = ({ children }) => {
 	}, [serverId]);
 
 	return (
-		<discordContext.Provider value={{ currentGuild, setCurrentGuild, roles, setRoles, adminRoles, setAdminRoles }}>
+		<discordContext.Provider
+			value={{
+				currentGuild,
+				setCurrentGuild,
+				roles,
+				setRoles,
+				adminRoles,
+				setAdminRoles,
+				serverSettings,
+				setServerSettings,
+			}}
+		>
 			{children}
 		</discordContext.Provider>
 	);
