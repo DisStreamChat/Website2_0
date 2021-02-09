@@ -45,6 +45,7 @@ const StyledRoleItem = styled.div`
 		background: ${props => colorify(props.color)};
 		color: ${props => colorify(props.color)};
 		cursor: pointer;
+		user-select: none;
 	}
 `;
 
