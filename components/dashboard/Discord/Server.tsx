@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PluginItem from "./PluginItem";
 import plugins from "../../../utils/plugins.json";
 import styled from "styled-components";
@@ -251,6 +251,13 @@ const Server = ({ server }) => {
 	const iconImage = getServerIconUrl(server.icon, server.id);
 	const [settingsModalOpen, setSettingsModalOpen] = useState(false);
 	const [infoModalOpen, setInfoModalOpen] = useState(false);
+	const [localActivePlugins, setLocalActivePlugins] = useState({});
+
+	const { activePlugins } = useDiscordContext();
+
+	useEffect(() => {
+		setLocalActivePlugins(activePlugins);
+	}, []);
 
 	return (
 		<>
@@ -304,10 +311,13 @@ const Server = ({ server }) => {
 				<PluginBody>
 					{plugins.map(plugin => (
 						<PluginItem
+							{...plugin}
 							key={plugin.id}
 							serverId={serverId}
-							{...plugin}
-							active={false}
+							active={!!localActivePlugins[plugin.id]}
+							setActive={val =>
+								setLocalActivePlugins(prev => ({ ...prev, [plugin.id]: val }))
+							}
 						/>
 					))}
 				</PluginBody>

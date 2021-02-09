@@ -63,10 +63,9 @@ const PluginSwitch = styled.div`
 `;
 
 const PluginItem = (props: pluginProps) => {
-	const [checked, setChecked] = useState(props.active);
-
+	console.log(props)
 	return (
-		<PluginCard href={checked ? `${props.serverId}/${props.id}` : null}>
+		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
 			<div>
 				<img alt={props.title} src={`/${props.image}`}  width={50} height={50} />
 			</div>
@@ -76,8 +75,8 @@ const PluginItem = (props: pluginProps) => {
 			</div>
 			<PluginSwitch>
 				<Switch
-					checked={checked}
-					onChange={e => setChecked(e.target.checked)}
+					checked={props.active}
+					onChange={e => props.setActive(e.target.checked)}
 					color="primary"
 					name="checkedB"
 					disabled={props.comingSoon}
