@@ -30,6 +30,7 @@ const InnerTextInput = styled.input`
 const StyledTextArea = styled.textarea`
 	width: 100%;
 	font-size: 14px;
+	font-family: "Open Sans", sans-serif, Helvetica, arial, sans-serif;
 	color: rgb(255, 255, 255);
 	border: 1px solid rgb(26, 26, 26);
 	background-color: rgb(43, 47, 51);

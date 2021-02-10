@@ -100,6 +100,7 @@ const SEO = () => {
 				integrity="sha512-DanfxWBasQtq+RtkNAEDTdX4Q6BPCJQ/kexi/RftcP0BcA4NIJPSi7i31Vl+Yl5OCfgZkdJmCqz+byTOIIRboQ=="
 				crossOrigin="anonymous"
 			/>
+			<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"></link>
 			<title>DisStreamChat</title>
 		</Head>
 	);
