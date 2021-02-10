@@ -88,3 +88,23 @@ export const GreenButton = withStyles((theme: Theme) => ({
 		},
 	},
 }))(PaddingButton);
+
+interface DescriptionProps {
+	onClick: () => void,
+	title: string,
+	description: string,
+	icon: JSX.Element
+}
+
+export const DescriptionButton = (props: DescriptionProps) => {
+	return (
+		<div
+			className="create-command"
+			onClick={() => props?.onClick?.()}
+		>
+			{props.icon}
+			<h1>{props.title}</h1>
+			<p>{props.description}</p>
+		</div>
+	);
+};
