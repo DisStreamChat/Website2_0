@@ -4,8 +4,13 @@ const SEO = () => {
 	return (
 		<Head>
 			<meta charSet="utf-8" />
-			<link rel="icon" href="%PUBLIC_URL%/logo.png" />
-			<link rel="preload" href="https://api.disstreamchat.com/public/fonts.css" />
+			<link rel="icon" href="/logo.png" />
+			<link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" as="style" />
+			{/* <link rel="preconnect" href="https://fonts.gstatic.com" /> */}
+			<link
+				href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+				rel="stylesheet"
+			/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta name="theme-color" content="#17181b" />
 			<meta name="title" content="DisStreamChat" />
@@ -15,7 +20,7 @@ const SEO = () => {
 				name="description"
 				content="An incredibly easy to use and feature filled system for connecting Twitch and Discord chat."
 			/>
-			<meta name="image" content="%PUBLIC_URL%/logo.png" />
+			<meta name="image" content="/logo.png" />
 			<meta name="application-name" content="disstreamchat" />
 			<meta
 				data-n-head="ssr"
@@ -89,14 +94,13 @@ const SEO = () => {
 				crossOrigin="anonymous"
 			/>
 			<link
-				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
 				rel="preload"
 				as="style"
+				href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.css"
+				integrity="sha512-DanfxWBasQtq+RtkNAEDTdX4Q6BPCJQ/kexi/RftcP0BcA4NIJPSi7i31Vl+Yl5OCfgZkdJmCqz+byTOIIRboQ=="
+				crossOrigin="anonymous"
 			/>
-			<link
-				href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
-				rel="stylesheet"
-			/>
+			<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"></link>
 			<title>DisStreamChat</title>
 		</Head>
 	);

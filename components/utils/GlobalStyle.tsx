@@ -22,8 +22,24 @@ const GlobalStyle = createGlobalStyle`
         margin: 0;
 		font-family: 'Poppins', sans-serif;
         /* overflow: hidden; */
+		color: white;
+		min-height: 100vh;
+		background: var(--background-light-gray);
         box-sizing: border-box !important;
+		margin-top: 40px;
     }
+
+	#__next{
+		z-index: 1;
+		button{
+			font-family: 'Poppins',sans-serif;
+		}
+	}
+
+	*[role="presentation"]{
+		z-index: 1000000000000000 !important;
+	}
+
 
     a {
     	color: inherit;
@@ -48,30 +64,32 @@ const GlobalStyle = createGlobalStyle`
 
 	/* Handle */
 	::-webkit-scrollbar-thumb {
-		background: var(--background-dark-gray);
+		background: var(--disstreamchat-blue);
 		border-radius: 100px;
 	}
 
 	/* Handle on hover */
 	::-webkit-scrollbar-thumb:hover {
-		background: #111;
-}
-
-
+		background: ${chroma("#2d688d").darken(0.1).hex()}
+	}
 
 	.MuiFormHelperText-contained{
 		margin-left: 0px !important;
 	}
 	
 	#nprogress{
-		z-index: 10000;
+		z-index: 100000000000000000;
 		.bar{
-			z-index: 1000000 !important;
+			z-index: 100000000000000000 !important;
 		}
 	}
 
 	.MuiOutlinedInput-adornedStart {
 		overflow: hidden !important;
+	}
+
+	.css-fac07y-container, .css-fac07y-container *{
+		color: white !important;
 	}
 `;
 
