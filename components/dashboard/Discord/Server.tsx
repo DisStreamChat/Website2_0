@@ -292,7 +292,7 @@ const ServerModals = ({
 			>
 				<Zoom in={infoModalOpen}>
 					<InfoModal>
-						{!data && (
+						{!!data && (
 							<>
 								<div>
 									<ModalSubTitle>Region</ModalSubTitle>

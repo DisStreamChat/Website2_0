@@ -27,12 +27,48 @@ const InnerTextInput = styled.input`
 	width: 100%;
 `;
 
-export const TextInput = forwardRef((props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
+const StyledTextArea = styled.textarea`
+	width: 100%;
+	font-size: 14px;
+	color: rgb(255, 255, 255);
+	border: 1px solid rgb(26, 26, 26);
+	background-color: rgb(43, 47, 51);
+	border-radius: 3px;
+	padding: 15px 15px 35px;
+	font-weight: 500;
+	outline: none;
+	box-sizing: border-box;
+	min-height: 150px;
+	transition: border 250ms ease-out 0s;
+	resize: none;
+`;
+
+export const TextInput = forwardRef(
+	(props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
+		return (
+			<TextInputBody className={props.className}>
+				<InnerTextInput {...props} ref={ref as any} type="text" />
+			</TextInputBody>
+		);
+	}
+);
+
+const TextAreaParent = styled.div`
+	position: relative;
+`;
+
+interface textareaProps
+	extends DetailedHTMLProps<InputHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
+	emojiPicker?: boolean;
+	maxCharacters?: number;
+}
+
+export const TextArea = forwardRef(({emojiPicker, maxCharacters, ...props}: textareaProps, ref) => {
 	return (
-		<TextInputBody className={props.className}>
-			<InnerTextInput {...props} ref={ref as any} type="text" />
-		</TextInputBody>
+		<TextAreaParent>
+			<StyledTextArea {...props} ref={ref as any}></StyledTextArea>
+			{/* emojiPicker && <EmojiPicker/> */}
+			{/* maxCharacters ?? <CharCounter max={maxCharacters} text={value}/> */}
+		</TextAreaParent>
 	);
 });
-
-export const TextArea = () => {};
