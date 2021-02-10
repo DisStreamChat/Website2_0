@@ -16,24 +16,24 @@ interface ServerProps {
 const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 	const smallScreen = useMediaQuery("(max-width: 425px)");
 
-	const Button = botIn ? BlueButton : PaddingButton
+	const Button = botIn ? BlueButton : PaddingButton;
 
 	return (
 		<ServerItemBody>
 			<GuildIcon size={smallScreen ? 64 : 128} id={id} icon={icon} name={name} />
 			<div>
 				<H2>{name}</H2>
-				<Button tabIndex={-1}>
-					{botIn ? (
-						<Link href={`discord/${id}`}>
-							<a>Manage</a>
-						</Link>
-					) : (
-						<Anchor href="https://invite.disstreamchat.com" newTab>
-							Invite
-						</Anchor>
-					)}
-				</Button>
+				{botIn ? (
+					<Link href={`discord/${id}`}>
+						<a>
+							<Button tabIndex={-1}>Manage</Button>
+						</a>
+					</Link>
+				) : (
+					<Anchor href="https://invite.disstreamchat.com" newTab>
+						<Button tabIndex={-1}>Invite</Button>
+					</Anchor>
+				)}
 			</div>
 		</ServerItemBody>
 	);
