@@ -47,7 +47,13 @@
 		"description": "Power up your moderation with cool commands and automations!",
 		"comingSoon": true
 	},
-
+	{
+		"id": "time",
+		"title": "Time",
+		"image": "clock.svg",
+		"description": "Manage built-in time commands and features",
+		"comingSoon": true
+	},
 	{
 		"id": "music",
 		"title": "Music",
