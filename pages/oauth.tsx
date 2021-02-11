@@ -22,7 +22,6 @@ export const getServerSideProps = async context => {
 		if (discord) {
 			const cookies = nookies.get(context);
 			const user = await verifyIdToken(cookies["auth-token"] || " ") as any;
-			console.log(user)
 			const isSignedIn = !!user
 
 			const response = await fetch(
@@ -35,7 +34,6 @@ export const getServerSideProps = async context => {
 				let discordUser;
 				if (!isSignedIn) {
 					discordUser = verifyIdToken(json.token) as any
-					console.log(discordUser)
 					nookies.set(context, "temp-token", json.token, { maxAge: 60, path: "/" });
 					// const user = await firebaseClient.auth.signInWithCustomToken(json.token)
 					// console.log(user)
