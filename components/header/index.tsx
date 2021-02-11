@@ -74,7 +74,7 @@ const Header = () => {
 		<>
 			<styles.navItem name="Chat Manager">
 				<Link href="/apps/download">
-					<a>Chat Manager</a>
+					<a>Download</a>
 				</Link>
 			</styles.navItem>
 			<styles.navItem name="Discord Bot">
@@ -82,16 +82,17 @@ const Header = () => {
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
+			<styles.navItem name="Commands">
+				<Link href="/commands">
+					<a>Commands</a>
+				</Link>
+			</styles.navItem>
 			<styles.navItem name="Community">
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem name="Support Us">
-				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
-					Support Us
-				</Anchor>
-			</styles.navItem>
+
 			{isLoggedIn && (
 				<styles.navItem name="Dashboard">
 					<Link href="/dashboard">
@@ -103,8 +104,8 @@ const Header = () => {
 	);
 
 	useEffect(() => {
-		if(isLoggedIn) setLoginModalOpen(false)
-	}, [isLoggedIn])
+		if (isLoggedIn) setLoginModalOpen(false);
+	}, [isLoggedIn]);
 
 	const classes = useStyles();
 
