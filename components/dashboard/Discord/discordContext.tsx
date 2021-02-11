@@ -42,7 +42,7 @@ export const DiscordContextProvider = ({ children }) => {
 	const [, serverId] = router.query.type as string[];
 
 	useEffect(() => {
-		if (!serverId) return;
+		if (!serverId || serverId === "discord") return;
 		const fetchFromApi = async () => {
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`

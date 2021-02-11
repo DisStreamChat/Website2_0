@@ -31,6 +31,8 @@ const Discord = ({ session }: dashboardProps) => {
 			server.permissions.includes("ADMINISTRATOR")
 	);
 
+	const server = servers.find(server => server.id === serverId)
+
 	return (
 		<>
 			{!serverId ? (
@@ -44,7 +46,7 @@ const Discord = ({ session }: dashboardProps) => {
 					<ServerSelect servers={servers} />
 				</>
 			) : (
-				<Server server={servers.find(server => server.id === serverId)}/>
+				server && <Server server={server}/>
 			)}
 		</>
 	);
