@@ -73,7 +73,16 @@ export const DiscordContextProvider = ({ children }) => {
 				const { activePlugins: plugins, ...settings } = serverData;
 				setActivePlugins(plugins);
 				setServerSettings(prev => ({ ...prev, ...settings }));
-			} catch (err) {}
+			} catch (err) {
+				setActivePlugins({});
+				setServerSettings({ prefix: "!", nickname: "DisStreamBot", adminRoles: [] });
+				firebaseClient.db.collection("DiscordSettings").doc(serverId).set({
+					activePlugins: {},
+					prefix: "!",
+					nickname: "DisStreamBot",
+					adminRoles: [],
+				});
+			}
 		};
 		Promise.all([fetchFromApi(), fetchFromFirebase()]).then(() => console.log("done"));
 	}, [serverId]);
