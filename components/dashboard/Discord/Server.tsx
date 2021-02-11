@@ -336,7 +336,7 @@ const Server = ({ server }) => {
 	const { activePlugins } = useDiscordContext();
 
 	useEffect(() => {
-		setLocalActivePlugins(activePlugins);
+		setLocalActivePlugins(activePlugins || {});
 	}, [activePlugins]);
 
 	return (
