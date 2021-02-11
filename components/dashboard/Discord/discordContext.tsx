@@ -69,9 +69,11 @@ export const DiscordContextProvider = ({ children }) => {
 			const serverRef = firebaseClient.db.collection("DiscordSettings").doc(serverId);
 			const serverDoc = await serverRef.get();
 			const serverData = serverDoc.data();
-			const { activePlugins: plugins, ...settings } = serverData;
-			setActivePlugins(plugins);
-			setServerSettings(prev => ({...prev, ...settings}));
+			try {
+				const { activePlugins: plugins, ...settings } = serverData;
+				setActivePlugins(plugins);
+				setServerSettings(prev => ({ ...prev, ...settings }));
+			} catch (err) {}
 		};
 		Promise.all([fetchFromApi(), fetchFromFirebase()]).then(() => console.log("done"));
 	}, [serverId]);
