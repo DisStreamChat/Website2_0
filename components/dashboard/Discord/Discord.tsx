@@ -6,6 +6,8 @@ import { useAuth } from "../../../auth/authContext";
 import Server from "./Server";
 import { dashboardProps } from "../types";
 import Plugins from "./Plugins";
+import { useEffect, useState } from "react";
+import firebaseClient from "../../../firebase/client"
 const ServerSelect = dynamic(() => import("./ServerSelect"));
 
 const Description = styled.p`
@@ -18,6 +20,9 @@ const Description = styled.p`
 const ServerArea = styled.div``;
 
 const Discord = ({ session }: dashboardProps) => {
+
+	const [refreshed, setRefreshed] = useState(false)
+
 	const router = useRouter();
 
 	const [, serverId, pluginName] = router.query.type as string[];
@@ -32,6 +37,33 @@ const Discord = ({ session }: dashboardProps) => {
 	);
 
 	const server = servers.find(server => server.id === serverId)
+
+	const refreshToken = user?.refreshToken;
+	const userId = user.uid
+	useEffect(() => {
+		(async () => {
+
+			if (!refreshToken || !userId) return;
+			if (refreshed) return console.log("already refreshed");
+			console.log("refreshing", userId);
+			const otcData = (await firebaseClient.db.collection("Secret").doc(userId).get()).data();
+			const otc = otcData?.value;
+			console.log(otc)
+			setRefreshed(true);
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/discord/token/refresh?token=${refreshToken}&id=${userId}&otc=${otc}`);
+			console.log(response)
+			if (!response.ok) return;
+
+			const json = await response.json();
+			if (!json) return;
+			await firebaseClient.db
+				.collection("Streamers")
+				.doc(userId || " ")
+				.collection("discord")
+				.doc("data")
+				.update(json.userData);
+		})();
+	}, [userId, refreshed, refreshToken]);
 
 	return (
 		<>

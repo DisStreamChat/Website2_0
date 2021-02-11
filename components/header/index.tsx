@@ -154,7 +154,7 @@ const Header = () => {
 									window.open(
 										`https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${encodeURIComponent(
 											redirect_uri
-										)}${encodeURIComponent(
+										)}/${encodeURIComponent(
 											"?discord=true"
 										)}&response_type=code&scope=identify%20guilds`,
 										"discord",
