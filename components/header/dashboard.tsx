@@ -50,7 +50,7 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 						}
 						name="Discord"
 					>
-						<Link href="discord">
+						<Link href="/dashboard/discord">
 							<a>Discord</a>
 						</Link>
 					</styles.navItem>
