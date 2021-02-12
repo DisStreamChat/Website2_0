@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion";
+import { gap } from "../../../shared/styles";
 
 export const Plugins = styled.div`
 	h2,
@@ -24,13 +25,13 @@ export const PluginSubHeader = styled.div`
 	}
 `;
 
-export const PluginSection = styled(motion.div)`
+export const PluginSection = styled(gap).attrs({as: motion.div})`
 	transform-origin: top left;
 	margin: 0.25rem 0;
 	padding: 0.5rem;
 	border-radius: 0.25rem;
 	overflow: hidden;
 	display: flex;
-	
+	background: black;
 	/* height: 100px; */
 `;

@@ -32,6 +32,7 @@ const Leveling = () => {
 			</PluginSubHeader>
 			<PluginSection
 				data-open={levelupAnnouncement}
+				// @ts-ignore
 				variants={levelingVariants}
 				initial="closed"
 				animate={levelupAnnouncement ? "open" : "closed"}
