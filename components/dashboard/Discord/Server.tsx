@@ -22,6 +22,7 @@ import { transformObjectToSelectValue, parseSelectValue } from "../../../utils/f
 import { isEqual } from "lodash";
 import firebaseClient from "../../../firebase/client";
 import { AnimatePresence, motion } from "framer-motion";
+import { Plugins as PluginPage } from "./pluginPages/styles";
 
 const PluginBody = styled.div`
 	display: grid;
@@ -402,7 +403,9 @@ const Server = ({ server }) => {
 					))}
 				</PluginBody>
 			) : (
-				<Plugins />
+				<PluginPage>
+					<Plugins />
+				</PluginPage>
 			)}
 		</>
 	);
