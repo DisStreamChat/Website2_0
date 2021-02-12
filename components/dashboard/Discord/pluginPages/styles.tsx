@@ -13,16 +13,24 @@ export const Plugins = styled.div`
 `;
 
 export const PluginSubHeader = styled.div`
+	display: flex;
+	align-items: center;
+	& > * + * {
+		margin-left: 1rem;
+	}
 	h4 {
 		font-weight: 400;
 		color: #aaa;
 	}
 `;
 
-export const PluginSection = styled.div`
+export const PluginSection = styled(motion.div)`
+	transform-origin: top left;
 	margin: 0.25rem 0;
-	/* background: var(--background-dark-gray); */
 	padding: 0.5rem;
 	border-radius: 0.25rem;
-	/* border: 0.5px solid #2e2e30; */
+	overflow: hidden;
+	display: flex;
+	
+	/* height: 100px; */
 `;
