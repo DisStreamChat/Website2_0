@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Switch from "@material-ui/core/Switch";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 
 export interface pluginProps {
 	id: string;
@@ -25,6 +26,8 @@ const PluginCard = styled.a`
 	min-width: 350px;
 	min-height: 120px;
 	padding: 20px;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 	/* align-items: center; */
 	box-shadow: 3px 3px 5px 0 #111;
 	& > * + * {
@@ -58,15 +61,26 @@ const PluginBody = styled.div`
 
 const PluginSwitch = styled.div`
 	position: absolute;
-	/* top: 25px; */
+	top: 5px;
 	right: 0;
 `;
+
+const PluginLine = styled(motion.div)`
+	height: 5px;
+	background: black;
+	width: 100%;
+	position: absolute;
+	&.bottom{
+		bottom: 0;
+	}
+`
 
 const PluginItem = (props: pluginProps) => {
 
 
 	return (
 		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
+			<PluginLine/>
 			<div>
 				<img alt={props.title} src={`/${props.image}`}  width={50} height={50} />
 			</div>
@@ -84,6 +98,7 @@ const PluginItem = (props: pluginProps) => {
 					inputProps={{ "aria-label": `${props.title} activity switch` }}
 				/>
 			</PluginSwitch>
+			<PluginLine className="bottom"/>
 		</PluginCard>
 	);
 };
