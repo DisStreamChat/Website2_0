@@ -29,4 +29,22 @@ export const DiscordMention = styled.span`
 
 export const Vr = styled.div`
 	border-left: 1px solid currentColor;
-`
+`;
+
+interface gapProps {
+	gap?: string;
+	grid?: boolean;
+}
+export const gap = styled.div`
+	display: ${(props: gapProps) => (props.grid ? "grid" : "flex")};
+	--gap: ${(props: gapProps) => props.gap ?? ".5rem"};
+	@supports (gap: 10px) {
+		& > * + * {
+			margin-left: 0;
+		}
+		gap: var(--gap);
+	}
+	& > * + * {
+		margin-left: var(--gap);
+	}
+`;
