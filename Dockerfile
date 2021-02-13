@@ -1,6 +1,7 @@
 FROM node:current-alpine AS base
 WORKDIR /base
 COPY package*.json ./
+RUN npx browserslist@latest --update-db
 RUN npm install
 COPY . .
 
