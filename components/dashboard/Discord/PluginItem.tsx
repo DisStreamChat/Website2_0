@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Switch from "@material-ui/core/Switch";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useInteraction } from "../../../hooks/useInteraction";
 
 export interface pluginProps {
 	id: string;
@@ -11,7 +12,7 @@ export interface pluginProps {
 	comingSoon?: boolean;
 	active: boolean;
 	setActive?: (value: boolean) => void;
-	serverId?: string
+	serverId?: string;
 }
 
 const PluginCard = styled.a`
@@ -56,7 +57,7 @@ const PluginBody = styled.div`
 	color: #aaa;
 	margin-top: 0.25rem;
 	line-height: 1.5;
-	font-size: .85rem;
+	font-size: 0.85rem;
 `;
 
 const PluginSwitch = styled.div`
@@ -67,22 +68,45 @@ const PluginSwitch = styled.div`
 
 const PluginLine = styled(motion.div)`
 	height: 5px;
-	background: black;
+	background: var(--disstreamchat-blue);
 	width: 100%;
 	position: absolute;
-	&.bottom{
+	transform-origin: left center;
+	border-radius: 0.25rem;
+	&.bottom {
 		bottom: 0;
 	}
-`
+`;
+
+const lineTransition = {
+	duration: 0.5,
+};
+
+const lineVariants = {
+	interacted: {
+		scaleX: 1,
+		transition: lineTransition,
+	},
+	ignored: {
+		scaleX: 0,
+		transition: lineTransition,
+	},
+};
 
 const PluginItem = (props: pluginProps) => {
-
+	const cardRef = useRef();
+	const [hovered, focused, interacted] = useInteraction(cardRef);
 
 	return (
-		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
-			<PluginLine/>
+		<PluginCard ref={cardRef} href={props.active ? `${props.serverId}/${props.id}` : null}>
+			{!props.comingSoon && (
+				<PluginLine
+					variants={lineVariants}
+					animate={interacted ? "ignored" : "interacted"}
+				/>
+			)}
 			<div>
-				<img alt={props.title} src={`/${props.image}`}  width={50} height={50} />
+				<img alt={props.title} src={`/${props.image}`} width={50} height={50} />
 			</div>
 			<div>
 				<PluginTitle>{props.title}</PluginTitle>
@@ -98,7 +122,13 @@ const PluginItem = (props: pluginProps) => {
 					inputProps={{ "aria-label": `${props.title} activity switch` }}
 				/>
 			</PluginSwitch>
-			<PluginLine className="bottom"/>
+			{!props.comingSoon && (
+				<PluginLine
+					className="bottom"
+					variants={lineVariants}
+					animate={!interacted ? "ignored" : "interacted"}
+				/>
+			)}
 		</PluginCard>
 	);
 };
