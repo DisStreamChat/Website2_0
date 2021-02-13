@@ -1,16 +1,28 @@
 import { Switch } from "@material-ui/core";
 import React, { useState } from "react";
 import { H2 } from "../../../shared/styles/headings";
-import { PluginSection, PluginSubHeader } from "./styles";
+import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
+import Select from "../../../shared/styles/styled-select";
+import styled from "styled-components";
+import { TextArea } from "../../../shared/ui-components/TextField";
 
 const levelingVariants = {
 	open: {
-		height: "0px",
+		height: "180px",
+		opacity: 1,
 	},
 	closed: {
-		height: "100px",
+		opacity: 0,
+		height: "-5px",
 	},
 };
+
+const AnnouncementSection = styled(PluginSection)`
+	display: flex;
+	& > div {
+		flex: 1 1 45%;
+	}
+`;
 
 const Leveling = () => {
 	const [levelupAnnouncement, setLevelupAnnouncement] = useState(false);
@@ -30,16 +42,33 @@ const Leveling = () => {
 					onChange={e => setLevelupAnnouncement(e.target.checked)}
 				/>
 			</PluginSubHeader>
-			<PluginSection
+			<AnnouncementSection
 				data-open={levelupAnnouncement}
 				// @ts-ignore
 				variants={levelingVariants}
 				initial="closed"
 				animate={levelupAnnouncement ? "open" : "closed"}
 			>
-				<div></div>
-				<div></div>
-			</PluginSection>
+				<div>
+					<SubSectionTitle>Announcement Channel</SubSectionTitle>
+					<Select />
+				</div>
+				<div>
+					<SubSectionTitle>Announcement Message</SubSectionTitle>
+					<TextArea />
+				</div>
+			</AnnouncementSection>
+			<hr />
+			<PluginSubHeader>
+				<span>
+					<H2>Xp rate</H2>
+					<h4>
+						Change the leveling difficulty by tweaking the rate at which your members
+						will gain XP.
+					</h4>
+				</span>
+			</PluginSubHeader>
+			
 		</div>
 	);
 };

@@ -33,7 +33,7 @@ const StyledTextArea = styled.textarea`
 	font-family: "Open Sans", sans-serif, Helvetica, arial, sans-serif;
 	color: rgb(255, 255, 255);
 	border: 1px solid rgb(26, 26, 26);
-	background-color: rgb(43, 47, 51);
+	background: #3e4349;
 	border-radius: 3px;
 	padding: 15px 15px 35px;
 	font-weight: 500;

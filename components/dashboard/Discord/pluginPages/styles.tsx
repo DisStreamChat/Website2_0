@@ -27,11 +27,13 @@ export const PluginSubHeader = styled.div`
 
 export const PluginSection = styled(gap).attrs({as: motion.div})`
 	transform-origin: top left;
-	margin: 0.25rem 0;
-	padding: 0.5rem;
 	border-radius: 0.25rem;
 	overflow: hidden;
 	display: flex;
-	background: black;
 	/* height: 100px; */
 `;
+
+export const SubSectionTitle = styled.span`
+	font-weight: 700;
+	text-transform: uppercase;
+`
