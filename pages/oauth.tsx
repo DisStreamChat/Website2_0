@@ -30,8 +30,6 @@ export const getServerSideProps = async context => {
 					process.env.NEXT_PUBLIC_API_URL
 				}/discord/token?code=${code}&create=${!isSignedIn}&redirect_uri=${encodeURIComponent(
 					redirect_uri
-				)}/${encodeURIComponent(
-					"?discord=true"
 				)}`
 			);
 			if (response.ok) {
