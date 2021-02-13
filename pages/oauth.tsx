@@ -4,6 +4,7 @@ import { useAuth } from "../auth/authContext";
 import { verifyIdToken } from "../firebase/admin";
 import firebaseClient from "../firebase/client";
 import admin from "firebase-admin"
+import { redirect_uri } from "../utils/constants";
 
 const Oauth = () => {
 	const { user } = useAuth();
@@ -27,7 +28,11 @@ export const getServerSideProps = async context => {
 			const response = await fetch(
 				`${
 					process.env.NEXT_PUBLIC_API_URL
-				}/discord/token?code=${code}&create=${!isSignedIn}&redirect_uri=${encodeURIComponent("http://localhost:3000/oauth")}`
+				}/discord/token?code=${code}&create=${!isSignedIn}&redirect_uri=${encodeURIComponent(
+					redirect_uri
+				)}/${encodeURIComponent(
+					"?discord=true"
+				)}`
 			);
 			if (response.ok) {
 				const json = await response.json();
