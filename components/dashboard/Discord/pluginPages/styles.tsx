@@ -25,10 +25,12 @@ export const PluginSubHeader = styled.div`
 	}
 `;
 
-export const PluginSection = styled(gap).attrs({as: motion.div})`
+export const PluginSection = styled(gap).attrs({ as: motion.div })`
 	transform-origin: top left;
 	border-radius: 0.25rem;
-	overflow: hidden;
+	&:not([data-open="true"]) {
+		overflow: hidden;
+	}
 	display: flex;
 	/* height: 100px; */
 `;
@@ -36,4 +38,4 @@ export const PluginSection = styled(gap).attrs({as: motion.div})`
 export const SubSectionTitle = styled.span`
 	font-weight: 700;
 	text-transform: uppercase;
-`
+`;

@@ -8,7 +8,7 @@ export const StyledChannelItem = styled.div`
 	display: flex;
 	align-items: center;
 	span {
-		margin-left: 1rem;
+		margin-left: .5rem;
 		font-size: 90%;
 		color: #ffffffaa;
 		font-weight: normal;

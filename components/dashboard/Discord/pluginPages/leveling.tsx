@@ -1,10 +1,13 @@
 import { Switch } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { H2 } from "../../../shared/styles/headings";
 import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
 import Select from "../../../shared/styles/styled-select";
 import styled from "styled-components";
 import { TextArea } from "../../../shared/ui-components/TextField";
+import { discordContext } from "../discordContext";
+import { transformObjectToSelectValue } from "../../../../utils/functions";
+import { ChannelItem } from "../ChannelItem";
 
 const levelingVariants = {
 	initial: {
@@ -31,6 +34,16 @@ const AnnouncementSection = styled(PluginSection)`
 const Leveling = () => {
 	const [levelupAnnouncement, setLevelupAnnouncement] = useState(false);
 
+	const [announcementChannel, setAnnouncementChannel] = useState(false);
+	const [noXpRoles, setNoXpRoles] = useState([]);
+	const [noXpChannels, setNoXpChannels] = useState([]);
+	const [generalScaling, setGeneralScaling] = useState(1);
+	const [levelUpMessage, setLevelUpMessage] = useState(
+		"Congrats {player}, you leveled up to level {level}!"
+	);
+
+	const { allChannels } = useContext(discordContext);
+
 	return (
 		<div>
 			<PluginSubHeader>
@@ -55,11 +68,16 @@ const Leveling = () => {
 			>
 				<div>
 					<SubSectionTitle>Announcement Channel</SubSectionTitle>
-					<Select />
+					<Select
+						options={allChannels.map(channel => ({
+							value: transformObjectToSelectValue(channel),
+							label: <ChannelItem {...channel} />,
+						}))}
+					/>
 				</div>
 				<div>
 					<SubSectionTitle>Announcement Message</SubSectionTitle>
-					<TextArea />
+					<TextArea value={levelUpMessage} />
 				</div>
 			</AnnouncementSection>
 			<hr />

@@ -6,6 +6,12 @@ interface obj<T = any> {
 	[key: string]: T;
 }
 
+interface channel {
+	id: string,
+	name: string,
+	parent: string
+}
+
 interface settings {
 	prefix: string;
 	nickname: string;
@@ -23,6 +29,8 @@ interface discordContextTpe {
 	setServerSettings: Dispatch<SetStateAction<settings>>;
 	activePlugins: obj<boolean>;
 	setActivePlugins: Dispatch<SetStateAction<obj<boolean>>>;
+	allChannels: channel[];
+	setAllChannels: Dispatch<SetStateAction<channel[]>>
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -31,6 +39,7 @@ export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
 	const [roles, setRoles] = useState([]);
 	const [adminRoles, setAdminRoles] = useState([]);
+	const [allChannels, setAllChannels] = useState<channel[]>([])
 	const [serverSettings, setServerSettings] = useState<settings>({
 		prefix: "!",
 		nickname: "DisStreamBot",
@@ -54,6 +63,7 @@ export const DiscordContextProvider = ({ children }) => {
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/getchannels?new=true&guild=${serverId}`
 			);
 			const roleJson = await roleResponse.json();
+			setAllChannels(roleJson.channels)
 			const allRoles = roleJson.roles.filter(role => role.name !== "@everyone");
 			setRoles(allRoles);
 			setAdminRoles(
@@ -100,6 +110,8 @@ export const DiscordContextProvider = ({ children }) => {
 				setServerSettings,
 				activePlugins,
 				setActivePlugins,
+				allChannels,
+				setAllChannels
 			}}
 		>
 			{children}
