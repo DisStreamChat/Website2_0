@@ -67,6 +67,7 @@ const AddItem = styled.li`
 `;
 
 const SelectArea = styled(motion.div)`
+	z-index: 10000;
 	position: absolute;
 	display: flex;
 	flex-direction: column;

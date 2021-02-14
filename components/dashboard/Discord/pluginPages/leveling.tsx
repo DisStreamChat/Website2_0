@@ -9,6 +9,7 @@ import { discordContext } from "../discordContext";
 import { parseSelectValue, transformObjectToSelectValue } from "../../../../utils/functions";
 import { ChannelItem, ChannelOption } from "../ChannelItem";
 import MultiSelect from "../Select";
+import RoleItem, { RoleOption } from "../RoleItem";
 
 const levelingVariants = {
 	initial: {
@@ -43,7 +44,7 @@ const Leveling = () => {
 		"Congrats {player}, you leveled up to level {level}!"
 	);
 
-	const { allChannels } = useContext(discordContext);
+	const { allChannels, roles } = useContext(discordContext);
 
 	return (
 		<div>
@@ -102,6 +103,40 @@ const Leveling = () => {
 			<PluginSection>
 				<MultiSelect
 					onChange={value => {
+						const roleId = parseSelectValue(value);
+						const role = roles.find(role => role.id === roleId);
+						setNoXpRoles(prev => [...prev, role]);
+					}}
+					value={noXpRoles.map(role => ({
+						value: transformObjectToSelectValue(role),
+						label: (
+							<RoleItem
+								{...role}
+								onClick={id =>
+									setNoXpRoles(prev => prev.filter(role => role.id !== id))
+								}
+							/>
+						),
+					}))}
+					options={roles.map(role => ({
+						value: transformObjectToSelectValue(role),
+						label: <RoleOption {...role}>{role.name}</RoleOption>,
+					}))}
+				></MultiSelect>
+			</PluginSection>
+			<hr />
+			<PluginSubHeader>
+				<span>
+					<H2>No-XP Channels</H2>
+					<h4>
+						You can also prevent your members from gaining XP if they send messages in
+						certain text channels.
+					</h4>
+				</span>
+			</PluginSubHeader>
+			<PluginSection>
+				<MultiSelect
+					onChange={value => {
 						const channelId = parseSelectValue(value);
 						const channel = allChannels.find(channel => channel.id === channelId);
 						setNoXpChannels(prev => [...prev, channel]);
@@ -126,16 +161,6 @@ const Leveling = () => {
 					}))}
 				></MultiSelect>
 			</PluginSection>
-			<hr />
-			<PluginSubHeader>
-				<span>
-					<H2>No-XP Channels</H2>
-					<h4>
-						You can also prevent your members from gaining XP if they send messages in
-						certain text channels.
-					</h4>
-				</span>
-			</PluginSubHeader>
 			<hr />
 		</div>
 	);
