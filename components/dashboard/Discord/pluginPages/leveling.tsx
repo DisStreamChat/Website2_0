@@ -7,6 +7,10 @@ import styled from "styled-components";
 import { TextArea } from "../../../shared/ui-components/TextField";
 
 const levelingVariants = {
+	initial: {
+		height: "0px",
+		opacity: 0,
+	},
 	open: {
 		height: "180px",
 		opacity: 1,
@@ -46,7 +50,7 @@ const Leveling = () => {
 				data-open={levelupAnnouncement}
 				// @ts-ignore
 				variants={levelingVariants}
-				initial="closed"
+				initial="initial"
 				animate={levelupAnnouncement ? "open" : "closed"}
 			>
 				<div>
@@ -68,7 +72,6 @@ const Leveling = () => {
 					</h4>
 				</span>
 			</PluginSubHeader>
-			
 		</div>
 	);
 };
