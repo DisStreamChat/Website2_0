@@ -28,7 +28,7 @@ export const PluginSubHeader = styled.div`
 export const PluginSection = styled(gap).attrs({ as: motion.div })`
 	transform-origin: top left;
 	border-radius: 0.25rem;
-	&:not([data-open="true"]) {
+	&[data-open="false"] {
 		overflow: hidden;
 	}
 	display: flex;

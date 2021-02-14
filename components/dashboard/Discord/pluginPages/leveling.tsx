@@ -6,8 +6,9 @@ import Select from "../../../shared/styles/styled-select";
 import styled from "styled-components";
 import { TextArea } from "../../../shared/ui-components/TextField";
 import { discordContext } from "../discordContext";
-import { transformObjectToSelectValue } from "../../../../utils/functions";
-import { ChannelItem } from "../ChannelItem";
+import { parseSelectValue, transformObjectToSelectValue } from "../../../../utils/functions";
+import { ChannelItem, ChannelOption } from "../ChannelItem";
+import MultiSelect from "../Select";
 
 const levelingVariants = {
 	initial: {
@@ -90,6 +91,52 @@ const Leveling = () => {
 					</h4>
 				</span>
 			</PluginSubHeader>
+			<hr />
+
+			<PluginSubHeader>
+				<span>
+					<H2>No-XP Roles</H2>
+					<h4>You can set roles here that will stop users from gaining XP.</h4>
+				</span>
+			</PluginSubHeader>
+			<PluginSection>
+				<MultiSelect
+					onChange={value => {
+						const channelId = parseSelectValue(value);
+						const channel = allChannels.find(channel => channel.id === channelId);
+						setNoXpChannels(prev => [...prev, channel]);
+					}}
+					value={noXpChannels.map(channel => ({
+						value: transformObjectToSelectValue(channel),
+						label: (
+							<ChannelOption
+								{...channel}
+								color="#ffffffa0"
+								onClick={id =>
+									setNoXpChannels(prev =>
+										prev.filter(channel => channel.id !== id)
+									)
+								}
+							/>
+						),
+					}))}
+					options={allChannels.map(channel => ({
+						value: transformObjectToSelectValue(channel),
+						label: <ChannelItem {...channel} color="#ffffffa0" />,
+					}))}
+				></MultiSelect>
+			</PluginSection>
+			<hr />
+			<PluginSubHeader>
+				<span>
+					<H2>No-XP Channels</H2>
+					<h4>
+						You can also prevent your members from gaining XP if they send messages in
+						certain text channels.
+					</h4>
+				</span>
+			</PluginSubHeader>
+			<hr />
 		</div>
 	);
 };

@@ -70,7 +70,7 @@ const SelectArea = styled(motion.div)`
 	position: absolute;
 	display: flex;
 	flex-direction: column;
-	width: 250px;
+	min-width: 250px;
 	background: rgb(39, 43, 46);
 	border-radius: 4px;
 	box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
@@ -124,7 +124,7 @@ const Select = (props: selectProps) => {
 	return (
 		<SelectBody>
 			<ul className="">
-				{props.value.map(item => (
+				{props?.value?.map?.(item => (
 					<li key={item.value}>{item.label}</li>
 				))}
 				{!!options?.length && (
