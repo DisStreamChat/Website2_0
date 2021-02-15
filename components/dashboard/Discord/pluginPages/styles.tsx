@@ -32,6 +32,9 @@ export const PluginSection = styled(gap).attrs({ as: motion.div })`
 		overflow: hidden;
 	}
 	display: flex;
+	&.column{
+		flex-direction: column;
+	}
 	/* height: 100px; */
 `;
 

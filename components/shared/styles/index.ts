@@ -38,13 +38,14 @@ interface gapProps {
 export const gap = styled.div`
 	display: ${(props: gapProps) => (props.grid ? "grid" : "flex")};
 	--gap: ${(props: gapProps) => props.gap ?? ".5rem"};
+	& > * + * {
+		margin-left: var(--gap);
+	}
 	@supports (gap: 10px) {
 		& > * + * {
 			margin-left: 0;
 		}
 		gap: var(--gap);
 	}
-	& > * + * {
-		margin-left: var(--gap);
-	}
+	
 `;

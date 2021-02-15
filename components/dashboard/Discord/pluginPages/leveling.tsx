@@ -92,6 +92,14 @@ const Leveling = () => {
 					</h4>
 				</span>
 			</PluginSubHeader>
+			<PluginSection className="column">
+				<div>
+					<span>General XP Scaling</span>
+				</div>
+				<div>
+					<span>Role XP Scaling</span>
+				</div>
+			</PluginSection>
 			<hr />
 
 			<PluginSubHeader>
