@@ -11,9 +11,12 @@ import { useRouter } from "next/router";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 import { DiscordContextProvider } from "../../components/dashboard/Discord/discordContext";
+import Head from "next/head";
 
 const Dashboard = ({ type, session }) => {
 	const router = useRouter();
+
+	const [, serverId, pluginName] = router.query.type as string[]
 
 	useEffect(() => {
 		if (!type?.[0]) {
@@ -28,6 +31,9 @@ const Dashboard = ({ type, session }) => {
 					<DashboardHeader user={session.user} serverId={type[1]} />
 				</HeaderContextProvider>
 			)}
+			<Head>
+				<title>DisStreamChat | Dashboard {pluginName && "-"} {pluginName}</title>
+			</Head>
 			<DashboardContainer>
 				<ContentArea>
 					{type?.[0] === "discord" && (

@@ -49,6 +49,17 @@ const ServerHeaderItem = styled.div`
 	display: flex;
 	align-items: center;
 	--gap: 1rem;
+	button{
+		white-space: nowrap
+	}
+	@media screen and (max-width: 725px){
+		h1{
+			font-size: 1rem;
+		}
+		button{
+			font-size: 80%;
+		}
+	}
 	& > * + * {
 		margin-left: var(--gap);
 	}
