@@ -6,6 +6,7 @@ const footer = styled.footer`
 	flex-direction: column;
 	background: var(--background-dark-gray);
 	color: white;
+	margin-top: 3rem;
 	a:hover,
 	a:focus {
 		text-underline-position: under;

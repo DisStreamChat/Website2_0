@@ -16,6 +16,7 @@ export const Plugins = styled.div`
 export const PluginSubHeader = styled.div`
 	display: flex;
 	align-items: center;
+	margin-top: 1rem;
 	& > * + * {
 		margin-left: 1rem;
 	}
@@ -28,6 +29,7 @@ export const PluginSubHeader = styled.div`
 export const PluginSection = styled(gap).attrs({ as: motion.div })`
 	transform-origin: top left;
 	border-radius: 0.25rem;
+	margin-bottom: 1rem;
 	&[data-open="false"] {
 		overflow: hidden;
 	}
