@@ -10,6 +10,7 @@ import { parseSelectValue, transformObjectToSelectValue } from "../../../../util
 import { ChannelItem, ChannelOption } from "../ChannelItem";
 import MultiSelect from "../Select";
 import RoleItem, { RoleOption } from "../RoleItem";
+import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 
 const levelingVariants = {
 	initial: {
@@ -32,6 +33,8 @@ const AnnouncementSection = styled(PluginSection)`
 		flex: 1 1 45%;
 	}
 `;
+
+const marks = [...Array(7)].map((item, index) => ({ value: index / 2, label: `x${index / 2}` }));
 
 const Leveling = () => {
 	const [levelupAnnouncement, setLevelupAnnouncement] = useState(false);
@@ -85,20 +88,29 @@ const Leveling = () => {
 			<hr />
 			<PluginSubHeader>
 				<span>
-					<H2>Xp rate</H2>
-					<h4>
-						Change the leveling difficulty by tweaking the rate at which your members
-						will gain XP.
-					</h4>
+					<H2>Server Xp rate</H2>
+					<h4>Change the rate at which all members of the server gain XP.</h4>
 				</span>
 			</PluginSubHeader>
-			<PluginSection className="column">
-				<div>
-					<span>General XP Scaling</span>
-				</div>
-				<div>
-					<span>Role XP Scaling</span>
-				</div>
+			<PluginSection>
+				<PrettoSlider
+					value={generalScaling}
+					onChange={(e, value) => {
+						if (Array.isArray(value)) {
+							setGeneralScaling(value[0]);
+						} else {
+							setGeneralScaling(value);
+						}
+					}}
+					defaultValue={1}
+					getAriaValueText={value => `${value}xp`}
+					aria-labelledby="xp scaling"
+					valueLabelDisplay="auto"
+					step={0.5}
+					min={0}
+					max={3}
+					marks={marks}
+				/>
 			</PluginSection>
 			<hr />
 
