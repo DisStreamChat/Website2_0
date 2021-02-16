@@ -24,6 +24,7 @@ export const PluginSubHeader = styled.div`
 		font-weight: 400;
 		color: #aaa;
 	}
+	margin-bottom: 0.75rem;
 `;
 
 export const PluginSection = styled(gap).attrs({ as: motion.div })`
@@ -34,7 +35,7 @@ export const PluginSection = styled(gap).attrs({ as: motion.div })`
 		overflow: hidden;
 	}
 	display: flex;
-	&.column{
+	&.column {
 		flex-direction: column;
 	}
 	/* height: 100px; */

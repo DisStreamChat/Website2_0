@@ -49,14 +49,17 @@ const ServerHeaderItem = styled.div`
 	display: flex;
 	align-items: center;
 	--gap: 1rem;
-	button{
-		white-space: nowrap
+	button {
+		white-space: nowrap;
 	}
-	@media screen and (max-width: 725px){
-		h1{
+	@media screen and (max-width: 725px) {
+		&.buttons {
+			flex-direction: column;
+		}
+		h1 {
 			font-size: 1rem;
 		}
-		button{
+		button {
 			font-size: 80%;
 		}
 	}
@@ -391,7 +394,7 @@ const Server = ({ server }) => {
 					</LargeAvatar>
 					<h1>{server.name}</h1>
 				</ServerHeaderItem>
-				<ServerHeaderItem>
+				<ServerHeaderItem className="buttons">
 					<BlueButton onClick={() => setInfoModalOpen(true)}>Server Info</BlueButton>
 					<BlueButton onClick={() => setSettingsModalOpen(true)}>
 						<SettingsIcon /> Settings

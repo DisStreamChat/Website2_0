@@ -1,4 +1,4 @@
-import { Switch } from "@material-ui/core";
+import { Switch, useMediaQuery } from "@material-ui/core";
 import React, { useState, useContext, useEffect } from "react";
 import { H2 } from "../../../shared/styles/headings";
 import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
@@ -47,16 +47,16 @@ const primaryLevelSettings: levelSettings = {
 
 const levelingVariants = {
 	initial: {
-		height: "0px",
+		height: 0,
 		opacity: 0,
 	},
 	open: {
-		height: "180px",
+		height: "auto",
 		opacity: 1,
 	},
 	closed: {
 		opacity: 0,
-		height: "-5px",
+		height: 0,
 	},
 };
 
@@ -65,7 +65,14 @@ const AnnouncementSection = styled(PluginSection)`
 	& > div {
 		flex: 1 1 45%;
 	}
+	@media screen and (max-width: 725px){
+		&#announcement-section{
+			flex-direction: column;
+		}
+	}
 `;
+
+// const levelAutoCompletes
 
 const marks = [...Array(7)].map((item, index) => ({ value: index / 2, label: `x${index / 2}` }));
 
@@ -84,6 +91,8 @@ const Leveling = () => {
 	);
 	const [defaultValues, setDefaultValues] = useState({});
 	const { allChannels, roles } = useContext(discordContext);
+
+	const smallScreen = useMediaQuery("(max-width: 725px)")
 
 	useEffect(() => {
 		(async () => {
@@ -167,8 +176,9 @@ const Leveling = () => {
 				variants={levelingVariants}
 				initial="initial"
 				animate={levelupAnnouncement ? "open" : "closed"}
+				id="announcement-section"
 			>
-				<div>
+				<div >
 					<SubSectionTitle>Announcement Channel</SubSectionTitle>
 					<Select
 						onChange={value => {
@@ -198,8 +208,8 @@ const Leveling = () => {
 						trigger={{
 							"{": {
 								dataProvider: token => {
-									return ["member", "member.idname", "member.ping", "member.tag"]
-										.filter(chatter => chatter.startsWith(token))
+									return ["player", "level"]
+										.filter(chatter => chatter.includes(token))
 										.map(chatter => ({
 											name: `${chatter}`,
 											char: `{${chatter}}`,
