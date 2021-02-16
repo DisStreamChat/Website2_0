@@ -15,7 +15,6 @@ import { useHeaderContext } from "./context";
 import { useAuth } from "../../auth/authContext";
 import dynamic from "next/dynamic";
 import { redirect_uri } from "../../utils/constants";
-import { redirect } from "next/dist/next-server/server/api-utils";
 const Profile = dynamic(() => import("./Profile"));
 const Sidebar = dynamic(() => import("./sidebar"));
 

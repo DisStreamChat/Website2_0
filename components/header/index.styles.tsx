@@ -117,7 +117,6 @@ const sidebar = styled(motion.nav)`
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 2rem;
-	justify-content: center;
 	padding: 2rem;
 	button {
 		margin-right: 0.5rem;

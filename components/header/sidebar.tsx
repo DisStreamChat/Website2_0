@@ -1,7 +1,7 @@
 import styles from "./index.styles";
-import Profile from "./Profile"
+import Profile, { DashboardProfile } from "./Profile"
 
-const Sidebar = ({ children }) => {
+const Sidebar = ({ children, user=null }) => {
 	return (
 		<styles.sidebar
 			key="sidebar"
@@ -11,7 +11,7 @@ const Sidebar = ({ children }) => {
 			transition={{ duration: 0.25 }}
 		>
 			{children}
-			<Profile />
+			{user ? <DashboardProfile user={user}/> : <Profile />}
 		</styles.sidebar>
 	);
 };

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRouter } from "next/router";
 import Plugins from "./Plugins";
 import { getServerIconUrl } from "../../../utils/functions";
-import { Avatar, createStyles, makeStyles, Theme, withStyles } from "@material-ui/core";
+import { Avatar, createStyles, makeStyles, Theme, useMediaQuery, withStyles } from "@material-ui/core";
 import { NoIcon } from "../../shared/styles/guildIcon";
 import { BlueButton, GreenButton, RedButton } from "../../shared/ui-components/Button";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -354,6 +354,10 @@ const Server = ({ server }) => {
 		setLocalActivePlugins(activePlugins || {});
 	}, [activePlugins]);
 
+	const verySmall = useMediaQuery("(max-width: 400px)")
+
+
+
 	return (
 		<>
 			<ServerModals
@@ -389,10 +393,10 @@ const Server = ({ server }) => {
 								margin: 0,
 							}}
 						>
-							{server.name?.split?.(" ")?.map(w => w[0])}
+							{ server.name?.split?.(" ")?.map(w => w[0])}
 						</NoIcon>
 					</LargeAvatar>
-					<h1>{server.name}</h1>
+					{!verySmall && <h1>{server.name}</h1>}
 				</ServerHeaderItem>
 				<ServerHeaderItem className="buttons">
 					<BlueButton onClick={() => setInfoModalOpen(true)}>Server Info</BlueButton>
