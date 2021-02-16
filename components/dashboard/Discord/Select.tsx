@@ -76,7 +76,7 @@ const SelectArea = styled(motion.div)`
 	border-radius: 4px;
 	box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
 	right: 0;
-	height: 264px;
+	max-height: 264px;
 	overflow: auto;
 	/* padding: 1rem 0; */
 	cursor: pointer;
@@ -105,8 +105,21 @@ const outState = {
 	x: "50%",
 };
 
+const SearchArea = styled.div`
+	background: var(--background-dark-gray);
+	input {
+		padding: 1rem;
+		color: white;
+		background: none;
+		outline: none;
+		border: none;
+		font-family: "Open sans";
+	}
+`;
+
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
+	const [searchValue, setSearchValue] = useState("");
 
 	const options = useMemo(
 		() =>
@@ -141,20 +154,32 @@ const Select = (props: selectProps) => {
 										exit={outState}
 										animate={inState}
 									>
+										<SearchArea>
+											<input
+												placeholder="Search"
+												type="text"
+												value={searchValue}
+												onChange={e => setSearchValue(e.target.value)}
+											/>
+										</SearchArea>
 										<ul className="">
-											{options.map(option => (
-												<li
-													key={option.value}
-													onClick={() => {
-														props.onChange(option);
-														if (props.closeMenuOnSelect) {
-															setOpen(false);
-														}
-													}}
-												>
-													{option.label}
-												</li>
-											))}
+											{options
+												.filter(option =>
+													option.value?.includes?.(searchValue)
+												)
+												.map(option => (
+													<li
+														key={option.value}
+														onClick={() => {
+															props.onChange(option);
+															if (props.closeMenuOnSelect) {
+																setOpen(false);
+															}
+														}}
+													>
+														{option.label}
+													</li>
+												))}
 										</ul>
 									</SelectArea>
 								</ClickAwayListener>
