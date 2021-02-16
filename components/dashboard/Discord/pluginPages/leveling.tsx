@@ -1,5 +1,5 @@
 import { Switch } from "@material-ui/core";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { H2 } from "../../../shared/styles/headings";
 import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
 import Select from "../../../shared/styles/styled-select";
@@ -11,6 +11,39 @@ import { ChannelItem, ChannelOption } from "../ChannelItem";
 import MultiSelect from "../Select";
 import RoleItem, { RoleOption } from "../RoleItem";
 import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
+import firebaseClient from "../../../../firebase/client";
+import { useRouter } from "next/router";
+
+interface levelSettings {
+	bannedItems: {
+		channels: string[];
+		roles: string[];
+	};
+	general: {
+		message: string;
+		channel: string | null;
+	};
+	scaling: {
+		general: number;
+		roles?: {
+			[serverId: string]: number;
+		};
+	};
+}
+
+const primaryLevelSettings: levelSettings = {
+	bannedItems: {
+		channels: [],
+		roles: [],
+	},
+	general: {
+		message: "Congrats {player}, you leveled up to level {level}!",
+		channel: null,
+	},
+	scaling: {
+		general: 1,
+	},
+};
 
 const levelingVariants = {
 	initial: {
@@ -37,17 +70,81 @@ const AnnouncementSection = styled(PluginSection)`
 const marks = [...Array(7)].map((item, index) => ({ value: index / 2, label: `x${index / 2}` }));
 
 const Leveling = () => {
+	const router = useRouter();
+	const [, serverId] = router.query.type as string[];
+
 	const [levelupAnnouncement, setLevelupAnnouncement] = useState(false);
 
-	const [announcementChannel, setAnnouncementChannel] = useState(false);
+	const [announcementChannel, setAnnouncementChannel] = useState<any>();
 	const [noXpRoles, setNoXpRoles] = useState([]);
 	const [noXpChannels, setNoXpChannels] = useState([]);
 	const [generalScaling, setGeneralScaling] = useState(1);
 	const [levelUpMessage, setLevelUpMessage] = useState(
 		"Congrats {player}, you leveled up to level {level}!"
 	);
-
+	const [defaultValues, setDefaultValues] = useState({});
 	const { allChannels, roles } = useContext(discordContext);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const levelingRef = firebaseClient.db
+					.collection("Leveling")
+					.doc(serverId)
+					.collection("settings");
+				const levelingCollection = await levelingRef.get();
+
+				let levelingDocs = levelingCollection.docs.reduce((acc, cur) => {
+					acc[cur.id] = cur.data();
+					return acc;
+				}, {}) as levelSettings;
+
+				// these are where the values for the notification channel and message used to be stored
+				// anyone who hasn't used the new site will still have them stored there so I fetch them just in case
+				const legacyMessage = (
+					await firebaseClient.db.collection("Leveling").doc(serverId).get()
+				).data().message;
+
+				const legacyChannel = (
+					await firebaseClient.db.collection("Leveling").doc(serverId).get()
+				).data().notifications;
+
+				// replace any missing values in the settings with values from the primary settings while also checking the legacy values
+				levelingDocs = ["bannedItems", "general", "scaling"].reduce((acc, key) => {
+					let value = levelingDocs[key] ?? {};
+					if (key === "general") {
+						value.message = value.message ?? legacyMessage;
+						value.channel = value.channel ?? legacyChannel;
+					}
+					acc[key] = { ...primaryLevelSettings[key], ...value };
+					return acc;
+				}, {}) as levelSettings;
+
+				// default values won't change and will be used to check if the over values have changed
+				setDefaultValues(levelingDocs);
+
+				setLevelUpMessage(levelingDocs?.general?.message);
+				setAnnouncementChannel(
+					allChannels.find(channel => channel.id === levelingDocs?.general?.channel)
+				);
+
+				if (levelingDocs.bannedItems) {
+					setNoXpChannels(
+						levelingDocs.bannedItems.channels
+							?.map?.(id => allChannels.find(channel => channel.id === id))
+							.filter(Boolean)
+					);
+					setNoXpRoles(
+						levelingDocs.bannedItems.roles
+							?.map?.(id => roles.find(role => role.id === id))
+							.filter(Boolean)
+					);
+				}
+			} catch (err) {
+				console.log(err.message);
+			}
+		})();
+	}, [serverId, allChannels, roles]);
 
 	return (
 		<div>
@@ -74,6 +171,19 @@ const Leveling = () => {
 				<div>
 					<SubSectionTitle>Announcement Channel</SubSectionTitle>
 					<Select
+						onChange={value => {
+							const channel = parseSelectValue(value);
+
+							setAnnouncementChannel(allChannels.find(({ id }) => id === channel));
+						}}
+						value={
+							announcementChannel
+								? {
+										value: transformObjectToSelectValue(announcementChannel),
+										label: <ChannelItem {...announcementChannel} />,
+								  }
+								: {}
+						}
 						options={allChannels.map(channel => ({
 							value: transformObjectToSelectValue(channel),
 							label: <ChannelItem {...channel} />,
