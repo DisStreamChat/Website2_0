@@ -51,7 +51,8 @@ const DashboardHeader = ({ user }) => {
 
 	const plugins : item[] = Object.entries(activePlugins).filter(([key, value]) => value).map(([key, value]) => ({
 		name: key,
-		link: `/dashboard/discord/${serverId}/${key}`
+		link: `/dashboard/discord/${serverId}/${key}`,
+		local: true
 	}))
 
 	const links = (
