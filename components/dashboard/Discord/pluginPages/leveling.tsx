@@ -190,9 +190,28 @@ const Leveling = () => {
 						}))}
 					/>
 				</div>
-				<div>
+				<div style={{zIndex: 100}}>
 					<SubSectionTitle>Announcement Message</SubSectionTitle>
-					<TextArea value={levelUpMessage} />
+					<TextArea
+						value={levelUpMessage}
+						onChange={e => setLevelUpMessage(e.target.value)}
+						trigger={{
+							"{": {
+								dataProvider: token => {
+									return ["member", "member.idname", "member.ping", "member.tag"]
+										.filter(chatter => chatter.startsWith(token))
+										.map(chatter => ({
+											name: `${chatter}`,
+											char: `{${chatter}}`,
+										}));
+								},
+								component: ({ selected, entity: { name, char } }) => (
+									<div className={`text-area-item ${selected ? "selected" : ""}`}>{name}</div>
+								),
+								output: (item, trigger) => item.char,
+							},
+						}}
+					/>
 				</div>
 			</AnnouncementSection>
 			<hr />

@@ -91,6 +91,22 @@ const GlobalStyle = createGlobalStyle`
 	.css-fac07y-container, .css-fac07y-container *{
 		color: white !important;
 	}
+
+	.text-area-list{
+		background: #3e4349;
+		opacity: 1;
+		z-index: 10000;
+	}
+
+	.text-area-item{
+		z-index: 10000;
+		padding: .5rem;
+		opacity: 1;
+		cursor: pointer;
+		&.selected{
+			background: #17181b;
+		}
+	}
 `;
 
 export default GlobalStyle;
