@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
 
-interface item {
+export interface item {
 	name: string;
 	link: string;
 	local?: boolean;

@@ -6,11 +6,12 @@ import React, { useEffect, useState } from "react";
 import Anchor from "../shared/ui-components/Anchor";
 import { DashboardProfile } from "./Profile";
 import { useRouter } from "next/router";
-import DropdownSelect from "./dropdownSelect";
+import DropdownSelect, {item} from "./dropdownSelect";
 import { useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { useDiscordContext } from "../dashboard/Discord/discordContext";
 const Sidebar = dynamic(() => import("./sidebar"));
 
 const Header = styled(styles.Header)`
@@ -30,7 +31,7 @@ const VerticalRule = styled(Vr)`
 	margin: 0.5rem 0;
 `;
 
-const DashboardHeader = ({ user, serverId = "" }) => {
+const DashboardHeader = ({ user }) => {
 	const router = useRouter();
 
 	const useHamburger = useMediaQuery("(max-width: 900px)");
@@ -44,6 +45,14 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 	useEffect(() => {
 		document.body.style.overflowY = menuOpen ? "hidden" : "auto";
 	}, [menuOpen]);
+
+	const { activePlugins } = useDiscordContext();
+	const [, serverId] = router.query.type as string[]
+
+	const plugins : item[] = Object.entries(activePlugins).filter(([key, value]) => value).map(([key, value]) => ({
+		name: key,
+		link: `/dashboard/discord/${serverId}/${key}`
+	}))
 
 	const links = (
 		<>
@@ -74,13 +83,7 @@ const DashboardHeader = ({ user, serverId = "" }) => {
 					</styles.navItem>
 					<DropdownSelect
 						title="Plugins"
-						items={[
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-							{ name: "leveling", link: "/leveling", local: true },
-						]}
+						items={plugins}
 					/>
 				</>
 			)}

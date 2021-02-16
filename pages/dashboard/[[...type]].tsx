@@ -16,7 +16,7 @@ import Head from "next/head";
 const Dashboard = ({ type, session }) => {
 	const router = useRouter();
 
-	const [, serverId, pluginName] = router.query.type as string[]
+	const [, serverId, pluginName] = router.query.type as string[];
 
 	useEffect(() => {
 		if (!type?.[0]) {
@@ -26,24 +26,24 @@ const Dashboard = ({ type, session }) => {
 
 	return (
 		<>
-			{session && (
-				<HeaderContextProvider>
-					<DashboardHeader user={session.user} serverId={type[1]} />
-				</HeaderContextProvider>
-			)}
-			<Head>
-				<title>DisStreamChat | Dashboard {pluginName && "-"} {pluginName}</title>
-			</Head>
-			<DashboardContainer>
-				<ContentArea>
-					{type?.[0] === "discord" && (
-						<DiscordContextProvider>
-							<Discord session={session} />
-						</DiscordContextProvider>
-					)}
-					{type?.[0] === "app" && <App session={session} />}
-				</ContentArea>
-			</DashboardContainer>
+			<DiscordContextProvider>
+				{session && (
+					<HeaderContextProvider>
+						<DashboardHeader user={session.user} serverId={type[1]} />
+					</HeaderContextProvider>
+				)}
+				<Head>
+					<title>
+						DisStreamChat | Dashboard {pluginName && "-"} {pluginName}
+					</title>
+				</Head>
+				<DashboardContainer>
+					<ContentArea>
+						{type?.[0] === "discord" && <Discord session={session} />}
+						{type?.[0] === "app" && <App session={session} />}
+					</ContentArea>
+				</DashboardContainer>
+			</DiscordContextProvider>
 		</>
 	);
 };
