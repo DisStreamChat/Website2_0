@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import Anchor from "../shared/ui-components/Anchor";
 import { DashboardProfile } from "./Profile";
 import { useRouter } from "next/router";
-import DropdownSelect, {item} from "./dropdownSelect";
+import DropdownSelect, { item } from "./dropdownSelect";
 import { useMediaQuery } from "@material-ui/core";
 import HamburgerMenu from "react-hamburger-menu";
 import { AnimatePresence } from "framer-motion";
@@ -47,13 +47,15 @@ const DashboardHeader = ({ user }) => {
 	}, [menuOpen]);
 
 	const { activePlugins } = useDiscordContext();
-	const [, serverId] = router.query.type as string[]
+	const [, serverId] = router.query.type as string[];
 
-	const plugins : item[] = Object.entries(activePlugins).filter(([key, value]) => value).map(([key, value]) => ({
-		name: key,
-		link: `/dashboard/discord/${serverId}/${key}`,
-		local: true
-	}))
+	const plugins: item[] = Object.entries(activePlugins)
+		.filter(([key, value]) => value)
+		.map(([key, value]) => ({
+			name: key,
+			link: `/dashboard/discord/${serverId}/${key}`,
+			local: true,
+		}));
 
 	const links = (
 		<>
@@ -84,7 +86,10 @@ const DashboardHeader = ({ user }) => {
 					</styles.navItem>
 					<DropdownSelect
 						title="Plugins"
-						items={plugins}
+						items={[
+							...plugins,
+							{ name: "home", link: `/dashboard/discord/${serverId}`, local: true },
+						]}
 					/>
 				</>
 			)}
