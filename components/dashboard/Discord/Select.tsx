@@ -165,7 +165,7 @@ const Select = (props: selectProps) => {
 										<ul className="">
 											{options
 												.filter(option =>
-													option.value?.includes?.(searchValue)
+													option.value?.toLowerCase()?.includes?.(searchValue?.toLowerCase())
 												)
 												.map(option => (
 													<li
