@@ -29,7 +29,7 @@ const Dashboard = ({ type, session }) => {
 			<DiscordContextProvider>
 				{session && (
 					<HeaderContextProvider>
-						<DashboardHeader user={session.user} serverId={type[1]} />
+						<DashboardHeader user={session.user} />
 					</HeaderContextProvider>
 				)}
 				<Head>
