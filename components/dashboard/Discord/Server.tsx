@@ -5,13 +5,16 @@ import { useRouter } from "next/router";
 import Plugins from "./Plugins";
 import { getServerIconUrl } from "../../../utils/functions";
 import { NoIcon } from "../../shared/styles/guildIcon";
-import { BlueButton } from "../../shared/ui-components/Button";
+import { BlueButton, GreenButton, RedButton } from "../../shared/ui-components/Button";
 import SettingsIcon from "@material-ui/icons/Settings";
 import { useDiscordContext } from "./discordContext";
 import { Plugins as PluginPage } from "./pluginPages/styles";
 import { useMediaQuery } from "@material-ui/core";
 import ServerModals from "./ServerModals";
-import { ServerHeader, ServerHeaderItem, LargeAvatar, PluginBody } from "./styles";
+import { ServerHeader, ServerHeaderItem, LargeAvatar, PluginBody, SaveSection } from "./styles";
+import { isEqual } from "lodash";
+import { AnimatePresence } from "framer-motion";
+import firebaseClient from "../../../firebase/client"
 
 const Server = ({ server }) => {
 	const router = useRouter();
@@ -23,13 +26,24 @@ const Server = ({ server }) => {
 	const [infoModalOpen, setInfoModalOpen] = useState(false);
 	const [localActivePlugins, setLocalActivePlugins] = useState({});
 
-	const { activePlugins } = useDiscordContext();
+	const { activePlugins, setActivePlugins } = useDiscordContext();
 
 	useEffect(() => {
 		setLocalActivePlugins(activePlugins || {});
 	}, [activePlugins]);
 
 	const verySmall = useMediaQuery("(max-width: 400px)");
+
+	const changed = !isEqual(activePlugins, localActivePlugins);
+
+	const reset = () => setLocalActivePlugins(activePlugins)
+
+	const save = () => {
+		firebaseClient.updateDoc(`DiscordSettings/${serverId}`, {
+			activePlugins: localActivePlugins
+		});
+		setActivePlugins(localActivePlugins)
+	};
 
 	return (
 		<>
@@ -98,6 +112,23 @@ const Server = ({ server }) => {
 					<Plugins />
 				</PluginPage>
 			)}
+
+			<AnimatePresence>
+				{changed && (
+					<SaveSection
+						initial={{ y: 20, x: "-50%", opacity: 0 }}
+						exit={{ y: 20, x: "-50%", opacity: 0 }}
+						animate={{ y: 0, x: "-50%", opacity: 1 }}
+						transition={{ type: "spring" }}
+					>
+						<div>You have unsaved Changes</div>
+						<div>
+							<RedButton onClick={reset}>Reset</RedButton>
+							<GreenButton onClick={save}>Save</GreenButton>
+						</div>
+					</SaveSection>
+				)}
+			</AnimatePresence>
 		</>
 	);
 };
