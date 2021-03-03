@@ -79,6 +79,17 @@ export const RedButton = withStyles((theme: Theme) => ({
 	},
 }))(PaddingButton);
 
+export const DeleteButton = withStyles((theme: Theme) => ({
+	root: {
+		color: ("#f45656"),
+		border: "2px solid #9b0e11",
+		background: "#333333aa",
+		"&:hover": {
+			border: `2px solid ${chroma("#9b0e11").darken(0.5).hex()}`,
+		},
+	},
+}))(PaddingButton);
+
 export const GreenButton = withStyles((theme: Theme) => ({
 	root: {
 		color: theme.palette.getContrastText("#44b37f"),
