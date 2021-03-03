@@ -151,6 +151,6 @@ export const SaveSection = styled(motion.div)`
 	box-sizing: content-box;
 	border: none;
 	div:last-child > * + * {
-		margin-left: 0.5rem;
+		margin-left: 1rem;
 	}
 `;
