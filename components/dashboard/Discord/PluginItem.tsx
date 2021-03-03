@@ -66,13 +66,18 @@ const PluginSwitch = styled.div`
 	right: 0;
 `;
 
+interface lineProps {
+	active?: boolean
+}
+
 const PluginLine = styled(motion.div)`
 	height: 5px;
-	background: var(--disstreamchat-blue);
+	background: ${({active}: lineProps) => `var(${active ? "--disstreamchat-blue" : "--warning-red"})`};
 	width: 100%;
 	position: absolute;
 	transform-origin: left center;
 	border-radius: 0.25rem;
+
 	&.bottom {
 		bottom: 0;
 	}
@@ -101,6 +106,7 @@ const PluginItem = (props: pluginProps) => {
 		<PluginCard ref={cardRef} href={props.active ? `${props.serverId}/${props.id}` : null}>
 			{!props.comingSoon && (
 				<PluginLine
+					active={props.active}
 					variants={lineVariants}
 					animate={interacted ? "ignored" : "interacted"}
 				/>
@@ -124,6 +130,7 @@ const PluginItem = (props: pluginProps) => {
 			</PluginSwitch>
 			{!props.comingSoon && (
 				<PluginLine
+					active={props.active}
 					className="bottom"
 					variants={lineVariants}
 					animate={!interacted ? "ignored" : "interacted"}
