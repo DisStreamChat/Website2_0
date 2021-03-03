@@ -13,7 +13,15 @@ import { transformObjectToSelectValue, parseSelectValue } from "../../../utils/f
 import { isEqual } from "lodash";
 import firebaseClient from "../../../firebase/client";
 import { AnimatePresence } from "framer-motion";
-import { InfoModal, ModalInfo, ModalSubTitle, ModalTitle, SaveSection, SettingsModal } from "./styles";
+import {
+	InfoModal,
+	ModalInfo,
+	ModalSubTitle,
+	ModalTitle,
+	SaveSection,
+	SettingsModal,
+} from "./styles";
+import SaveBar from "../../shared/ui-components/SaveBar";
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -150,22 +158,7 @@ const ServerModals = ({
 								/>
 							)}
 						</div>
-						<AnimatePresence>
-							{changed && (
-								<SaveSection
-									initial={{ y: 20, x: "-50%", opacity: 0 }}
-									exit={{ y: 20, x: "-50%", opacity: 0 }}
-									animate={{ y: 0, x: "-50%", opacity: 1 }}
-									transition={{ type: "spring" }}
-								>
-									<div>You have unsaved Changes</div>
-									<div>
-										<RedButton onClick={reset}>Reset</RedButton>
-										<GreenButton onClick={save}>Save</GreenButton>
-									</div>
-								</SaveSection>
-							)}
-						</AnimatePresence>
+						<SaveBar changed={changed} save={save} reset={reset} />
 					</SettingsModal>
 				</Zoom>
 			</Modal>
