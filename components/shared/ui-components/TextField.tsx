@@ -45,11 +45,16 @@ const StyledTextArea = styled.textarea`
 	resize: none;
 `;
 
+export interface TextProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+	prefix?: string
+}
+
 export const TextInput = forwardRef(
-	(props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
+	({prefix, value, ...props}: TextProps, ref) => {
+		const hasValue = value != undefined
 		return (
 			<TextInputBody className={props.className}>
-				<InnerTextInput {...props} ref={ref as any} type="text" />
+				<InnerTextInput value={hasValue ? `${prefix}${value}` : undefined} {...props} ref={ref as any} type="text" />
 			</TextInputBody>
 		);
 	}

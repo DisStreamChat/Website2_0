@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
-import { H1, H2, H3 } from "../../../shared/styles/headings";
+import { H1, H2, H3, H4 } from "../../../shared/styles/headings";
 import { BlueButton } from "../../../shared/ui-components/Button";
 import { PluginSubHeader } from "./styles";
 import { useDocumentData } from "react-firebase-hooks/firestore";
@@ -12,6 +12,9 @@ import SaveBar from "../../../shared/ui-components/SaveBar";
 import Modal from "../../../shared/ui-components/Modal";
 import { command, commandMap } from "../../../../utils/types";
 import ClearIcon from "@material-ui/icons/Clear";
+// import { TextField, InputAdornment } from "@material-ui/core";
+import { discordContext } from "../discordContext";
+import { TextArea, TextInput } from "../../../shared/ui-components/TextField";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -35,7 +38,7 @@ const actions = {
 	UPDATE: "update",
 	SET: "set",
 	CLEAR: "clear",
-	RESET: "clear"
+	RESET: "clear",
 };
 
 const defaultCommand = serverId => ({
@@ -88,18 +91,39 @@ const CommandHeader = styled.div`
 	}
 `;
 
+const SectionTitle = styled.div`
+	color: white;
+	text-transform: uppercase;
+	padding: 0;
+	font-size: 12px;
+	font-weight: 600;
+	margin-bottom: 8px;
+`;
+
+const CreateCommandArea = styled.div`
+	padding: 2rem;
+	hr {
+		border-color: #aaaaaaaa;
+		margin: 1rem 0;
+	}
+`;
+
 const CommandModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
 	const [, serverId, pluginName] = router.query.type as string[];
+	const { serverSettings } = useContext(discordContext);
 
-	const [state, dispatch] = useReducer(commandReducer, defaultValue ?? defaultCommand(serverId));
+	const [state, dispatch] = useReducer<(state: any, action: any) => command, command>(
+		commandReducer,
+		defaultValue ?? defaultCommand(serverId),
+		command => command
+	);
 
 	useEffect(() => {
 		if (defaultValue) {
-			console.log("editing a command")
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
-		}else{
-			dispatch({type: actions.RESET, server: serverId})
+		} else {
+			dispatch({ type: actions.RESET, server: serverId });
 		}
 	}, [defaultValue]);
 
@@ -112,9 +136,53 @@ const CommandModal = ({ defaultValue, ...props }) => {
 						<ClearIcon />
 					</button>
 				</CommandHeader>
-				<pre>
-					{JSON.stringify(state, null, 4)}
-				</pre>
+				<CreateCommandArea>
+					<SectionTitle>Command Name</SectionTitle>
+					<TextInput
+						prefix={serverSettings.prefix}
+						value={state.name}
+						onChange={e => {
+							console.log(e.target.value);
+							dispatch({
+								type: actions.UPDATE,
+								value: e.target.value
+									.replaceAll(" ", "-")
+									.slice(serverSettings.prefix.length),
+								key: "name",
+							});
+						}}
+					/>
+					<hr />
+					<SectionTitle>Command Response</SectionTitle>
+					<TextArea
+						value={state.message}
+						onChange={e => {
+							dispatch({
+								type: actions.UPDATE,
+								value: e.target.value,
+								key: "message",
+							});
+						}}
+						trigger={{
+							"{": {
+								dataProvider: token => {
+									return ["player", "level"]
+										.filter(chatter => chatter.includes(token))
+										.map(chatter => ({
+											name: `${chatter}`,
+											char: `{${chatter}}`,
+										}));
+								},
+								component: ({ selected, entity: { name, char } }) => (
+									<div className={`text-area-item ${selected ? "selected" : ""}`}>
+										{name}
+									</div>
+								),
+								output: (item, trigger) => item.char,
+							},
+						}}
+					></TextArea>
+				</CreateCommandArea>
 			</CommandModalBody>
 		</Modal>
 	);
@@ -162,9 +230,9 @@ const CustomCommands = () => {
 	};
 
 	const edit = command => {
-		setCommandBeingEdited(command)
-		setCommandModalOpen(true)
-	}
+		setCommandBeingEdited(command);
+		setCommandModalOpen(true);
+	};
 
 	return (
 		<div>
