@@ -9,6 +9,7 @@ import firebaseClient from "../../../../firebase/client";
 import ListItem from "../../../shared/ui-components/ListItem";
 import { isEqual } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
+import Modal from "../../../shared/ui-components/Modal";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -42,11 +43,43 @@ interface commandMap {
 	[key: string]: command;
 }
 
+const CommandModalBody = styled.div`
+	width: 100vw;
+	height: 100vh;
+	background: var(--background-light-gray);
+`;
+
+const actions = {
+	UPDATE: "update",
+	SET: "set",
+	CLEAR: "clear"
+}
+
+const commandReducer = (state, action) => {
+	switch(action.type){
+		case actions.UPDATE:
+			return {...state, [action.key]: action.value}
+		case actions.SET:
+			return action.value
+		case actions.CLEAR: 
+			return {}
+	}
+}
+
+const CommandModal = props => {
+	return (
+		<Modal open={props.open} onClose={props.onClose}>
+			<CommandModalBody></CommandModalBody>
+		</Modal>
+	);
+};
+
 const CustomCommands = () => {
 	const router = useRouter();
 
 	const [, serverId, pluginName] = router.query.type as string[];
 	const [localCommands, setLocalCommands] = useState<commandMap>({});
+	const [commandModalOpen, setCommandModalOpen] = useState(false);
 
 	const collectionRef = firebaseClient.db.collection("customCommands");
 
@@ -65,7 +98,7 @@ const CustomCommands = () => {
 		.filter(([key, val]) => val.type === "text")
 		.sort();
 
-	const changed = !isEqual(snapshot, localCommands);
+	const changed = !isEqual(snapshot ?? {}, localCommands);
 
 	const deleteMe = key => {
 		setLocalCommands(prev => {
@@ -77,17 +110,21 @@ const CustomCommands = () => {
 
 	const save = () => {
 		collectionRef.doc(serverId).set(localCommands);
-	}
+	};
 
 	return (
 		<div>
+			<CommandModal
+				open={commandModalOpen}
+				onClose={() => setCommandModalOpen(false)}
+			></CommandModal>
 			<CommandsHeader>
 				<span>
 					<H2>Text Command</H2>
 					<h4>A simple command that responds with a custom message in DM or public</h4>
 				</span>
 				<span>
-					<BlueButton>Create Command</BlueButton>
+					<BlueButton onClick={() => setCommandModalOpen(true)}>Create Command</BlueButton>
 				</span>
 			</CommandsHeader>
 			<span>

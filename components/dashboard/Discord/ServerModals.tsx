@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core";
 import { GreenButton, RedButton } from "../../shared/ui-components/Button";
 import { useQuery } from "react-query";
-import Modal from "@material-ui/core/Modal";
+import Modal from "../../shared/ui-components/Modal";
 import Backdrop from "@material-ui/core/Backdrop";
 import Zoom from "@material-ui/core/Zoom";
 import Select from "./Select";
@@ -23,22 +23,6 @@ import {
 } from "./styles";
 import SaveBar from "../../shared/ui-components/SaveBar";
 
-const useStyles = makeStyles((theme: Theme) =>
-	createStyles({
-		modal: {
-			display: "flex",
-			alignItems: "center",
-			justifyContent: "center",
-		},
-		paper: {
-			backgroundColor: theme.palette.background.paper,
-			border: "2px solid #000",
-			boxShadow: theme.shadows[5],
-			padding: theme.spacing(2, 4, 3),
-		},
-	})
-);
-
 const ServerModals = ({
 	infoModalOpen,
 	setInfoModalOpen,
@@ -46,7 +30,6 @@ const ServerModals = ({
 	setSettingsModalOpen,
 	serverId,
 }) => {
-	const classes = useStyles();
 	const [adminRoles, setAdminRoles] = useState([]);
 	const [localPrefix, setLocalPrefix] = useState("");
 	const [localNickname, setLocalNickname] = useState("");
@@ -110,94 +93,76 @@ const ServerModals = ({
 
 	return (
 		<>
-			<Modal
-				aria-labelledby="settings-modal"
-				aria-describedby="settings-modal"
-				open={settingsModalOpen}
-				onClose={() => setSettingsModalOpen(false)}
-				BackdropComponent={Backdrop}
-				className={classes.modal}
-			>
-				<Zoom in={settingsModalOpen}>
-					<SettingsModal>
-						<div>
-							<ModalTitle>Bot Nickname</ModalTitle>
-							<TextInput
-								placeholder="DisStreamBot"
-								value={localNickname}
-								onChange={e => setLocalNickname(e.target.value)}
+			<Modal open={settingsModalOpen} onClose={() => setSettingsModalOpen(false)}>
+				<SettingsModal>
+					<div>
+						<ModalTitle>Bot Nickname</ModalTitle>
+						<TextInput
+							placeholder="DisStreamBot"
+							value={localNickname}
+							onChange={e => setLocalNickname(e.target.value)}
+						/>
+					</div>
+					<div>
+						<ModalTitle>Command Prefix</ModalTitle>
+						<TextInput
+							value={localPrefix}
+							onChange={e => setLocalPrefix(e.target.value)}
+						/>
+					</div>
+					<div>
+						<ModalTitle>Bot Admins</ModalTitle>
+						<ModalSubTitle>Default Admins</ModalSubTitle>
+						<ModalInfo>
+							These are the roles that have permission to manage your server.
+						</ModalInfo>
+						{roles && (
+							<Select
+								onChange={value => {
+									const parsedValue = parseSelectValue(value);
+									setAdminRoles(prev => [
+										...prev,
+										roles.find(role => role.id === parsedValue),
+									]);
+								}}
+								value={[...mappedDefaultRoles, ...mappedRoles]}
+								options={roles.map(role => ({
+									value: transformObjectToSelectValue(role),
+									label: <RoleOption {...role}>{role.name}</RoleOption>,
+								}))}
 							/>
-						</div>
-						<div>
-							<ModalTitle>Command Prefix</ModalTitle>
-							<TextInput
-								value={localPrefix}
-								onChange={e => setLocalPrefix(e.target.value)}
-							/>
-						</div>
-						<div>
-							<ModalTitle>Bot Admins</ModalTitle>
-							<ModalSubTitle>Default Admins</ModalSubTitle>
-							<ModalInfo>
-								These are the roles that have permission to manage your server.
-							</ModalInfo>
-							{roles && (
-								<Select
-									onChange={value => {
-										const parsedValue = parseSelectValue(value);
-										setAdminRoles(prev => [
-											...prev,
-											roles.find(role => role.id === parsedValue),
-										]);
-									}}
-									value={[...mappedDefaultRoles, ...mappedRoles]}
-									options={roles.map(role => ({
-										value: transformObjectToSelectValue(role),
-										label: <RoleOption {...role}>{role.name}</RoleOption>,
-									}))}
-								/>
-							)}
-						</div>
-						<SaveBar changed={changed} save={save} reset={reset} />
-					</SettingsModal>
-				</Zoom>
-			</Modal>
-			<Modal
-				aria-labelledby="settings-modal"
-				aria-describedby="settings-modal"
-				open={infoModalOpen}
-				onClose={() => setInfoModalOpen(false)}
-				BackdropComponent={Backdrop}
-				className={classes.modal}
-			>
-				<Zoom in={infoModalOpen}>
-					<InfoModal>
-						{!!data && (
-							<>
-								<div>
-									<ModalSubTitle>Region</ModalSubTitle>
-									<ModalInfo>{data?.region}</ModalInfo>
-								</div>
-								<div>
-									<ModalSubTitle>Channels</ModalSubTitle>
-									<ModalInfo>{data?.channels?.length}</ModalInfo>
-								</div>
-								<div>
-									<ModalSubTitle>Roles</ModalSubTitle>
-									<ModalInfo>{data?.roles?.length}</ModalInfo>
-								</div>
-								<div>
-									<ModalSubTitle>Members</ModalSubTitle>
-									<ModalInfo>{data?.members?.length}</ModalInfo>
-								</div>
-								<div>
-									<ModalSubTitle>Custom Emojis</ModalSubTitle>
-									<ModalInfo>{data?.emojis?.length}</ModalInfo>
-								</div>
-							</>
 						)}
-					</InfoModal>
-				</Zoom>
+					</div>
+					<SaveBar changed={changed} save={save} reset={reset} />
+				</SettingsModal>
+			</Modal>
+			<Modal open={infoModalOpen} onClose={() => setInfoModalOpen(false)}>
+				<InfoModal>
+					{!!data && (
+						<>
+							<div>
+								<ModalSubTitle>Region</ModalSubTitle>
+								<ModalInfo>{data?.region}</ModalInfo>
+							</div>
+							<div>
+								<ModalSubTitle>Channels</ModalSubTitle>
+								<ModalInfo>{data?.channels?.length}</ModalInfo>
+							</div>
+							<div>
+								<ModalSubTitle>Roles</ModalSubTitle>
+								<ModalInfo>{data?.roles?.length}</ModalInfo>
+							</div>
+							<div>
+								<ModalSubTitle>Members</ModalSubTitle>
+								<ModalInfo>{data?.members?.length}</ModalInfo>
+							</div>
+							<div>
+								<ModalSubTitle>Custom Emojis</ModalSubTitle>
+								<ModalInfo>{data?.emojis?.length}</ModalInfo>
+							</div>
+						</>
+					)}
+				</InfoModal>
 			</Modal>
 		</>
 	);
