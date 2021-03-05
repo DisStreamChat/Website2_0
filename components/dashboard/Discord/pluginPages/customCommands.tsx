@@ -135,7 +135,7 @@ const CreateCommandArea = styled.div`
 	padding: 2rem;
 	padding-bottom: 6rem;
 	hr {
-		border-color: #aaaaaaaa;
+		border-color: #aaaaaa33;
 		margin: 1rem 0;
 	}
 	overflow: auto;
@@ -184,7 +184,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 		<Modal open={props.open} onClose={props.onClose}>
 			<CommandModalBody>
 				<CommandHeader>
-					<H2>Create Text Command</H2>
+					<H2>{defaultValue ? "Edit" : "Create Text"} Command</H2>
 					<button onClick={props.onClose}>
 						<ClearIcon />
 					</button>
@@ -370,7 +370,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 				</CreateCommandArea>
 				<CreateCommandFooter>
 					<DeleteButton onClick={props.onClose}>Cancel</DeleteButton>
-					<BlueButton onClick={create}>Create</BlueButton>
+					<BlueButton onClick={create}>{defaultValue ? "Update" : "Create"}</BlueButton>
 				</CreateCommandFooter>
 			</CommandModalBody>
 		</Modal>
