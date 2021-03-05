@@ -134,6 +134,7 @@ const SectionSubtitle = styled.div`
 const CreateCommandArea = styled.div`
 	padding: 2rem;
 	padding-bottom: 6rem;
+	scroll-behavior: smooth;
 	hr {
 		border-color: #aaaaaa33;
 		margin: 1rem 0;

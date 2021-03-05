@@ -1,4 +1,4 @@
-import { JSXElementConstructor, useEffect, useMemo, useState } from "react";
+import { JSXElementConstructor, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import AddIcon from "@material-ui/icons/Add";
 import { ClickAwayListener } from "@material-ui/core";
@@ -60,6 +60,9 @@ const AddButton = styled.button`
 	width: 28px;
 	height: 28px;
 	justify-content: center;
+	:focus, :hover{
+		background: #66666666;
+	}
 `;
 
 const AddItem = styled.li`
@@ -120,6 +123,7 @@ const SearchArea = styled.div`
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
+	const buttonRef = useRef<HTMLElement>()
 
 	const options = useMemo(
 		() =>
@@ -143,7 +147,7 @@ const Select = (props: selectProps) => {
 				))}
 				{!!options?.length && (
 					<AddItem>
-						<AddButton onClick={() => setOpen(prev => !prev)}>
+						<AddButton ref={buttonRef as any} onMouseDown={e => e.preventDefault()} onFocus={() => buttonRef.current.scrollIntoView()} onClick={() => setOpen(prev => !prev)}>
 							<AddIcon />
 						</AddButton>
 						<AnimatePresence>
