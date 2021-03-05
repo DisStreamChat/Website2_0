@@ -54,7 +54,7 @@ export const TextInput = forwardRef(
 		const hasValue = value != undefined
 		return (
 			<TextInputBody className={props.className}>
-				<InnerTextInput value={hasValue ? `${prefix}${value}` : undefined} {...props} ref={ref as any} type="text" />
+				<InnerTextInput value={hasValue ? `${prefix||""}${value}` : undefined} {...props} ref={ref as any} type="text" />
 			</TextInputBody>
 		);
 	}
