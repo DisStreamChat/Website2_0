@@ -14,8 +14,19 @@ import ServerModals from "./ServerModals";
 import { ServerHeader, ServerHeaderItem, LargeAvatar, PluginBody, SaveSection } from "./styles";
 import { isEqual } from "lodash";
 import { AnimatePresence } from "framer-motion";
-import firebaseClient from "../../../firebase/client"
+import firebaseClient from "../../../firebase/client";
 import SaveBar from "../../shared/ui-components/SaveBar";
+import styled from "styled-components";
+
+const ServerName = styled.div`
+	h2{
+		display: flex;
+		align-items: center;
+		img{
+			margin-right: .75ch;
+		}
+	}
+`;
 
 const Server = ({ server }) => {
 	const router = useRouter();
@@ -37,14 +48,16 @@ const Server = ({ server }) => {
 
 	const changed = !isEqual(activePlugins, localActivePlugins);
 
-	const reset = () => setLocalActivePlugins(activePlugins)
+	const reset = () => setLocalActivePlugins(activePlugins);
 
 	const save = () => {
 		firebaseClient.updateDoc(`DiscordSettings/${serverId}`, {
-			activePlugins: localActivePlugins
+			activePlugins: localActivePlugins,
 		});
-		setActivePlugins(localActivePlugins)
+		setActivePlugins(localActivePlugins);
 	};
+
+	const currentPlugin = plugins.find(plugin => plugin.id === pluginName);
 
 	return (
 		<>
@@ -84,7 +97,12 @@ const Server = ({ server }) => {
 							{server.name?.split?.(" ")?.map(w => w[0])}
 						</NoIcon>
 					</LargeAvatar>
-					{!verySmall && <h1>{server.name}</h1>}
+					{!verySmall && (
+						<ServerName>
+							<h1>{server.name}</h1>
+							{currentPlugin && <h2><img width="24" height="24" src={`/${currentPlugin.image}`}/> {currentPlugin.title}</h2>}
+						</ServerName>
+					)}
 				</ServerHeaderItem>
 				<ServerHeaderItem className="buttons">
 					<BlueButton onClick={() => setInfoModalOpen(true)}>Server Info</BlueButton>
@@ -114,7 +132,7 @@ const Server = ({ server }) => {
 				</PluginPage>
 			)}
 
-			<SaveBar changed={changed} save={save} reset={reset}/>
+			<SaveBar changed={changed} save={save} reset={reset} />
 		</>
 	);
 };
