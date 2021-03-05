@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { SaveSection } from "../../dashboard/Discord/styles";
 import { RedButton, GreenButton } from "./Button";
+import { useBeforeunload } from 'react-beforeunload';
 
 export interface saveBarProps {
 	changed?: boolean,
@@ -10,6 +11,15 @@ export interface saveBarProps {
 }
 
 const SaveBar = ({changed, reset, save}: saveBarProps) => {
+
+	useBeforeunload((e) => {
+		if(changed){
+			e.preventDefault()
+		}else{
+			return false
+		}
+	});
+
 	return (
 		<AnimatePresence>
 			{changed && (
