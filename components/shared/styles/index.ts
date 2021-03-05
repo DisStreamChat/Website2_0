@@ -35,9 +35,10 @@ interface gapProps {
 	gap?: string;
 	grid?: boolean;
 }
-export const gap = styled.div`
-	display: ${(props: gapProps) => (props.grid ? "grid" : "flex")};
-	--gap: ${(props: gapProps) => props.gap ?? ".5rem"};
+
+export const gapFunction = (props: gapProps = {}) => `
+	display: ${props.grid ? "grid" : "flex"};
+	--gap: ${props.gap ?? ".5rem"};
 	& > * + * {
 		margin-left: var(--gap);
 	}
@@ -47,5 +48,8 @@ export const gap = styled.div`
 		}
 		gap: var(--gap);
 	}
-	
+`;
+
+export const gap = styled.div`
+	${(props: gapProps) => gapFunction(props)}
 `;
