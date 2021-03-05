@@ -9,6 +9,7 @@ FROM base AS build
 ENV NODE_ENV=production
 WORKDIR /build
 COPY --from=base /base ./
+COPY .env.production .env.local
 RUN npm run build
 
 FROM node:current-alpine AS production
