@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useContext, useEffect, useReducer, useState } from "react";
 import styled from "styled-components";
 import { H1, H2, H3, H4 } from "../../../shared/styles/headings";
-import { BlueButton } from "../../../shared/ui-components/Button";
+import { BlueButton, DeleteButton } from "../../../shared/ui-components/Button";
 import { PluginSubHeader } from "./styles";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import firebaseClient from "../../../../firebase/client";
@@ -10,11 +10,15 @@ import ListItem from "../../../shared/ui-components/ListItem";
 import { isEqual } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import Modal from "../../../shared/ui-components/Modal";
-import { command, commandMap } from "../../../../utils/types";
+import { command, commandMap, role as Role } from "../../../../utils/types";
 import ClearIcon from "@material-ui/icons/Clear";
 // import { TextField, InputAdornment } from "@material-ui/core";
 import { discordContext } from "../discordContext";
 import { TextArea, TextInput } from "../../../shared/ui-components/TextField";
+import Select from "../Select";
+import { parseSelectValue, transformObjectToSelectValue } from "../../../../utils/functions";
+import RoleItem, { RoleOption } from "../RoleItem";
+import { gapFunction } from "../../../shared/styles";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -26,12 +30,14 @@ const CommandsHeader = styled(PluginSubHeader)`
 		margin-top: 1rem;
 		margin-left: 0;
 	}
+	margin-bottom: 1rem;
 `;
 
 const CommandModalBody = styled.div`
 	width: 100vw;
 	height: 100vh;
 	background: var(--background-light-gray);
+	position: relative;
 `;
 
 const actions = {
@@ -39,6 +45,8 @@ const actions = {
 	SET: "set",
 	CLEAR: "clear",
 	RESET: "clear",
+	UPDATEARRAY: "array",
+	REMOVEARRAY: "remove",
 };
 
 const defaultCommand = serverId => ({
@@ -48,7 +56,7 @@ const defaultCommand = serverId => ({
 	cooldown: 0,
 	cooldownTime: 0,
 	deleteUsage: false,
-	description: "",
+	description: "An Awesome Command",
 	lastUsed: 0,
 	message: "",
 	name: "",
@@ -57,7 +65,14 @@ const defaultCommand = serverId => ({
 	type: "text",
 });
 
-const commandReducer = (state, action) => {
+interface action {
+	server?: string;
+	type: string;
+	value?: any;
+	key?: string;
+}
+
+const commandReducer = (state: command, action: action) => {
 	switch (action.type) {
 		case actions.UPDATE:
 			return { ...state, [action.key]: action.value };
@@ -66,6 +81,16 @@ const commandReducer = (state, action) => {
 		case actions.CLEAR:
 		case actions.RESET:
 			return defaultCommand(action.server);
+		case actions.UPDATEARRAY:
+			return { ...state, [action.key]: [...state[action.key], action.value] };
+		case actions.REMOVEARRAY:
+			return {
+				...state,
+				[action.key]: state[action.key].filter(item => item !== action.value),
+			};
+
+		default:
+			return state;
 	}
 };
 
@@ -77,7 +102,7 @@ const CommandHeader = styled.div`
 	padding: 0.5rem 1.5rem;
 	width: 100vw;
 	height: 70px;
-	box-shadow: 0 1px 0 0 hsl(0deg 0% 67% / 20%), 0 1px 2px 0 hsl(0deg 0% 67% / 20%);
+	border-bottom: 1px solid #999;
 	button {
 		background: #101010;
 		color: #aaa;
@@ -100,20 +125,40 @@ const SectionTitle = styled.div`
 	margin-bottom: 8px;
 `;
 
+const SectionSubtitle = styled.div`
+	color: #aaa;
+	margin-bottom: 8px;
+	font-size: 14px;
+`;
+
 const CreateCommandArea = styled.div`
 	padding: 2rem;
+	padding-bottom: 6rem;
 	hr {
 		border-color: #aaaaaaaa;
 		margin: 1rem 0;
 	}
+	overflow: auto;
+	max-height: calc(100vh - 70px);
+`;
+
+const CreateCommandFooter = styled.div`
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	padding: 0.75rem;
+	display: flex;
+	justify-content: flex-end;
+	background: var(--background-dark-gray);
+	${gapFunction({ gap: "1rem" })}
 `;
 
 const CommandModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
 	const [, serverId, pluginName] = router.query.type as string[];
-	const { serverSettings } = useContext(discordContext);
+	const { serverSettings, roles, allChannels } = useContext(discordContext);
 
-	const [state, dispatch] = useReducer<(state: any, action: any) => command, command>(
+	const [state, dispatch] = useReducer<(state: command, action: action) => command, command>(
 		commandReducer,
 		defaultValue ?? defaultCommand(serverId),
 		command => command
@@ -126,6 +171,14 @@ const CommandModal = ({ defaultValue, ...props }) => {
 			dispatch({ type: actions.RESET, server: serverId });
 		}
 	}, [defaultValue]);
+
+	const create = async () => {
+		const docRef = firebaseClient.db.collection("customCommands").doc(serverId)
+
+		await docRef.set({[state.name]: state}, {merge: true})
+
+		props.onClose()
+	}
 
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
@@ -182,7 +235,143 @@ const CommandModal = ({ defaultValue, ...props }) => {
 							},
 						}}
 					></TextArea>
+					<hr />
+					<SectionTitle>Command Description</SectionTitle>
+					<TextInput
+						placeholder="An Awesome Command"
+						value={state.description}
+						onChange={e => {
+							console.log(e.target.value);
+							dispatch({
+								type: actions.UPDATE,
+								value: e.target.value,
+								key: "description",
+							});
+						}}
+					/>
+					<hr />
+					<SectionTitle>Allowed Roles</SectionTitle>
+					<SectionSubtitle>
+						Anyone with these roles can use this command. Adding @everyone means
+						everyone!
+					</SectionSubtitle>
+					<Select
+						value={state.permittedRoles.map(id => {
+							const role = roles.find(role => role.id === id);
+							if (!role) return { value: "", label: "" };
+							return {
+								label: (
+									<RoleItem
+										onClick={id => {
+											dispatch({
+												type: actions.REMOVEARRAY,
+												value: id,
+												key: "permittedRoles",
+											});
+										}}
+										{...role}
+									></RoleItem>
+								),
+								value: transformObjectToSelectValue(role),
+							};
+						})}
+						options={roles.map(role => ({
+							value: transformObjectToSelectValue(role),
+							label: <RoleOption {...role}>{role.name}</RoleOption>,
+						}))}
+						onChange={value => {
+							const roleId = parseSelectValue(value);
+							dispatch({
+								type: actions.UPDATEARRAY,
+								key: "permittedRoles",
+								value: roleId,
+							});
+						}}
+					/>
+					<hr />
+					<SectionTitle>Banned Roles</SectionTitle>
+					<SectionSubtitle>
+						Anyone with these roles can't use this command.
+					</SectionSubtitle>
+					<Select
+						value={state.bannedRoles.map(id => {
+							const role = roles.find(role => role.id === id);
+							if (!role) return { value: "", label: "" };
+							return {
+								label: (
+									<RoleItem
+										onClick={id => {
+											dispatch({
+												type: actions.REMOVEARRAY,
+												value: id,
+												key: "permittedRoles",
+											});
+										}}
+										{...role}
+									></RoleItem>
+								),
+								value: transformObjectToSelectValue(role),
+							};
+						})}
+						options={roles
+							.filter(({ id }) => !state.permittedRoles.includes(id))
+							.map(role => ({
+								value: transformObjectToSelectValue(role),
+								label: <RoleOption {...role}>{role.name}</RoleOption>,
+							}))}
+						onChange={value => {
+							const roleId = parseSelectValue(value);
+							dispatch({
+								type: actions.UPDATEARRAY,
+								key: "bannedRoles",
+								value: roleId,
+							});
+						}}
+					/>
+					<hr />
+					<SectionTitle>Allowed Channels</SectionTitle>
+					<SectionSubtitle>
+						The command can only be used in these channels. Selecting none means it can
+						be used anywhere
+					</SectionSubtitle>
+					<Select
+						value={state.allowedChannels.map(id => {
+							const role = roles.find(role => role.id === id);
+							if (!role) return { value: "", label: "" };
+							return {
+								label: (
+									<RoleItem
+										onClick={id => {
+											dispatch({
+												type: actions.REMOVEARRAY,
+												value: id,
+												key: "allowedChannels",
+											});
+										}}
+										{...role}
+									></RoleItem>
+								),
+								value: transformObjectToSelectValue(role),
+							};
+						})}
+						options={roles.map(role => ({
+							value: transformObjectToSelectValue(role),
+							label: <RoleOption {...role}>{role.name}</RoleOption>,
+						}))}
+						onChange={value => {
+							const roleId = parseSelectValue(value);
+							dispatch({
+								type: actions.UPDATEARRAY,
+								key: "permittedRoles",
+								value: roleId,
+							});
+						}}
+					/>
 				</CreateCommandArea>
+				<CreateCommandFooter>
+					<DeleteButton onClick={props.onClose}>Cancel</DeleteButton>
+					<BlueButton onClick={create}>Create</BlueButton>
+				</CreateCommandFooter>
 			</CommandModalBody>
 		</Modal>
 	);
