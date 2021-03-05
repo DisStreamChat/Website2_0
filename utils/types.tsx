@@ -4,7 +4,8 @@ export interface role {
 	color: string,
 	rawPosition: number,
 	position: number,
-	permissions: string[]
+	permissions: number,
+	managed?: boolean
 }
 
 export interface guildMember {
