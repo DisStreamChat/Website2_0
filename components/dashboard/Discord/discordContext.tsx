@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import firebaseClient from "../../../firebase/client";
+import { role as Role } from "../../../utils/types";
 
 interface obj<T = any> {
 	[key: string]: T;
@@ -21,7 +22,7 @@ interface settings {
 interface discordContextTpe {
 	currentGuild: obj;
 	setCurrentGuild: Dispatch<SetStateAction<obj>>;
-	roles: obj[];
+	roles: Role[];
 	setRoles: Dispatch<SetStateAction<obj[]>>;
 	adminRoles: obj[];
 	setAdminRoles: Dispatch<SetStateAction<obj[]>>;
@@ -37,7 +38,7 @@ export const discordContext = createContext<discordContextTpe>(null);
 
 export const DiscordContextProvider = ({ children }) => {
 	const [currentGuild, setCurrentGuild] = useState({});
-	const [roles, setRoles] = useState([]);
+	const [roles, setRoles] = useState<Role[]>([]);
 	const [adminRoles, setAdminRoles] = useState([]);
 	const [allChannels, setAllChannels] = useState<channel[]>([])
 	const [serverSettings, setServerSettings] = useState<settings>({
@@ -64,7 +65,7 @@ export const DiscordContextProvider = ({ children }) => {
 			);
 			const roleJson = await roleResponse.json();
 			setAllChannels(roleJson.channels)
-			const allRoles = roleJson.roles.filter(role => role.name !== "@everyone");
+			const allRoles: Role[] = roleJson.roles;
 			setRoles(allRoles);
 			setAdminRoles(
 				allRoles.filter(
