@@ -137,7 +137,8 @@ export const ModalInfo = styled.div`
 `;
 
 export const SaveSection = styled(motion.div)`
-	position: absolute;
+	position: fixed;
+	z-index: 1000;
 	width: 90%;
 	left: 50%;
 	bottom: 20px;
