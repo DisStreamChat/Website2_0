@@ -10,15 +10,17 @@ import ListItem from "../../../shared/ui-components/ListItem";
 import { isEqual } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import Modal from "../../../shared/ui-components/Modal";
-import { command, commandMap, role as Role } from "../../../../utils/types";
+import { command, commandMap, role as Role, Action as action } from "../../../../utils/types";
 import ClearIcon from "@material-ui/icons/Clear";
-// import { TextField, InputAdornment } from "@material-ui/core";
 import { discordContext } from "../discordContext";
 import { TextArea, TextInput } from "../../../shared/ui-components/TextField";
 import Select from "../Select";
 import { parseSelectValue, transformObjectToSelectValue } from "../../../../utils/functions";
 import RoleItem, { RoleOption } from "../RoleItem";
 import { gapFunction } from "../../../shared/styles";
+import { SectionTitle, SectionSubtitle } from "../../../shared/styles/plugins";
+import { ChannelItem } from "../ChannelItem";
+import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -65,13 +67,6 @@ const defaultCommand = serverId => ({
 	type: "text",
 });
 
-interface action {
-	server?: string;
-	type: string;
-	value?: any;
-	key?: string;
-}
-
 const commandReducer = (state: command, action: action) => {
 	switch (action.type) {
 		case actions.UPDATE:
@@ -114,21 +109,6 @@ const CommandHeader = styled.div`
 		height: 36px;
 		outline: none !important;
 	}
-`;
-
-const SectionTitle = styled.div`
-	color: white;
-	text-transform: uppercase;
-	padding: 0;
-	font-size: 12px;
-	font-weight: 600;
-	margin-bottom: 8px;
-`;
-
-const SectionSubtitle = styled.div`
-	color: #aaa;
-	margin-bottom: 8px;
-	font-size: 14px;
 `;
 
 const CreateCommandArea = styled.div`
@@ -174,12 +154,12 @@ const CommandModal = ({ defaultValue, ...props }) => {
 	}, [defaultValue]);
 
 	const create = async () => {
-		const docRef = firebaseClient.db.collection("customCommands").doc(serverId)
+		const docRef = firebaseClient.db.collection("customCommands").doc(serverId);
 
-		await docRef.set({[state.name]: state}, {merge: true})
+		await docRef.set({ [state.name]: state }, { merge: true });
 
-		props.onClose()
-	}
+		props.onClose();
+	};
 
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
@@ -234,6 +214,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 								),
 								output: (item, trigger) => item.char,
 							},
+							"#": channelAutoComplete(allChannels),
 						}}
 					></TextArea>
 					<hr />

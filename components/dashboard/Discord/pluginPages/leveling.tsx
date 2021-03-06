@@ -13,6 +13,7 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
+import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
 
 interface levelSettings {
 	bannedItems: {
@@ -220,6 +221,7 @@ const Leveling = () => {
 								),
 								output: (item, trigger) => item.char,
 							},
+							"#": channelAutoComplete(allChannels),
 						}}
 					/>
 				</div>
