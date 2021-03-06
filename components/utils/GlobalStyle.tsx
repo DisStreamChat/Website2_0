@@ -97,6 +97,8 @@ const GlobalStyle = createGlobalStyle`
 		background: #3e4349;
 		opacity: 1;
 		z-index: 10000;
+		max-height: 400px;
+		overflow: auto;
 	}
 
 	.text-area-item{
