@@ -39,3 +39,10 @@ export interface command {
 export interface commandMap {
 	[key: string]: command;
 }
+
+export interface Action {
+	server?: string;
+	type: string;
+	value?: any;
+	key?: string;
+}
