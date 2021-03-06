@@ -30,7 +30,8 @@
 		"react-query": "^3.8.2",
 		"react-select": "^4.0.2",
 		"react-use": "^15.3.8",
-		"styled-components": "^5.2.1"
+		"styled-components": "^5.2.1",
+		"use-async-memo": "^1.2.2"
 	},
 	"devDependencies": {
 		"@testing-library/dom": "^7.29.4",

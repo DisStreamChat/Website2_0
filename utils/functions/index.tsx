@@ -17,3 +17,5 @@ export const parseSelectValue = value => {
 		}
 	}
 };
+
+export const ArrayAny = (arr1: any[], arr2: any[]) => arr1.some(v => arr2.indexOf(v) >= 0);

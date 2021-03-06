@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import firebaseClient from "../../../firebase/client";
 import { redirect_uri } from "../../../utils/constants";
 const ServerSelect = dynamic(() => import("./ServerSelect"));
+import { useAsyncMemo } from "use-async-memo";
+import { ArrayAny } from "../../../utils/functions";
 
 const Description = styled.p`
 	font-weight: 400;
@@ -29,12 +31,47 @@ const Discord = ({ session }: dashboardProps) => {
 
 	const user = session.user;
 
-	const servers = user.guilds.filter(
-		server =>
+	const databaseServers = useAsyncMemo(
+		async () => {
+			const collectionRef = firebaseClient.db.collection("DiscordSettings");
+
+			const servers = {};
+			const serverIds = user.guilds.map(server => server.id);
+			for (const id of serverIds) {
+				try {
+					const docRef = collectionRef.doc(id);
+					const doc = await docRef.get();
+					const docData = doc.data();
+					servers[id] = docData ?? {};
+				} catch (err) {
+					console.log(err.message);
+				}
+			}
+			return servers;
+		},
+		[serverId],
+		{}
+	);
+
+	const servers = user.guilds.filter(server => {
+		const permissionsBased =
 			server.permissions.includes("MANAGE_GUILD") ||
 			server.owner ||
-			server.permissions.includes("ADMINISTRATOR")
-	);
+			server.permissions.includes("ADMINISTRATOR");
+
+		if (permissionsBased) return true;
+		const dbserver = databaseServers[server.id];
+		console.log(server.roles);
+		if (dbserver) {
+			// return true
+			return ArrayAny(
+				server.roles,
+				dbserver?.adminRoles?.map(role => (role.id ? role.id : role))
+			);
+		} else {
+			return false;
+		}
+	});
 
 	const server = servers.find(server => server.id === serverId);
 
@@ -51,20 +88,22 @@ const Discord = ({ session }: dashboardProps) => {
 			const response = await fetch(
 				`${
 					process.env.NEXT_PUBLIC_API_URL
-				}/discord/token/refresh?token=${refreshToken}&id=${userId}&otc=${otc}&redirect_url=${encodeURIComponent(
+				}/v2/discord/token/refresh?token=${refreshToken}&id=${userId}&otc=${otc}&redirect_url=${encodeURIComponent(
 					redirect_uri
 				)}`
 			);
 			if (!response.ok) return;
 
 			const json = await response.json();
+			console.log(json);
 			if (!json) return;
+			console.log(userId);
 			await firebaseClient.db
 				.collection("Streamers")
 				.doc(userId || " ")
 				.collection("discord")
 				.doc("data")
-				.update(json.userData);
+				.set(json.userData, { merge: true });
 		})();
 	}, [userId, refreshed, refreshToken]);
 
