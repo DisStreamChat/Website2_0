@@ -31,47 +31,15 @@ const Discord = ({ session }: dashboardProps) => {
 
 	const user = session.user;
 
-	const databaseServers = useAsyncMemo(
-		async () => {
-			const collectionRef = firebaseClient.db.collection("DiscordSettings");
-
-			const servers = {};
-			const serverIds = user.guilds.map(server => server.id);
-			for (const id of serverIds) {
-				try {
-					const docRef = collectionRef.doc(id);
-					const doc = await docRef.get();
-					const docData = doc.data();
-					servers[id] = docData ?? {};
-				} catch (err) {
-					console.log(err.message);
-				}
-			}
-			return servers;
-		},
-		[serverId],
-		{}
-	);
-
-	const servers = user.guilds.filter(server => {
-		const permissionsBased =
-			server.permissions.includes("MANAGE_GUILD") ||
-			server.owner ||
-			server.permissions.includes("ADMINISTRATOR");
-
-		if (permissionsBased) return true;
-		const dbserver = databaseServers[server.id];
-		console.log(server.roles);
-		if (dbserver) {
-			// return true
-			return ArrayAny(
-				server.roles,
-				dbserver?.adminRoles?.map(role => (role.id ? role.id : role))
+	const servers =
+		user.adminServers ??
+		user.guilds.filter(server => {
+			return (
+				server.permissions.includes("MANAGE_GUILD") ||
+				server.owner ||
+				server.permissions.includes("ADMINISTRATOR")
 			);
-		} else {
-			return false;
-		}
-	});
+		});
 
 	const server = servers.find(server => server.id === serverId);
 
