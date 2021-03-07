@@ -64,8 +64,9 @@ export const OrangeButton = withStyles((theme: Theme) => ({
 		color: theme.palette.getContrastText("#f95515"),
 		background: "linear-gradient(283deg,#f9af15,#f95515)",
 		"&:hover": {
-			boxShadow: "4px 4px 10px 0px #000000",
+			boxShadow: "0 0 35px #f9af15, inset 0 0 20px #f95515",
 		},
+		
 	},
 }))(PaddingButton);
 
@@ -81,7 +82,7 @@ export const RedButton = withStyles((theme: Theme) => ({
 
 export const DeleteButton = withStyles((theme: Theme) => ({
 	root: {
-		color: ("#f45656"),
+		color: "#f45656",
 		border: "2px solid #9b0e11",
 		background: "#333333aa",
 		"&:hover": {
@@ -101,18 +102,15 @@ export const GreenButton = withStyles((theme: Theme) => ({
 }))(PaddingButton);
 
 interface DescriptionProps {
-	onClick: () => void,
-	title: string,
-	description: string,
-	icon: JSX.Element
+	onClick: () => void;
+	title: string;
+	description: string;
+	icon: JSX.Element;
 }
 
 export const DescriptionButton = (props: DescriptionProps) => {
 	return (
-		<div
-			className="create-command"
-			onClick={() => props?.onClick?.()}
-		>
+		<div className="create-command" onClick={() => props?.onClick?.()}>
 			{props.icon}
 			<h1>{props.title}</h1>
 			<p>{props.description}</p>

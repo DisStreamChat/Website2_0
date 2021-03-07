@@ -34,6 +34,7 @@ const Buttons = styled.div`
 		margin: 0.5rem 2rem;
 		font-weight: bold;
 		font-size: 2.15rem;
+		/* box-shadow: 0 0 35px #f9af15, inset 0 0 20px #f95515; */
 		@media screen and (max-width: 425px) {
 			font-size: 1rem;
 		}
@@ -111,7 +112,7 @@ export default function Home() {
 			</Hero>
 			<Features>
 				{features.map((feature, i) => (
-					<Feature {...feature} reversed={i % 2 !== 0} />
+					<Feature key={feature.title} {...feature} reversed={i % 2 !== 0} />
 				))}
 			</Features>
 		</Main>
