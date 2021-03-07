@@ -80,7 +80,7 @@ const DashboardHeader = ({ user }) => {
 						overrideUnderline={router.asPath.includes("leaderboard")}
 						name="Leaderboard"
 					>
-						<Link href={`${router.asPath}/leaderboard`}>
+						<Link href={`/leaderboard/${serverId}`}>
 							<a>Leaderboard</a>
 						</Link>
 					</styles.navItem>

@@ -2,6 +2,8 @@ import admin from "firebase-admin";
 
 const serviceAccount = require("../serviceAccount.json");
 
+export default admin
+
 export const verifyIdToken = async token => {
 	if (!admin.apps.length) {
 		admin.initializeApp({
