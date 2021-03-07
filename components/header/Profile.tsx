@@ -1,6 +1,6 @@
 import styles from "./index.styles";
 import Link from "next/link";
-import { Avatar, ClickAwayListener } from "@material-ui/core";
+import { Avatar, ClickAwayListener, useMediaQuery } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { PurpleButton } from "../shared/ui-components/Button";
 import { AnimatePresence } from "framer-motion";
@@ -33,6 +33,9 @@ export const StyledProfile = ({
 }: profileProps) => {
 
 	const router = useRouter()
+	const smallScreen = useMediaQuery("(max-width: 900px)")
+
+	const yLoc = smallScreen ? -250 : 15
 
 	return !user ? (
 		<PurpleButton
@@ -62,7 +65,7 @@ export const StyledProfile = ({
 						<styles.menuDropDown
 							exit={{ y: -50, opacity: 0 }}
 							initial={{ y: -50, opacity: 0 }}
-							animate={{ y: 15, opacity: 1 }}
+							animate={{ y: yLoc, opacity: 1 }}
 							transition={{
 								staggerChildren: 0.1,
 								when: "beforeChildren",
