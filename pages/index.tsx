@@ -79,8 +79,8 @@ const Features = styled.section`
 	justify-content: space-between;
 	/* padding-top: 5rem; */
 	z-index: 10;
-	@media screen and (max-width: 1250px){
 		width: 75%;
+	@media screen and (max-width: 1250px){
 	}
 `;
 

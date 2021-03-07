@@ -21,6 +21,10 @@ const StyledFeature = styled.section`
 	gap: 1rem;
 	h1 {
 		color: white;
+		margin-bottom: .5rem;
+	}
+	p{
+		font-size: 1.25rem;
 	}
 	&:nth-child(odd) .right,
 	&:nth-child(odd) .right * {
@@ -48,8 +52,11 @@ const StyledFeature = styled.section`
 	@media screen and (max-width: 1250px) {
 		flex-direction: column-reverse;
 		text-align: center;
-		h1{
+		h1 {
 			font-size: 1.5rem;
+		}
+		p {
+			font-size: 1rem;
 		}
 	}
 `;
