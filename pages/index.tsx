@@ -50,6 +50,12 @@ const BG = styled.div`
 	opacity: 0.5;
 	top: 15%;
 	pointer-events: none;
+	@media screen and (max-width: 1000px){
+		top: -15px;
+	}
+	@media screen and (max-height: 580px){
+		top: -20%;
+	}
 `;
 
 const Heading = styled(H1)`
@@ -71,6 +77,7 @@ const Features = styled.section`
 	flex-direction: column;
 	justify-content: space-between;
 	/* padding-top: 5rem; */
+	z-index: 10;
 	@media screen and (max-width: 1250px){
 		width: 75%;
 	}
