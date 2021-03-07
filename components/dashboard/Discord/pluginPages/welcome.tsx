@@ -81,7 +81,7 @@ const Welcome = () => {
 
 	const welcomeChannel = allChannels.find(channel => channel.id === state.channel);
 
-	const changed = !isEqual(databaseWelcomeMessage, state);
+	const changed = !isEqual(databaseWelcomeMessage ?? defaultWelcomeMessage(), state);
 
 	const save = () => {
 		docRef.set({welcomeMessage: state}, {merge: true})
