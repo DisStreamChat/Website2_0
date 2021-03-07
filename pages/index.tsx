@@ -6,6 +6,8 @@ import { Main, Hero } from "../components/shared/styles";
 import { H1, H2 } from "../components/shared/styles/headings";
 import Anchor from "../components/shared/ui-components/Anchor";
 import { OrangeButton } from "../components/shared/ui-components/Button";
+import Feature from "../components/shared/ui-components/Feature";
+import features from "../utils/landing-features.json";
 
 const Subheading = styled(H2)`
 	font-style: normal;
@@ -17,7 +19,7 @@ const Subheading = styled(H2)`
 	text-align: center;
 	color: #aaa;
 	max-width: 45%;
-	@media screen and (max-width: 725px){
+	@media screen and (max-width: 725px) {
 		font-size: 1.25rem;
 	}
 `;
@@ -45,28 +47,40 @@ const BG = styled.div`
 	background-position: center;
 	position: absolute;
 	width: 100%;
-	opacity: .5;
+	opacity: 0.5;
 	top: 15%;
 	pointer-events: none;
-`
+`;
 
 const Heading = styled(H1)`
 	/* max-width: 50%; */
 	--size: 5.625rem;
 	font-size: var(--size);
 	line-height: var(--size);
-	@media screen and (max-width: 725px){
+	@media screen and (max-width: 725px) {
 		--size: 3.25rem;
 	}
 	text-align: center;
-`
+`;
+
+const Features = styled.section`
+	width: 65%;
+	/* min-height: 2000px; */
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	/* padding-top: 5rem; */
+`;
 
 export default function Home() {
 	return (
 		<Main>
 			<Hero>
-				<BG/>
-				<Heading>DisStream<span dangerouslySetInnerHTML={{__html: "&#8203"}}></span>Chat</Heading>
+				<BG />
+				<Heading>
+					DisStream<span dangerouslySetInnerHTML={{ __html: "&#8203" }}></span>Chat
+				</Heading>
 				<Subheading>
 					Chat, moderation, interactivity, and much more easily Integrated with Twitch and
 					Discord!
@@ -85,7 +99,11 @@ export default function Home() {
 					</Link> */}
 				</Buttons>
 			</Hero>
-			<div id="features"></div>
+			<Features>
+				{features.map((feature, i) => (
+					<Feature {...feature} reversed={i % 2 !== 0} />
+				))}
+			</Features>
 		</Main>
 	);
 }
