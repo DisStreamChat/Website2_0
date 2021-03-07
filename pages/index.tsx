@@ -71,6 +71,9 @@ const Features = styled.section`
 	flex-direction: column;
 	justify-content: space-between;
 	/* padding-top: 5rem; */
+	@media screen and (max-width: 1250px){
+		width: 75%;
+	}
 `;
 
 export default function Home() {

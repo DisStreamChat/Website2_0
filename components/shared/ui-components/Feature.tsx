@@ -48,6 +48,9 @@ const StyledFeature = styled.section`
 	@media screen and (max-width: 1250px) {
 		flex-direction: column-reverse;
 		text-align: center;
+		h1{
+			font-size: 1.5rem;
+		}
 	}
 `;
 
