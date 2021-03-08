@@ -41,6 +41,7 @@ const UserList = styled.ul`
 	padding: 1.25rem !important;
 	box-sizing: content-box;
 	background: #3e4246;
+	box-shadow: 0 0 16px -6px #4e4b4b;
 `;
 
 interface userProps {
