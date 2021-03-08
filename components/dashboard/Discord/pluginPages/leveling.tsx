@@ -1,5 +1,5 @@
 import { Switch, useMediaQuery } from "@material-ui/core";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useReducer } from "react";
 import { H2 } from "../../../shared/styles/headings";
 import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
 import Select from "../../../shared/styles/styled-select";
@@ -14,37 +14,9 @@ import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
 import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
-
-interface levelSettings {
-	bannedItems: {
-		channels: string[];
-		roles: string[];
-	};
-	general: {
-		message: string;
-		channel: string | null;
-	};
-	scaling: {
-		general: number;
-		roles?: {
-			[serverId: string]: number;
-		};
-	};
-}
-
-const primaryLevelSettings: levelSettings = {
-	bannedItems: {
-		channels: [],
-		roles: [],
-	},
-	general: {
-		message: "Congrats {player}, you leveled up to level {level}!",
-		channel: null,
-	},
-	scaling: {
-		general: 1,
-	},
-};
+import { Action } from "../../../../utils/types";
+import { get, set, isEqual, cloneDeep } from "lodash";
+import SaveBar from "../../../shared/ui-components/SaveBar";
 
 const levelingVariants = {
 	initial: {
@@ -66,8 +38,8 @@ const AnnouncementSection = styled(PluginSection)`
 	& > div {
 		flex: 1 1 45%;
 	}
-	@media screen and (max-width: 725px){
-		&#announcement-section{
+	@media screen and (max-width: 725px) {
+		&#announcement-section {
 			flex-direction: column;
 		}
 	}
@@ -77,27 +49,86 @@ const AnnouncementSection = styled(PluginSection)`
 
 const marks = [...Array(7)].map((item, index) => ({ value: index / 2, label: `x${index / 2}` }));
 
+interface general {
+	channel: string;
+	message: string;
+	announcement: boolean;
+}
+
+interface banned {
+	channels: string[];
+	roles: string[];
+}
+
+interface scaling {
+	general: number;
+	roles?: { [id: string]: number };
+}
+
+interface settings {
+	bannedItems: banned;
+	general: general;
+	scaling: scaling;
+}
+
+const defaultSettings = (): settings => ({
+	bannedItems: {
+		roles: [],
+		channels: [],
+	},
+	general: {
+		message: "Congrats {player}, you leveled up to level {level}!",
+		channel: null,
+		announcement: false,
+	},
+	scaling: {
+		general: 1,
+	},
+});
+
+const actions = {
+	UPDATE: "update",
+	RESET: "reset",
+	SET: "set",
+};
+
+const settingsReducer = (state: settings, action: Action) => {
+	switch (action.type) {
+		case actions.UPDATE:
+			const obj = set(
+				{ ...state },
+				action.key,
+				typeof action.value === "function"
+					? action.value(get(state, action.key))
+					: action.value
+			);
+			return obj;
+		case actions.RESET:
+			return defaultSettings();
+		case actions.SET:
+			return action.value;
+	}
+};
+
 const Leveling = () => {
 	const router = useRouter();
 	const [, serverId] = router.query.type as string[];
 
-	const [levelupAnnouncement, setLevelupAnnouncement] = useState(false);
-
-	const [announcementChannel, setAnnouncementChannel] = useState<any>();
-	const [noXpRoles, setNoXpRoles] = useState([]);
-	const [noXpChannels, setNoXpChannels] = useState([]);
-	const [generalScaling, setGeneralScaling] = useState(1);
-	const [levelUpMessage, setLevelUpMessage] = useState(
-		"Congrats {player}, you leveled up to level {level}!"
+	const [state, dispatch] = useReducer<(state: settings, action: Action) => settings, settings>(
+		settingsReducer,
+		defaultSettings(),
+		defaultSettings
 	);
-	const [defaultValues, setDefaultValues] = useState({});
+
+	const [defaultValues, setDefaultValues] = useState<settings>(() => defaultSettings());
 	const { allChannels, roles } = useContext(discordContext);
 
-	const smallScreen = useMediaQuery("(max-width: 725px)")
+	const smallScreen = useMediaQuery("(max-width: 725px)");
 
 	useEffect(() => {
 		(async () => {
 			try {
+				console.log("setup");
 				const levelingRef = firebaseClient.db
 					.collection("Leveling")
 					.doc(serverId)
@@ -107,54 +138,49 @@ const Leveling = () => {
 				let levelingDocs = levelingCollection.docs.reduce((acc, cur) => {
 					acc[cur.id] = cur.data();
 					return acc;
-				}, {}) as levelSettings;
+				}, {}) as settings;
 
 				// these are where the values for the notification channel and message used to be stored
 				// anyone who hasn't used the new site will still have them stored there so I fetch them just in case
-				const legacyMessage = (
+				const legacyDoc = (
 					await firebaseClient.db.collection("Leveling").doc(serverId).get()
-				).data().message;
+				).data();
 
-				const legacyChannel = (
-					await firebaseClient.db.collection("Leveling").doc(serverId).get()
-				).data().notifications;
+				const legacyMessage = legacyDoc.message;
+				const legacyChannel = legacyDoc.notifications;
 
 				// replace any missing values in the settings with values from the primary settings while also checking the legacy values
-				levelingDocs = ["bannedItems", "general", "scaling"].reduce((acc, key) => {
+				const levelSettings = ["bannedItems", "general", "scaling"].reduce((acc, key) => {
 					let value = levelingDocs[key] ?? {};
 					if (key === "general") {
 						value.message = value.message ?? legacyMessage;
 						value.channel = value.channel ?? legacyChannel;
 					}
-					acc[key] = { ...primaryLevelSettings[key], ...value };
+					acc[key] = { ...defaultSettings()[key], ...value };
 					return acc;
-				}, {}) as levelSettings;
+				}, {}) as settings;
 
 				// default values won't change and will be used to check if the over values have changed
-				setDefaultValues(levelingDocs);
+				setDefaultValues(cloneDeep({ ...levelSettings }));
 
-				setLevelUpMessage(levelingDocs?.general?.message);
-				setAnnouncementChannel(
-					allChannels.find(channel => channel.id === levelingDocs?.general?.channel)
-				);
-
-				if (levelingDocs.bannedItems) {
-					setNoXpChannels(
-						levelingDocs.bannedItems.channels
-							?.map?.(id => allChannels.find(channel => channel.id === id))
-							.filter(Boolean)
-					);
-					setNoXpRoles(
-						levelingDocs.bannedItems.roles
-							?.map?.(id => roles.find(role => role.id === id))
-							.filter(Boolean)
-					);
-				}
+				dispatch({ type: actions.SET, value: cloneDeep({ ...levelSettings }) });
 			} catch (err) {
 				console.log(err.message);
 			}
 		})();
 	}, [serverId, allChannels, roles]);
+
+	const announcementChannel = allChannels.find(channel => channel.id === state.general.channel);
+
+	const noXpRoles = state.bannedItems.roles.map(roleId => roles.find(role => role.id === roleId));
+	const noXpChannels = state.bannedItems.channels.map(channelId =>
+		allChannels.find(channel => channel.id === channelId)
+	);
+
+	const { scaling, general, bannedItems } = state;
+
+	const changed = !isEqual(defaultValues, state);
+	console.log({ defaultValues, state });
 
 	return (
 		<div>
@@ -167,25 +193,35 @@ const Leveling = () => {
 				</span>
 				<Switch
 					color="primary"
-					value={levelupAnnouncement}
-					onChange={e => setLevelupAnnouncement(e.target.checked)}
+					value={general.announcement}
+					onChange={e =>
+						dispatch({
+							type: actions.UPDATE,
+							key: "general.announcement",
+							value: e.target.checked,
+						})
+					}
 				/>
 			</PluginSubHeader>
 			<AnnouncementSection
-				data-open={levelupAnnouncement}
+				data-open={general.announcement}
 				// @ts-ignore
 				variants={levelingVariants}
 				initial="initial"
-				animate={levelupAnnouncement ? "open" : "closed"}
+				animate={general.announcement ? "open" : "closed"}
 				id="announcement-section"
 			>
-				<div >
+				<div>
 					<SubSectionTitle>Announcement Channel</SubSectionTitle>
 					<Select
 						onChange={value => {
 							const channel = parseSelectValue(value);
 
-							setAnnouncementChannel(allChannels.find(({ id }) => id === channel));
+							dispatch({
+								type: actions.UPDATE,
+								key: "general.channel",
+								value: channel,
+							});
 						}}
 						value={
 							announcementChannel
@@ -201,11 +237,17 @@ const Leveling = () => {
 						}))}
 					/>
 				</div>
-				<div style={{zIndex: 100}}>
+				<div style={{ zIndex: 100 }}>
 					<SubSectionTitle>Announcement Message</SubSectionTitle>
 					<TextArea
-						value={levelUpMessage}
-						onChange={e => setLevelUpMessage(e.target.value)}
+						value={state.general.message}
+						onChange={e =>
+							dispatch({
+								type: actions.UPDATE,
+								key: "general.message",
+								value: e.target.value,
+							})
+						}
 						trigger={{
 							"{": {
 								dataProvider: token => {
@@ -217,7 +259,9 @@ const Leveling = () => {
 										}));
 								},
 								component: ({ selected, entity: { name, char } }) => (
-									<div className={`text-area-item ${selected ? "selected" : ""}`}>{name}</div>
+									<div className={`text-area-item ${selected ? "selected" : ""}`}>
+										{name}
+									</div>
 								),
 								output: (item, trigger) => item.char,
 							},
@@ -235,12 +279,16 @@ const Leveling = () => {
 			</PluginSubHeader>
 			<PluginSection>
 				<PrettoSlider
-					value={generalScaling}
+					value={state.scaling.general}
 					onChange={(e, value) => {
 						if (Array.isArray(value)) {
-							setGeneralScaling(value[0]);
+							dispatch({
+								type: actions.UPDATE,
+								key: "scaling.general",
+								value: value[0],
+							});
 						} else {
-							setGeneralScaling(value);
+							dispatch({ type: actions.UPDATE, key: "scaling.general", value });
 						}
 					}}
 					defaultValue={1}
@@ -266,7 +314,11 @@ const Leveling = () => {
 					onChange={value => {
 						const roleId = parseSelectValue(value);
 						const role = roles.find(role => role.id === roleId);
-						setNoXpRoles(prev => [...prev, role]);
+						dispatch({
+							type: actions.UPDATE,
+							key: "bannedItems.roles",
+							value: prev => [...prev, roleId],
+						});
 					}}
 					value={noXpRoles.map(role => ({
 						value: transformObjectToSelectValue(role),
@@ -274,7 +326,11 @@ const Leveling = () => {
 							<RoleItem
 								{...role}
 								onClick={id =>
-									setNoXpRoles(prev => prev.filter(role => role.id !== id))
+									dispatch({
+										type: actions.UPDATE,
+										key: "bannedItems.roles",
+										value: prev => prev.filter(role => role.id !== id),
+									})
 								}
 							/>
 						),
@@ -300,7 +356,11 @@ const Leveling = () => {
 					onChange={value => {
 						const channelId = parseSelectValue(value);
 						const channel = allChannels.find(channel => channel.id === channelId);
-						setNoXpChannels(prev => [...prev, channel]);
+						dispatch({
+							type: actions.UPDATE,
+							key: "bannedItems.channels",
+							value: prev => [...prev, channelId],
+						});
 					}}
 					value={noXpChannels.map(channel => ({
 						value: transformObjectToSelectValue(channel),
@@ -309,9 +369,11 @@ const Leveling = () => {
 								{...channel}
 								color="#ffffffa0"
 								onClick={id =>
-									setNoXpChannels(prev =>
-										prev.filter(channel => channel.id !== id)
-									)
+									dispatch({
+										type: actions.UPDATE,
+										key: "bannedItems.channels",
+										value: prev => prev.filter(channel => channel.id !== id),
+									})
 								}
 							/>
 						),
@@ -323,6 +385,7 @@ const Leveling = () => {
 				></MultiSelect>
 			</PluginSection>
 			<hr />
+			<SaveBar changed={changed} save={() => {}} reset={() => {}} />
 		</div>
 	);
 };
