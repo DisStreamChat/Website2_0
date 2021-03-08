@@ -125,10 +125,30 @@ const Leveling = () => {
 
 	const smallScreen = useMediaQuery("(max-width: 725px)");
 
+	const save = async () => {
+		const collectionRef = firebaseClient.db
+			.collection("Leveling")
+			.doc(serverId)
+			.collection("settings");
+		if (!isEqual(state.bannedItems, defaultValues.bannedItems)) {
+			await collectionRef.doc("bannedItems").set(state.bannedItems, { merge: true });
+		}
+		if (!isEqual(state.general, defaultValues.general)) {
+			await collectionRef.doc("general").set(state.general, { merge: true });
+		}
+		if (!isEqual(state.scaling, defaultValues.scaling)) {
+			await collectionRef.doc("scaling").set(state.scaling, { merge: true });
+		}
+		setDefaultValues(cloneDeep(state));
+	};
+
+	const reset = () => {
+		dispatch({ type: actions.SET, value: cloneDeep(defaultValues) });
+	};
+
 	useEffect(() => {
 		(async () => {
 			try {
-				console.log("setup");
 				const levelingRef = firebaseClient.db
 					.collection("Leveling")
 					.doc(serverId)
@@ -148,6 +168,7 @@ const Leveling = () => {
 
 				const legacyMessage = legacyDoc.message;
 				const legacyChannel = legacyDoc.notifications;
+				const legacyAnnouncment = legacyDoc.type === 3;
 
 				// replace any missing values in the settings with values from the primary settings while also checking the legacy values
 				const levelSettings = ["bannedItems", "general", "scaling"].reduce((acc, key) => {
@@ -155,6 +176,7 @@ const Leveling = () => {
 					if (key === "general") {
 						value.message = value.message ?? legacyMessage;
 						value.channel = value.channel ?? legacyChannel;
+						value.announcement = value.announcement ?? legacyAnnouncment;
 					}
 					acc[key] = { ...defaultSettings()[key], ...value };
 					return acc;
@@ -177,10 +199,7 @@ const Leveling = () => {
 		allChannels.find(channel => channel.id === channelId)
 	);
 
-	const { scaling, general, bannedItems } = state;
-
 	const changed = !isEqual(defaultValues, state);
-	console.log({ defaultValues, state });
 
 	return (
 		<div>
@@ -193,7 +212,7 @@ const Leveling = () => {
 				</span>
 				<Switch
 					color="primary"
-					value={general.announcement}
+					checked={!!state.general.announcement}
 					onChange={e =>
 						dispatch({
 							type: actions.UPDATE,
@@ -204,11 +223,11 @@ const Leveling = () => {
 				/>
 			</PluginSubHeader>
 			<AnnouncementSection
-				data-open={general.announcement}
+				data-open={!!state.general.announcement}
 				// @ts-ignore
 				variants={levelingVariants}
 				initial="initial"
-				animate={general.announcement ? "open" : "closed"}
+				animate={!!state.general.announcement ? "open" : "closed"}
 				id="announcement-section"
 			>
 				<div>
@@ -385,7 +404,7 @@ const Leveling = () => {
 				></MultiSelect>
 			</PluginSection>
 			<hr />
-			<SaveBar changed={changed} save={() => {}} reset={() => {}} />
+			<SaveBar changed={changed} save={save} reset={reset} />
 		</div>
 	);
 };
