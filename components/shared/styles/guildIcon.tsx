@@ -7,12 +7,24 @@ interface iconProps {
 	name?: string;
 }
 
+interface noIconProps {
+	size: number,
+	name: string
+}
+
 export const NoIcon = styled.span`
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	font-size: ${({ size, name }: { size: number; name: string }) => `${size / name.length}px`};
 	text-transform: uppercase;
+	border-radius: 50%;
+	background: #36393f;
+	width: ${({size}: noIconProps) => `${size}px`};
+	height: ${({size}: noIconProps) => `${size}px`};
+	box-sizing: content-box;
+	padding: .5rem;
+	text-align: center;
 `;
 
 const GuildIcon = (props: iconProps) => {

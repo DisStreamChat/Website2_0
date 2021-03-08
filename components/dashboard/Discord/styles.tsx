@@ -95,6 +95,16 @@ export const LargeAvatar = withStyles((theme: Theme) =>
 	})
 )(Avatar);
 
+export const MediumAvatar = withStyles((theme: Theme) =>
+	createStyles({
+		root: {
+			width: 50,
+			height: 50,
+		},
+	})
+)(Avatar);
+
+
 export const ServerModal = styled.div`
 	width: 50vw;
 	height: 80vh;
