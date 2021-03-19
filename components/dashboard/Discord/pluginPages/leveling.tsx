@@ -270,7 +270,7 @@ const Leveling = () => {
 						trigger={{
 							"{": {
 								dataProvider: token => {
-									return ["player", "level"]
+									return ["player", "level", "ping", "xp", "user", "user.tag", "member", "user.username"]
 										.filter(chatter => chatter.includes(token))
 										.map(chatter => ({
 											name: `${chatter}`,
