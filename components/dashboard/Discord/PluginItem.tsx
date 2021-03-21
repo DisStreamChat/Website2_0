@@ -44,6 +44,10 @@ const PluginCard = styled.a`
 	div:first-child {
 		align-self: start;
 	}
+	&:focus{
+		box-shadow: 0 0 0px 5px #24252a, 0 0 0 10px var(--disstreamchat-blue);
+
+	}
 `;
 
 const PluginTitle = styled.div`
@@ -108,7 +112,7 @@ const PluginItem = (props: pluginProps) => {
 				<PluginLine
 					active={props.active}
 					variants={lineVariants}
-					animate={interacted ? "ignored" : "interacted"}
+					animate={hovered ? "ignored" : "interacted"}
 				/>
 			)}
 			<div>
@@ -133,7 +137,7 @@ const PluginItem = (props: pluginProps) => {
 					active={props.active}
 					className="bottom"
 					variants={lineVariants}
-					animate={!interacted ? "ignored" : "interacted"}
+					animate={!hovered ? "ignored" : "interacted"}
 				/>
 			)}
 		</PluginCard>
