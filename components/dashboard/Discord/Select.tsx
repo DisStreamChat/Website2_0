@@ -60,7 +60,8 @@ const AddButton = styled.button`
 	width: 28px;
 	height: 28px;
 	justify-content: center;
-	:focus, :hover{
+	:focus,
+	:hover {
 		background: #66666666;
 	}
 `;
@@ -110,6 +111,8 @@ const outState = {
 
 const SearchArea = styled.div`
 	background: var(--background-dark-gray);
+	position: sticky;
+	top: 0;
 	input {
 		padding: 1rem;
 		color: white;
@@ -123,7 +126,7 @@ const SearchArea = styled.div`
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
-	const buttonRef = useRef<HTMLElement>()
+	const buttonRef = useRef<HTMLElement>();
 
 	const options = useMemo(
 		() =>
@@ -147,7 +150,12 @@ const Select = (props: selectProps) => {
 				))}
 				{!!options?.length && (
 					<AddItem>
-						<AddButton ref={buttonRef as any} onMouseDown={e => e.preventDefault()} onFocus={() => buttonRef.current.scrollIntoView()} onClick={() => setOpen(prev => !prev)}>
+						<AddButton
+							ref={buttonRef as any}
+							onMouseDown={e => e.preventDefault()}
+							onFocus={() => buttonRef.current.scrollIntoView()}
+							onClick={() => setOpen(prev => !prev)}
+						>
 							<AddIcon />
 						</AddButton>
 						<AnimatePresence>
@@ -169,7 +177,9 @@ const Select = (props: selectProps) => {
 										<ul className="">
 											{options
 												.filter(option =>
-													option.value?.toLowerCase()?.includes?.(searchValue?.toLowerCase())
+													option.value
+														?.toLowerCase()
+														?.includes?.(searchValue?.toLowerCase())
 												)
 												.map(option => (
 													<li
