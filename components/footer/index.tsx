@@ -15,10 +15,10 @@ const Footer = () => {
 						DisStreamChat is the easiest way to link your Discord with your Stream chat
 					</styles.h4>
 					<styles.icons>
-						<Anchor aria-label="Github" href="https://github.com/DisStreamChat">
+						<Anchor newTab aria-label="Github" href="https://github.com/DisStreamChat">
 							<GitHubIcon />
 						</Anchor>
-						<Anchor aria-label="Twitter" href="https://twitter.com/DisStreamChat">
+						<Anchor newTab aria-label="Twitter" href="https://twitter.com/DisStreamChat">
 							<TwitterIcon />
 						</Anchor>
 					</styles.icons>

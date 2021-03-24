@@ -30,6 +30,7 @@ const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 						</a>
 					</Link>
 				) : (
+					// TODO: change to use a button with a modal
 					<Anchor href="https://invite.disstreamchat.com" newTab>
 						<Button tabIndex={-1}>Invite</Button>
 					</Anchor>
