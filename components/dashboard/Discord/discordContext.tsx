@@ -58,6 +58,7 @@ export const DiscordContextProvider = ({ children }) => {
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
 			);
 			const json = await response.json();
+			console.log(json)
 			if (!json) return;
 			setCurrentGuild(json);
 			const roleResponse = await fetch(

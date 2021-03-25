@@ -20,7 +20,7 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import { gapFunction } from "../../../shared/styles";
 import { SectionTitle, SectionSubtitle } from "../../../shared/styles/plugins";
 import { ChannelItem } from "../ChannelItem";
-import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
+import { channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete } from "../../../../utils/functions/autocomplete";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -200,7 +200,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 						trigger={{
 							"{": {
 								dataProvider: token => {
-									return ["player", "level"]
+									return generalItems
 										.filter(chatter => chatter.includes(token))
 										.map(chatter => ({
 											name: `${chatter}`,
@@ -215,6 +215,8 @@ const CommandModal = ({ defaultValue, ...props }) => {
 								output: (item, trigger) => item.char,
 							},
 							"#": channelAutoComplete(allChannels),
+							"@": roleAutoComplete(roles),
+							// ":": emoteAutoComplete()
 						}}
 					></TextArea>
 					<hr />

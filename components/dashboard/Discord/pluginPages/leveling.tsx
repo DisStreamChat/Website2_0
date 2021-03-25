@@ -13,7 +13,7 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
-import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
+import { allItems, channelAutoComplete } from "../../../../utils/functions/autocomplete";
 import { Action } from "../../../../utils/types";
 import { get, set, isEqual, cloneDeep } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
@@ -270,7 +270,7 @@ const Leveling = () => {
 						trigger={{
 							"{": {
 								dataProvider: token => {
-									return ["player", "level", "ping", "xp", "user", "user.tag", "member", "user.username"]
+									return allItems
 										.filter(chatter => chatter.includes(token))
 										.map(chatter => ({
 											name: `${chatter}`,

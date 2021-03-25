@@ -12,7 +12,7 @@ import { discordContext } from "../discordContext";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import { TextArea } from "../../../shared/ui-components/TextField";
 import styled from "styled-components";
-import { channelAutoComplete } from "../../../../utils/functions/autocomplete";
+import { channelAutoComplete, generalItems } from "../../../../utils/functions/autocomplete";
 
 const actions = {
 	UPDATE: "update",
@@ -125,7 +125,7 @@ const Welcome = () => {
 					trigger={{
 						"{": {
 							dataProvider: token => {
-								return ["member"]
+								return generalItems
 									.filter(chatter => chatter.includes(token))
 									.map(chatter => ({
 										name: `${chatter}`,
