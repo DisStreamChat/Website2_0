@@ -31,7 +31,9 @@ interface discordContextTpe {
 	activePlugins: obj<boolean>;
 	setActivePlugins: Dispatch<SetStateAction<obj<boolean>>>;
 	allChannels: channel[];
-	setAllChannels: Dispatch<SetStateAction<channel[]>>
+	setAllChannels: Dispatch<SetStateAction<channel[]>>,
+	emotes: obj[],
+	setEmotes: Dispatch<SetStateAction<obj[]>>
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -46,6 +48,7 @@ export const DiscordContextProvider = ({ children }) => {
 		nickname: "DisStreamBot",
 		adminRoles: [],
 	});
+	const [emotes, setEmotes] = useState<obj[]>([])
 	const [activePlugins, setActivePlugins] = useState<obj<boolean>>({});
 	const router = useRouter();
 
@@ -76,6 +79,9 @@ export const DiscordContextProvider = ({ children }) => {
 						!role.managed
 				)
 			);
+			const emoteResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/emotes`)
+			const emoteJson = await emoteResponse.json()
+			setEmotes(emoteJson)
 		};
 		const fetchFromFirebase = async () => {
 			const serverRef = firebaseClient.db.collection("DiscordSettings").doc(serverId);
@@ -113,7 +119,9 @@ export const DiscordContextProvider = ({ children }) => {
 				activePlugins,
 				setActivePlugins,
 				allChannels,
-				setAllChannels
+				setAllChannels,
+				emotes,
+				setEmotes,
 			}}
 		>
 			{children}

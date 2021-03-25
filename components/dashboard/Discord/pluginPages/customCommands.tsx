@@ -20,7 +20,13 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import { gapFunction } from "../../../shared/styles";
 import { SectionTitle, SectionSubtitle } from "../../../shared/styles/plugins";
 import { ChannelItem } from "../ChannelItem";
-import { channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete } from "../../../../utils/functions/autocomplete";
+import {
+	channelAutoComplete,
+	emoteAutoComplete,
+	generalItems,
+	roleAutoComplete,
+} from "../../../../utils/functions/autocomplete";
+import { EmotePicker } from "../../../shared/ui-components/emotePicker";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -70,7 +76,13 @@ const defaultCommand = serverId => ({
 const commandReducer = (state: command, action: action) => {
 	switch (action.type) {
 		case actions.UPDATE:
-			return { ...state, [action.key]: action.value };
+			return {
+				...state,
+				[action.key]:
+					typeof action.value === "function"
+						? action.value(state[action.key])
+						: action.value,
+			};
 		case actions.SET:
 			return action.value;
 		case actions.CLEAR:
@@ -134,10 +146,26 @@ const CreateCommandFooter = styled.div`
 	${gapFunction({ gap: "1rem" })}
 `;
 
+const EmoteParent = styled.div`
+	position: relative;
+`;
+
+const EmotePickerOpener = styled.div`
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background: none;
+	outline: none;
+	border: none;
+	z-index: 80;
+	cursor: pointer;
+`;
+
 const CommandModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
 	const [, serverId, pluginName] = router.query.type as string[];
-	const { serverSettings, roles, allChannels } = useContext(discordContext);
+	const { serverSettings, roles, allChannels, emotes } = useContext(discordContext);
+	const [emotePickerVisible, setEmotePickerVisible] = useState(false);
 
 	const [state, dispatch] = useReducer<(state: command, action: action) => command, command>(
 		commandReducer,
@@ -188,37 +216,61 @@ const CommandModal = ({ defaultValue, ...props }) => {
 					/>
 					<hr />
 					<SectionTitle>Command Response</SectionTitle>
-					<TextArea
-						value={state.message}
-						onChange={e => {
-							dispatch({
-								type: actions.UPDATE,
-								value: e.target.value,
-								key: "message",
-							});
-						}}
-						trigger={{
-							"{": {
-								dataProvider: token => {
-									return generalItems
-										.filter(chatter => chatter.includes(token))
-										.map(chatter => ({
-											name: `${chatter}`,
-											char: `{${chatter}}`,
-										}));
+					<EmoteParent>
+						<EmotePickerOpener onClick={() => setEmotePickerVisible(true)}>
+							<img width="24" height="24" src="/smile.svg" alt="" />
+						</EmotePickerOpener>
+						<EmotePicker
+							onClickAway={() => {
+								setEmotePickerVisible(false);
+							}}
+							visible={emotePickerVisible}
+							emotes={emotes}
+							onEmoteSelect={emote => {
+								dispatch({
+									type: actions.UPDATE,
+									value: prev => `${prev} ${emote.colons}`,
+									key: "message",
+								});
+								setEmotePickerVisible(false);
+							}}
+						/>
+						<TextArea
+							value={state.message}
+							onChange={e => {
+								dispatch({
+									type: actions.UPDATE,
+									value: e.target.value,
+									key: "message",
+								});
+							}}
+							trigger={{
+								"{": {
+									dataProvider: token => {
+										return generalItems
+											.filter(chatter => chatter.includes(token))
+											.map(chatter => ({
+												name: `${chatter}`,
+												char: `{${chatter}}`,
+											}));
+									},
+									component: ({ selected, entity: { name, char } }) => (
+										<div
+											className={`text-area-item ${
+												selected ? "selected" : ""
+											}`}
+										>
+											{name}
+										</div>
+									),
+									output: (item, trigger) => item.char,
 								},
-								component: ({ selected, entity: { name, char } }) => (
-									<div className={`text-area-item ${selected ? "selected" : ""}`}>
-										{name}
-									</div>
-								),
-								output: (item, trigger) => item.char,
-							},
-							"#": channelAutoComplete(allChannels),
-							"@": roleAutoComplete(roles),
-							// ":": emoteAutoComplete()
-						}}
-					></TextArea>
+								"#": channelAutoComplete(allChannels),
+								"@": roleAutoComplete(roles),
+								// ":": emoteAutoComplete()
+							}}
+						></TextArea>
+					</EmoteParent>
 					<hr />
 					<SectionTitle>Command Description</SectionTitle>
 					<TextInput

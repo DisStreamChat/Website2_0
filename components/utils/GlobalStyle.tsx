@@ -111,6 +111,10 @@ const GlobalStyle = createGlobalStyle`
 			background: #17181b;
 		}
 	}
+
+	.emoji-mart-search input{
+		box-sizing: border-box;
+	}
 `;
 
 export default GlobalStyle;
