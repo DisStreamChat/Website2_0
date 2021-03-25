@@ -254,7 +254,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 								},
 								"#": channelAutoComplete(allChannels),
 								"@": roleAutoComplete(roles),
-								// ":": emoteAutoComplete()
+								":": emoteAutoComplete(emotes)
 							}}
 						></TextArea>
 					</EmoteParent>

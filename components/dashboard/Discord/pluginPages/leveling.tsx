@@ -13,10 +13,15 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
-import { allItems, channelAutoComplete } from "../../../../utils/functions/autocomplete";
+import { allItems, channelAutoComplete, emoteAutoComplete } from "../../../../utils/functions/autocomplete";
 import { Action } from "../../../../utils/types";
 import { get, set, isEqual, cloneDeep } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
+import {
+	EmoteParent,
+	EmotePicker,
+	EmotePickerOpener,
+} from "../../../shared/ui-components/emotePicker";
 
 const levelingVariants = {
 	initial: {
@@ -121,7 +126,8 @@ const Leveling = () => {
 	);
 
 	const [defaultValues, setDefaultValues] = useState<settings>(() => defaultSettings());
-	const { allChannels, roles } = useContext(discordContext);
+	const { allChannels, roles, emotes } = useContext(discordContext);
+	const [emotePickerOpen, setEmotePickerOpen] = useState(false);
 
 	const smallScreen = useMediaQuery("(max-width: 725px)");
 
@@ -258,6 +264,23 @@ const Leveling = () => {
 				</div>
 				<div style={{ zIndex: 100 }}>
 					<SubSectionTitle>Announcement Message</SubSectionTitle>
+					<EmoteParent>
+						<EmotePickerOpener onClick={() => setEmotePickerOpen(true)}>
+							<img width="24" height="24" src="/smile.svg" alt="" />
+						</EmotePickerOpener>
+						<EmotePicker
+							emotes={emotes}
+							onClickAway={() => setEmotePickerOpen(false)}
+							visible={emotePickerOpen}
+							onEmoteSelect={emote => {
+								dispatch({
+									type: actions.UPDATE,
+									key: "general.message",
+									value: prev => `${prev} ${emote.colons}`,
+								});
+							}}
+						/>
+					</EmoteParent>
 					<TextArea
 						value={state.general.message}
 						onChange={e =>
@@ -285,6 +308,7 @@ const Leveling = () => {
 								output: (item, trigger) => item.char,
 							},
 							"#": channelAutoComplete(allChannels),
+							":": emoteAutoComplete(emotes)
 						}}
 					/>
 				</div>

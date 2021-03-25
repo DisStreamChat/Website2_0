@@ -12,7 +12,7 @@ import { discordContext } from "../discordContext";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import { TextArea } from "../../../shared/ui-components/TextField";
 import styled from "styled-components";
-import { channelAutoComplete, generalItems } from "../../../../utils/functions/autocomplete";
+import { channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete } from "../../../../utils/functions/autocomplete";
 import {
 	EmoteParent,
 	EmotePicker,
@@ -82,7 +82,7 @@ const Welcome = () => {
 	const [, serverId, pluginName] = router.query.type as string[];
 	const docRef = firebaseClient.db.collection("DiscordSettings").doc(serverId);
 	const [snapshot, loading, error] = useDocumentData(docRef);
-	const { allChannels, emotes } = useContext(discordContext);
+	const { allChannels, emotes, roles } = useContext(discordContext);
 	const [emotePickerOpen, setEmotePickerOpen] = useState(false);
 
 	const databaseWelcomeMessage = snapshot?.welcomeMessage;
@@ -179,6 +179,8 @@ const Welcome = () => {
 								output: (item, trigger) => item.char,
 							},
 							"#": channelAutoComplete(allChannels),
+							"@": roleAutoComplete(roles),
+							":": emoteAutoComplete(emotes)
 						}}
 					></TextArea>
 				</EmoteParent>

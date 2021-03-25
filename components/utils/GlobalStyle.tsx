@@ -95,10 +95,12 @@ const GlobalStyle = createGlobalStyle`
 	}
 
 	.text-area-list{
+		position: absolute;
 		background: #3e4349;
 		opacity: 1;
 		z-index: 10000;
 		max-height: 400px;
+		width: 100%;
 		overflow: auto;
 	}
 

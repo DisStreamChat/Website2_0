@@ -45,12 +45,12 @@ export const emoteAutoComplete = emotes => ({
 			.map(emote => ({
 				...emote,
 				name: `${emote.name}`,
-				char: `:${emote.id}:`,
+				char: `:${emote.name}:`,
 			}));
 	},
 	component: ({ selected, entity }) => (
 		<div className={`text-area-item ${selected ? "selected" : ""}`}>
-			<RoleItem {...entity} />
+			<img src={entity.url} width="24" height="24"/>
 		</div>
 	),
 	output: (item, trigger) => item.char,
