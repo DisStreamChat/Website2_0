@@ -2,6 +2,7 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import { useMemo } from "react";
 import { ClickAwayListener } from "@material-ui/core";
+import styled from "styled-components"
 
 interface EmotePickerProps {
 	emotes: any[];
@@ -45,3 +46,18 @@ export const EmotePicker = ({ emotes, visible, onClickAway, onEmoteSelect }: Emo
 		<></>
 	);
 };
+
+export const EmoteParent = styled.div`
+	position: relative;
+`;
+
+export const EmotePickerOpener = styled.div`
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	background: none;
+	outline: none;
+	border: none;
+	z-index: 80;
+	cursor: pointer;
+`;

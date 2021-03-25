@@ -26,7 +26,7 @@ import {
 	generalItems,
 	roleAutoComplete,
 } from "../../../../utils/functions/autocomplete";
-import { EmotePicker } from "../../../shared/ui-components/emotePicker";
+import { EmoteParent, EmotePicker, EmotePickerOpener } from "../../../shared/ui-components/emotePicker";
 
 const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -146,20 +146,7 @@ const CreateCommandFooter = styled.div`
 	${gapFunction({ gap: "1rem" })}
 `;
 
-const EmoteParent = styled.div`
-	position: relative;
-`;
 
-const EmotePickerOpener = styled.div`
-	position: absolute;
-	top: 0.5rem;
-	right: 0.5rem;
-	background: none;
-	outline: none;
-	border: none;
-	z-index: 80;
-	cursor: pointer;
-`;
 
 const CommandModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
