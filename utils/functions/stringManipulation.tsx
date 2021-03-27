@@ -18,3 +18,5 @@ export const formatNumber = (number: number, precision=2) => {
     // format number and add suffix
     return scaled.toFixed(precision) + suffix;
 }
+
+export const splitByCaps = string => string.match(/[A-Z][a-z]+|[0-9]+/g).join(" ")

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import CustomCommands from "./pluginPages/customCommands";
 import Leveling from "./pluginPages/leveling";
+import Logging from "./pluginPages/logging";
 import Welcome from "./pluginPages/welcome";
 
 const Plugins = () => {
@@ -15,6 +16,8 @@ const Plugins = () => {
 			return <CustomCommands/>
 		case "welcome-message": 
 			return <Welcome/>
+		case "logging":
+			return <Logging/>
 		default:
 			return <></>;
 	}

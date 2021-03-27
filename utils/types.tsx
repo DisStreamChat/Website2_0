@@ -13,8 +13,10 @@ export interface guildMember {
 }
 
 export interface channel {
-
-}
+	id: string,
+	name: string,
+	parent?: string
+}	
 
 export interface server {
 

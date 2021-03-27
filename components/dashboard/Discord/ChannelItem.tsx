@@ -14,7 +14,8 @@ export const StyledChannelItem = styled.div`
 	}
 	span {
 		margin-left: 0.5rem;
-		font-size: 90%;
+		font-size: 80%;
+		text-transform: uppercase;
 		color: #ffffffaa;
 		font-weight: normal;
 		display: inline-block;
@@ -46,7 +47,7 @@ export const StyledChannelItem = styled.div`
 
 interface channelItemProps {
 	name: string;
-	parent: string;
+	parent?: string;
 	color?: string;
 	id: string
 }
@@ -67,7 +68,7 @@ export const ChannelItem = (props: channelItemProps) => {
 				></path>
 			</svg>
 			{props.name}
-			<span>{props.parent}</span>
+			<span style={{textTransform: "uppercase"}}>{props.parent}</span>
 		</StyledChannelItem>
 	);
 };
