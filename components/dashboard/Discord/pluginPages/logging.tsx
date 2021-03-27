@@ -84,21 +84,14 @@ const CommandsHeader = styled(PluginSubHeader)`
 
 const reducer = (state: LogRecords | LogRecord, action: LogAction) => {
 	switch (action.type) {
-		case actions.UPDATEITEM:
+		case actions.UPDATE:
 			return {
 				...state,
 				[action.key]:
 					action.value === "function" ? action.value(state[action.key]) : action.value,
 			};
-		case actions.UPDATE:
-			const itemToUpdate = state[action.id];
-			itemToUpdate[action.key] =
-				typeof action.value === "function"
-					? action.value(itemToUpdate[action.key])
-					: action.value;
-			return { ...state, [action.id]: itemToUpdate };
 		case actions.RESET:
-			return {};
+			return logRecordFactory();
 		case actions.SET:
 			return action.value;
 		default:
@@ -160,27 +153,27 @@ const CreateCommandFooter = styled.div`
 `;
 
 const logActions = [
-	"InviteCreate",
-	"InviteDelete",
-	"MemberAdd",
+	"InviteCreated",
+	"InviteDeleted",
+	"MemberAdded",
 	"MemberBanned",
-	"MemberRemove",
+	"MemberRemoved",
 	"MemberUnbanned",
-	"NicknameChange",
+	"NicknameChanged",
 	"RolesChanged",
-	"ServerEdit",
-	"channelCreate",
-	"channelDelete",
-	"channelUpdate",
-	"emojiCreate",
-	"emojiDelete",
-	"emojiUpdate",
-	"messageDelete",
-	"messageUpdate",
-	"roleCreate",
-	"roleDelete",
-	"roleUpdate",
-	"userUpdate",
+	"ServerEdited",
+	"ChannelCreated",
+	"ChannelDeleted",
+	"ChannelUpdated",
+	"EmojiCreated",
+	"EmojiDeleted",
+	"EmojiUpdated",
+	"MessageDeleted",
+	"MessageUpdated",
+	"RoleCreated",
+	"RoleDeleted",
+	"RoleUpdated",
+	"UserUpdated",
 ];
 
 const LogModal = ({ defaultValue, ...props }) => {
@@ -195,14 +188,16 @@ const LogModal = ({ defaultValue, ...props }) => {
 	>(reducer, defaultValue ?? logRecordFactory(), record => record);
 
 	useEffect(() => {
+		console.log(defaultValue)
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
+		} else {
+			dispatch({ type: actions.RESET });
 		}
-	}, [defaultValue]);
+	}, [defaultValue, props.open]);
 
 	const create = async () => {
-		const docRef = firebaseClient.db.collection("customCommands").doc(serverId);
-
+		const docRef = firebaseClient.db.collection("logging").doc(serverId);
 		await docRef.set({ [state.id]: state }, { merge: true });
 
 		props.onClose();
@@ -223,24 +218,22 @@ const LogModal = ({ defaultValue, ...props }) => {
 						<StyledSelect
 							placeholder="Select Action"
 							onChange={value => {
-								const channel = parseSelectValue(value);
-
 								dispatch({
 									type: actions.UPDATE,
-									key: "general.channel",
-									value: channel,
+									key: "action",
+									value: value.value,
 								});
 							}}
 							value={
 								state.action
 									? {
-										value: (state.action),
-										label: splitByCaps(state.action),
+											value: state.action,
+											label: splitByCaps(state.action),
 									  }
 									: null
 							}
 							options={logActions.map(action => ({
-								value: (action),
+								value: action,
 								label: splitByCaps(action),
 							}))}
 						/>
@@ -253,8 +246,8 @@ const LogModal = ({ defaultValue, ...props }) => {
 
 								dispatch({
 									type: actions.UPDATE,
-									key: "general.channel",
-									value: channel,
+									key: "channel",
+									value: allChannels.find(({ id }) => id === channel),
 								});
 							}}
 							value={
@@ -310,6 +303,7 @@ const Logging = () => {
 	const changed = !isEqual(snapshot ?? {}, localActions);
 
 	const deleteMe = key => {
+		console.log(key)
 		setLocalActions(prev => {
 			const copy = { ...prev };
 			delete copy[key];
@@ -318,7 +312,7 @@ const Logging = () => {
 	};
 
 	const save = () => {
-		collectionRef.doc(serverId).set(localActions, { merge: true });
+		collectionRef.doc(serverId).set(localActions);
 	};
 
 	const createCommand = () => {
@@ -350,10 +344,15 @@ const Logging = () => {
 			<span>
 				<H2>Logging Actions - {logRecordCount}</H2>
 				<ul className="">
-					{logRecordList.map(record => (
-						<ListItem delete={() => {}} edit={() => edit(record)}>
+					{logRecordList.map((record, i) => (
+						<ListItem
+							delete={() => {
+								deleteMe(record.id);
+							}}
+							edit={() => edit(record)}
+						>
 							<H2>
-								Log {record.action} in{" "}
+								Log {splitByCaps(record.action)} in{" "}
 								<ChannelItem {...record.channel}></ChannelItem>
 							</H2>
 						</ListItem>
