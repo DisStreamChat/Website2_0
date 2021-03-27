@@ -24,6 +24,7 @@ const ServerArea = styled.div``;
 
 const Discord = ({ session }: dashboardProps) => {
 	const [refreshed, setRefreshed] = useState(false);
+	const [servers, setServers] = useState([]);
 
 	const router = useRouter();
 
@@ -31,15 +32,34 @@ const Discord = ({ session }: dashboardProps) => {
 
 	const user = session.user;
 
-	const servers =
-		user.adminServers ??
-		user.guilds.filter(server => {
-			return (
-				server.permissions.includes("MANAGE_GUILD") ||
-				server.owner ||
-				server.permissions.includes("ADMINISTRATOR")
+	const { adminServers, guilds } = user;
+
+	useEffect(() => {
+		const allServers =
+			adminServers ??
+			guilds.filter(server => {
+				return (
+					server.permissions.includes("MANAGE_GUILD") ||
+					server.owner ||
+					server.permissions.includes("ADMINISTRATOR")
+				);
+			});
+
+		(async () => {
+			const mappedServers: any[] = await Promise.all(
+				allServers.map(async server => {
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/ismember?guild=${server.id}`
+					);
+					const json = await response.json();
+					return { ...server, botIn: json.result };
+				})
 			);
-		});
+			setServers(mappedServers.sort((a, b) => !a.botIn ? 1 : -1));
+		})();
+	}, [adminServers, guilds]);
+
+	console.log(servers);
 
 	const server = servers.find(server => server.id === serverId);
 

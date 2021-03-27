@@ -14,18 +14,11 @@ interface ServerProps {
 	botIn?: boolean;
 }
 
-const ServerItem = ({ id, name, icon }: ServerProps) => {
+const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 	const smallScreen = useMediaQuery("(max-width: 425px)");
 
-	const [botIn, setBotIn] = useState(false)
 
-	useEffect(() => {
-		(async () => {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/ismember?guild=${id}`)
-			const json = await response.json()
-			setBotIn(json.result)
-		})()
-	}, [])
+
 
 	const Button = botIn ? BlueButton : PaddingButton;
 
@@ -41,7 +34,7 @@ const ServerItem = ({ id, name, icon }: ServerProps) => {
 						</a>
 					</Link>
 				) : (
-					// TODO: change to use a button with a modal
+					// TODO: change to use a button with a popup
 					<Anchor href="https://invite.disstreamchat.com" newTab>
 						<Button tabIndex={-1}>Invite</Button>
 					</Anchor>

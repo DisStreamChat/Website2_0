@@ -7,7 +7,7 @@ const ServerSelect = ({servers}) => {
 			<ServerTitle>Select a Server</ServerTitle>
 			<ServerSelectBody>
 				{servers.map(server => (
-					<ServerItem key={server.id} {...server} botIn={true} />
+					<ServerItem key={server.id} {...server} />
 				))}
 			</ServerSelectBody>
 		</>
