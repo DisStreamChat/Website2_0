@@ -5,6 +5,7 @@ import { ServerItemBody } from "./styles";
 import Link from "next/link";
 import { useMediaQuery } from "@material-ui/core";
 import Anchor from "../../shared/ui-components/Anchor";
+import { useEffect, useState } from "react";
 
 interface ServerProps {
 	id: string;
@@ -13,8 +14,18 @@ interface ServerProps {
 	botIn?: boolean;
 }
 
-const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
+const ServerItem = ({ id, name, icon }: ServerProps) => {
 	const smallScreen = useMediaQuery("(max-width: 425px)");
+
+	const [botIn, setBotIn] = useState(false)
+
+	useEffect(() => {
+		(async () => {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/ismember?guild=${id}`)
+			const json = await response.json()
+			setBotIn(json.result)
+		})()
+	}, [])
 
 	const Button = botIn ? BlueButton : PaddingButton;
 
