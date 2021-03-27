@@ -117,3 +117,12 @@ export const DescriptionButton = (props: DescriptionProps) => {
 		</div>
 	);
 };
+
+export const EmptyButton = styled.button`
+	background: none;
+	outline: none;
+	border: none;
+	text-align: left;
+	color: white;
+	
+`
