@@ -117,6 +117,11 @@ const GlobalStyle = createGlobalStyle`
 	.emoji-mart-search input{
 		box-sizing: border-box;
 	}
+
+	hr {
+		width: 100%;
+		border-color: grey;
+	}
 `;
 
 export default GlobalStyle;

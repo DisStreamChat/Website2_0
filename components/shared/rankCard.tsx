@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { loadImage } from "canvas";
 
 const adminIds = {
 	twitch: {
@@ -20,19 +21,8 @@ const adminIds = {
 	},
 };
 
-const getRoleScaling = (roles, scaling) => {
-	const sortedRoles = roles.sort((a, b) => -1 * a.comparePositionTo(b));
-	for (const role of sortedRoles) {
-		const scale = scaling?.[role.id];
-		if (scale != undefined) return scale;
-	}
-};
-
-const getLevel = xp => Math.max(0, Math.floor(Math.log(xp - 100)));
 
 const getXp = level => (5 / 6) * level * (2 * level * level + 27 * level + 91);
-
-
 
 const applyText = (
 	canvas,
@@ -87,22 +77,22 @@ const roundCanvas = function (ctx, x, y, w, h, r = 0, cb) {
 	return ctx;
 };
 
-const loadImage = url => {
-	const img = new window.Image();
-	img.src = url
-	return img
-}
+// const loadImage = url => {
+// 	const img = new window.Image();
+// 	img.src = url;
+// 	return img;
+// };
 
-const generateRankCard = async (canvas: HTMLCanvasElement, userData, user) => {
+const generateRankCard = async (canvas: HTMLCanvasElement, userData, user, images) => {
+	console.log(user);
 	const primaryColor = userData.primaryColor || "#c31503";
-	const backgroundColor1 = "#1f2525a0";
+	const backgroundColor1 = "#1f2525";
 	const backgroundColor2 = `#090b0b${(userData.backgroundOpacity ?? 255).toString(16)}`;
 	const xpBarBackground = "#484b4e";
 	const black = "#000000";
 	const backgroundImage = userData.backgroundImage;
 
 	const ctx = canvas.getContext("2d");
-
 	// calculate all required values
 	const xpToNextLevel = getXp(userData.level + 1);
 	const xpForCurrentLevel = getXp(userData.level);
@@ -110,16 +100,18 @@ const generateRankCard = async (canvas: HTMLCanvasElement, userData, user) => {
 	const xpProgress = Math.abs(userData.xp - xpForCurrentLevel);
 	const percentDone = xpProgress / xpLevelDif;
 	const displayXp =
-		xpProgress > 1000 ? `${(xpProgress / 1000).toFixed(2)}k` : Math.floor(xpProgress);
+	xpProgress > 1000 ? `${(xpProgress / 1000).toFixed(2)}k` : Math.floor(xpProgress);
 	const displayXpToGo = xpLevelDif > 1000 ? `${(xpLevelDif / 1000).toFixed(2)}k` : xpLevelDif;
-
+	
 	// draw the first background
 	if (backgroundImage) {
 		const backgroundImageFile = await loadImage(backgroundImage);
 		roundCanvas(ctx, 0, 0, canvas.width, canvas.height, 125, () => {
+			//@ts-ignore
 			ctx.drawImage(backgroundImageFile, 0, 0, canvas.width, canvas.height);
 		});
 	} else {
+		ctx.clearRect(0, 0, canvas.width+5, canvas.height+5);
 		ctx.fillStyle = backgroundColor1;
 		roundRect(ctx, 0, 0, canvas.width, canvas.height, 125);
 	}
@@ -147,7 +139,7 @@ const generateRankCard = async (canvas: HTMLCanvasElement, userData, user) => {
 
 	// draw nickname
 	ctx.fillStyle = "#ffffff";
-	const name = `${user.nickname || user?.user?.username}${user.user?.tag?.slice?.(-5)}`;
+	const name = `${user.nickname || user?.username}${user?.tag?.slice?.(-5)}`;
 	ctx.font = applyText(canvas, name, 24, 8, "Poppins");
 	ctx.fillText(`${name}`, canvas.width / 3, 75);
 
@@ -171,7 +163,7 @@ const generateRankCard = async (canvas: HTMLCanvasElement, userData, user) => {
 
 	// draw users and level and rank
 	ctx.fillStyle = "#ffffff";
-	ctx.font = "24px Poppins";
+	ctx.font = "18px Poppins";
 	const levelText = `Level ${userData.level + 1}`;
 	const levelTextWidth = ctx.measureText(levelText).width;
 	ctx.fillText(levelText, canvas.width / 3, textY);
@@ -186,35 +178,50 @@ const generateRankCard = async (canvas: HTMLCanvasElement, userData, user) => {
 	ctx.arc(100, 100, 75 / 1.25, 0, Math.PI * 2, true);
 	ctx.fill();
 	ctx.clip();
-	const profileUrl = user.user?.displayAvatarURL({ format: "png" });
-	const avatar = await loadImage("https://static-cdn.jtvnw.net/jtv_user_pictures/b308a27a-1b9f-413a-b22b-3c9b2815a81a-profile_image-300x300.png");
-	ctx.drawImage(avatar, 25 * 1.75, 25 * 1.75, 150 / 1.25, 150 / 1.25);
+
+	//@ts-ignore
+	try {
+		ctx.drawImage(images.avatar, 25 * 1.6, 25 * 1.5, 150 / 1.25, 150 / 1.25);
+	} catch (err) {}
 	ctx.restore();
 
 	// draw status icon
 	const iconWidth = 50;
-	const discordAdmins = adminIds.discord.developers;
-	const statuses = {
-		online: "https://cdn.discordapp.com/emojis/726982918064570400.png?v=1",
-		idle: "https://cdn.discordapp.com/emojis/726982942181818450.png?v=1",
-		dnd: "https://cdn.discordapp.com/emojis/726982954580181063.png?v=1",
-		offline: "https://cdn.discordapp.com/emojis/702707414927015966.png?v=1",
-	};
-	const statusUrl = statuses[user?.presence?.status ?? "offline"];
-	const statusImage = await loadImage(statusUrl);
-	ctx.drawImage(
-		statusImage,
-		200 / 1.25 - iconWidth / 1.15,
-		200 / 1.25 - iconWidth / 1.15,
-		iconWidth,
-		iconWidth
-	);
-
-
+	try {
+		ctx.drawImage(
+			//@ts-ignore
+			images.status,
+			200 / 1.25 - iconWidth / 1.15,
+			200 / 1.25 - iconWidth / 1.15,
+			iconWidth,
+			iconWidth
+		);
+	} catch (err) {}
 };
 
 export const RankCard = props => {
 	const canvasRef = useRef(null);
+	const [images, setImages] = useState<any>({});
+
+	const { user } = props;
+	useEffect(() => {
+		(async () => {
+			const discordAdmins = adminIds.discord.developers;
+			const statuses = {
+				online: "https://cdn.discordapp.com/emojis/726982918064570400.png?v=1",
+				idle: "https://cdn.discordapp.com/emojis/726982942181818450.png?v=1",
+				dnd: "https://cdn.discordapp.com/emojis/726982954580181063.png?v=1",
+				offline: "https://cdn.discordapp.com/emojis/702707414927015966.png?v=1",
+			};
+			const statusUrl = statuses["online"];
+			const statusImage = await loadImage(statusUrl);
+			images.status = statusImage;
+
+			const profileUrl = user?.avatarURL;
+			const avatar = await loadImage(profileUrl);
+			images.avatar = avatar;
+		})();
+	}, [user]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -222,8 +229,8 @@ export const RankCard = props => {
 
 		//Our draw come here
 		// draw(context);
-		generateRankCard(canvas, {level: 0, xp: 30}, {})
-	}, []);
+		requestAnimationFrame(() => generateRankCard(canvas, props.userData, props.user, images));
+	}, [props.userData, props.user]);
 
 	return <canvas width={560} height={200} ref={canvasRef} {...props} />;
 };
