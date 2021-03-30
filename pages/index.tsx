@@ -70,7 +70,7 @@ const Heading = styled(H1)`
 	text-align: center;
 `;
 
-const Features = styled.section`
+export const Features = styled.section`
 	width: 65%;
 	/* min-height: 2000px; */
 	margin: 0 auto;
