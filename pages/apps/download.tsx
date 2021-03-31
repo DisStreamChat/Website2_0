@@ -73,7 +73,11 @@ const Downloads = styled.div`
 `;
 
 const Download = () => {
-	const os = useMemo(getOS, []);
+	const os = useMemo(() => {
+		if (typeof window !== "undefined") {
+			return getOS();
+		}
+	}, []);
 
 	const osDetails = getOsDetails(os);
 

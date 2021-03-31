@@ -59,16 +59,18 @@ const DashboardHeader = ({ user }) => {
 
 	const links = (
 		<>
-			<styles.navItem
-				overrideUnderline={
-					router.query?.type[0] === "discord" && router.query?.type?.length == 1
-				}
-				name="Discord"
-			>
-				<Link href="/dashboard/discord">
-					<a>Discord</a>
-				</Link>
-			</styles.navItem>
+			{user.discordId && (
+				<styles.navItem
+					overrideUnderline={
+						router.query?.type[0] === "discord" && router.query?.type?.length == 1
+					}
+					name="Discord"
+				>
+					<Link href="/dashboard/discord">
+						<a>Discord</a>
+					</Link>
+				</styles.navItem>
+			)}
 			<styles.navItem overrideUnderline={router.query?.type[0] === "app"} name="app">
 				<Link href="app">
 					<a>app</a>

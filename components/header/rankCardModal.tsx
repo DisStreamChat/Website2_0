@@ -149,8 +149,9 @@ const RankCardModal = ({ open, onClose }) => {
 	const [discordUser, setDiscordUser] = useState({});
 	const [customizationData, setCustomizationData] = useState<RankCardCustomization>({});
 	const collectionRef = firebaseClient.db.collection("Streamers");
+
 	const [snapshot, loading, error] = useCollectionData(
-		collectionRef.where("discordId", "==", user.discordId)
+		collectionRef.where("discordId", "==", user?.discordId || " ")
 	);
 	const [pickerOpen, setPickerOpen] = useState(false);
 
@@ -174,7 +175,7 @@ const RankCardModal = ({ open, onClose }) => {
 
 	useEffect(() => {
 		(async () => {
-			const { discordId } = user;
+			const { discordId } = user || {};
 
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveuser?user=${discordId}`
@@ -201,7 +202,7 @@ const RankCardModal = ({ open, onClose }) => {
 			try {
 				await collectionRef.doc(doc.id).update(customizationData);
 			} catch (err) {
-				console.log(err.message)
+				console.log(err.message);
 			}
 		}
 	};

@@ -78,9 +78,11 @@ export const StyledProfile = ({
 										<a>My Dashboard</a>
 									</Link>
 								</styles.menuItem>
-								<styles.menuItem onClick={() => setModalOpen(true)}>
-									Edit my personal rank card
-								</styles.menuItem>
+								{user.discordId && (
+									<styles.menuItem onClick={() => setModalOpen(true)}>
+										Edit my personal rank card
+									</styles.menuItem>
+								)}
 								<styles.menuItem tabIndex={-1}>
 									<Link href="/account">
 										<a>My Account</a>

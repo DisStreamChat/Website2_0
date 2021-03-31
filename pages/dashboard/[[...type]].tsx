@@ -81,7 +81,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			const userDiscordDoc = await userDisordRef.get();
 			const userData = userDoc.data();
 			const userDiscordData = userDiscordDoc.data();
-			session.user = { ...userData, ...userDiscordData };
+			session.user = {
+				...userData,
+				...(userDiscordData || {}),
+				discordConnected: !!userDiscordData,
+			};
 		}
 	} catch (err) {
 		console.log("error: ", err.message);
@@ -90,7 +94,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	}
 
 	if (!params.type) {
-		res.writeHead(307, { location: "/dashboard/discord" }).end();
+		if (session.user?.discordConnected) {
+			res.writeHead(307, { location: "/dashboard/discord" }).end();
+		} else {
+			res.writeHead(307, { location: "/dashboard/app" }).end();
+		}
 		return { props: {} };
 	}
 
