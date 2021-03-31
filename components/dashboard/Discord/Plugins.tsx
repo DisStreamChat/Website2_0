@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import CustomCommands from "./pluginPages/customCommands";
 import Leveling from "./pluginPages/leveling";
 import Logging from "./pluginPages/logging";
+import RoleManagement from "./pluginPages/roleManagement";
 import Welcome from "./pluginPages/welcome";
 
 const Plugins = () => {
@@ -18,6 +19,8 @@ const Plugins = () => {
 			return <Welcome/>
 		case "logging":
 			return <Logging/>
+		case "roles":
+			return <RoleManagement/>
 		default:
 			return <></>;
 	}
