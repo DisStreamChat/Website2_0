@@ -1,14 +1,32 @@
-import { ReactNode, ReactNodeArray, useContext } from "react";
+import { ReactNode, ReactNodeArray, useContext, useReducer } from "react";
 import { discordContext } from "../discordContext";
 import styled from "styled-components";
 import { H1 } from "../../../shared/styles/headings";
 import { Switch } from "@material-ui/core";
+import { get, set, isEqual, cloneDeep } from "lodash";
+import { Action } from "../../../../utils/types";
+
+interface RoleSettings {
+	reactions: {};
+	commands: {};
+	join: {};
+	descriptions: {};
+}
+
+const roleFactory = (): RoleSettings => {
+	return {
+		reactions: {},
+		commands: {},
+		join: {},
+		descriptions: {},
+	};
+};
 
 interface sectionProps {
 	id: string;
 	title: string;
 	open?: boolean;
-	setOpen?: () => void
+	setOpen?: () => void;
 }
 
 const StyledRoleSection = styled.section`
@@ -18,7 +36,7 @@ const StyledRoleSection = styled.section`
 		font-size: 16px;
 	}
 	border-top: 1px solid #aaaaaa44;
-	&:first-child{
+	&:first-child {
 		margin-top: 1rem;
 	}
 `;
@@ -27,7 +45,7 @@ const RoleSectionTitle = styled.div`
 	padding: 1.5rem 0;
 	display: flex;
 	justify-content: space-between;
-`
+`;
 
 const RoleSection: React.FC<sectionProps> = props => {
 	return (
@@ -41,11 +59,36 @@ const RoleSection: React.FC<sectionProps> = props => {
 	);
 };
 
+const actions = {
+	UPDATE: "update",
+	RESET: "reset",
+	SET: "set",
+};
 
+const settingsReducer = (state: RoleSettings, action: Action) => {
+	switch (action.type) {
+		case actions.UPDATE:
+			const obj = set(
+				{ ...state },
+				action.key,
+				typeof action.value === "function"
+					? action.value(get(state, action.key))
+					: action.value
+			);
+			return obj;
+		case actions.RESET:
+			return roleFactory();
+		case actions.SET:
+			return action.value;
+	}
+};
 
 const RoleManagement = () => {
 	const { roles, allChannels, emotes } = useContext(discordContext);
-
+	const [{ reactions, commands, join, descriptions }, dispatch] = useReducer<
+		(state: RoleSettings, action: Action) => RoleSettings,
+		RoleSettings
+	>(settingsReducer, roleFactory(), roleFactory);
 	return (
 		<>
 			<RoleSection
