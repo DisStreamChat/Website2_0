@@ -1,8 +1,8 @@
-FROM node:current-alpine AS base
+FROM node:12 AS base
 WORKDIR /base
 COPY package*.json ./
 RUN npx browserslist@latest --update-db
-RUN npm install
+RUN npm install --force
 COPY . .
 
 FROM base AS build
@@ -12,7 +12,7 @@ COPY --from=base /base ./
 COPY .env.production .env.local
 RUN npm run build
 
-FROM node:current-alpine AS production
+FROM node:12 AS production
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build /build/package*.json ./

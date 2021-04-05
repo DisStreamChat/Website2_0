@@ -14,7 +14,7 @@
 		"@webscopeio/react-textarea-autocomplete": "^4.7.3",
 		"canvas": "^2.7.0",
 		"chroma-js": "^2.1.0",
-		"disstreamchat-utils": "^0.0.2",
+		"disstreamchat-utils": "^0.0.3",
 		"emoji-mart": "^3.0.1",
 		"firebase": "^8.2.4",
 		"firebase-admin": "^9.4.2",

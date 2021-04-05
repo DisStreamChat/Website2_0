@@ -175,7 +175,8 @@ const RankCardModal = ({ open, onClose }) => {
 
 	useEffect(() => {
 		(async () => {
-			const { discordId } = user || {};
+			if(!user) return
+			const { discordId } = user
 
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveuser?user=${discordId}`
