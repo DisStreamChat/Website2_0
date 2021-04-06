@@ -1,4 +1,12 @@
-import { JSXElementConstructor, useEffect, useMemo, useRef, useState } from "react";
+import {
+	JSXElementConstructor,
+	MutableRefObject,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import styled from "styled-components";
 import AddIcon from "@material-ui/icons/Add";
 import { ClickAwayListener } from "@material-ui/core";
@@ -123,10 +131,25 @@ const SearchArea = styled.div`
 	}
 `;
 
+const calculateSizeAndPosition = (
+	optionsLength: number,
+	buttonRef: MutableRefObject<HTMLButtonElement>
+) => {
+	const height = 264;
+	const width = 250;
+	if (!buttonRef?.current) return {};
+	const rect = buttonRef.current.getBoundingClientRect();
+	const buttonBottom = rect.bottom;
+	const buttonCenterX = rect.left + Math.abs(rect.left - rect.right) / 2;
+
+	const boxTop = buttonBottom + 25;
+	return { height, width, top: boxTop, center: buttonCenterX };
+};
+
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
 	const [searchValue, setSearchValue] = useState("");
-	const buttonRef = useRef<HTMLElement>();
+	const buttonRef = useRef<HTMLButtonElement>();
 
 	const options = useMemo(
 		() =>
@@ -135,6 +158,34 @@ const Select = (props: selectProps) => {
 			),
 		[props.options, props.value]
 	);
+
+	const { width, height, top, center } = calculateSizeAndPosition(
+		props.options?.length || 0,
+		buttonRef
+	);
+
+	const overflowLeft = center < width / 2;
+	const overflowRight = center > width / 2 + window?.innerWidth;
+
+	const overflowBottom = top > window?.innerHeight - height;
+
+	if (overflowLeft) {
+		inState.x = `${width / 1.25}px`;
+		outState.x = `${width / 1.25}px`;
+	} else {
+		inState.x = "50%";
+		outState.x = "50%";
+	}
+
+	console.log(overflowBottom);
+
+	if (overflowBottom) {
+		inState.y = (height + 50) * -1;
+		outState.y = (height + 38) * -1;
+	} else {
+		inState.y = 12;
+		outState.y = 20;
+	}
 
 	useEffect(() => {
 		if (!options?.length) {
