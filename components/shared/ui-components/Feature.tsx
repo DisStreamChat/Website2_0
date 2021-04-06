@@ -70,7 +70,7 @@ const Feature = (props: FeatureProps) => {
 		</>,
 		<>
 			{props.images.map((image, idx) => (
-				<LazyLoad debounce={false} offsetVertical={700} offsetTop={700}>
+				<LazyLoad key={image} debounce={false} offsetVertical={700} offsetTop={700}>
 					<img key={image} src={image} alt="" className={props.imageClassNames?.[idx]} />
 				</LazyLoad>
 			))}
