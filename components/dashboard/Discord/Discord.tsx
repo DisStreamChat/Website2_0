@@ -35,17 +35,12 @@ const Discord = ({ session }: dashboardProps) => {
 	const { adminServers, guilds } = user;
 
 	useEffect(() => {
-		const allServers =
-			adminServers ??
-			guilds.filter(server => {
-				return (
-					server.permissions.includes("MANAGE_GUILD") ||
-					server.owner ||
-					server.permissions.includes("ADMINISTRATOR")
-				);
-			});
-
 		(async () => {
+			const getServers = firebaseClient.app.functions().httpsCallable("getServers");
+			const data = await getServers({
+				discordId: user.discordId,
+			});
+			const allServers = data.data.adminServers;
 			const mappedServers: any[] = await Promise.all(
 				allServers.map(async server => {
 					const response = await fetch(
@@ -55,11 +50,18 @@ const Discord = ({ session }: dashboardProps) => {
 					return { ...server, botIn: json.result };
 				})
 			);
-			setServers(mappedServers.sort((a, b) => !a.botIn ? 1 : -1));
+			setServers(mappedServers.sort((a, b) => (!a.botIn ? 1 : -1)));
 		})();
-	}, [adminServers, guilds]);
 
-	console.log(servers);
+		// adminServers ??
+		// guilds.filter(server => {
+		// 	return (
+		// 		server.permissions.includes("MANAGE_GUILD") ||
+		// 		server.owner ||
+		// 		server.permissions.includes("ADMINISTRATOR")
+		// 		);
+		// 	});
+	}, [adminServers, guilds]);
 
 	const server = servers.find(server => server.id === serverId);
 
