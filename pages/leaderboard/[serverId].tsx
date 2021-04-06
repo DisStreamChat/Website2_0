@@ -26,6 +26,9 @@ const LeaderboardHeader = styled.div`
 `;
 const LeaderboardBody = styled.div`
 	display: flex;
+	@media screen and (max-width: 350px){
+		width: 100vw;
+	}
 `;
 
 const LeaderBoardMain = styled.main`
@@ -33,7 +36,12 @@ const LeaderBoardMain = styled.main`
 	max-width: 1440px;
 	margin: 0 auto;
 	padding: 0 1rem;
+	display: flex;
+	flex-direction: column;
 	min-height: calc(100vh - 125px);
+	@media screen and (max-width: 350px){
+		padding-left: 0px;
+	}
 `;
 
 const UserList = styled.ul`
@@ -42,6 +50,10 @@ const UserList = styled.ul`
 	box-sizing: content-box;
 	background: #3e4246;
 	box-shadow: 0 0 16px -6px #4e4b4b;
+	@media screen and (max-width: 712px){
+		width: 95%;
+	}
+	
 `;
 
 interface userProps {
@@ -66,6 +78,9 @@ const ListItem = styled.li`
 		padding: 1rem 0 !important;
 		${gapFunction({ gap: "1rem" })};
 		white-space: nowrap;
+		@media screen and (max-width: 660px){
+			font-size: .75rem;
+		}
 	}
 	.xp {
 		display: flex;
@@ -83,6 +98,10 @@ const ListItem = styled.li`
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+	@media screen and (max-width: 500px){
+		flex-direction: column;
+		align-items: flex-start;
 	}
 `;
 
@@ -132,8 +151,8 @@ const UserItem = (props: userProps) => {
 			);
 			const json = await response.json();
 			setUserDetails({
-				name: json.username,
-				avatar: json.avatarURL,
+				name: json?.username,
+				avatar: json?.avatarURL,
 				id: props.id,
 			});
 		})();
@@ -263,9 +282,9 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	const json = await response.json();
 
 	const server = {
-		icon: json.iconURL,
-		nameAcronym: json.nameAcronym,
-		name: json.name,
+		icon: json?.iconURL || "",
+		nameAcronym: json?.nameAcronym || "",
+		name: json?.name || "",
 	};
 
 	if (!(await levelingIsEnabled(serverId)) || leveling?.length === 0) {
