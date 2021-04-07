@@ -20,6 +20,13 @@ const PrivacyPolicy = styled.div`
 	a {
 		text-decoration: underline;
 	}
+	h2{
+		font-size: 2rem;
+		font-weight: bold;
+	}
+	ul{
+		padding-left: 1rem;
+	}
 `;
 
 const PrivacyMain = styled(Main)`
@@ -90,7 +97,7 @@ const Privacy = () => {
 
 					<p>We use the information we collect in various ways, including to:</p>
 
-					<ul className="">
+					<ul >
 						<li>Provide, operate, and maintain our website</li>
 						<li>Improve, personalize, and expand our website</li>
 						<li>Understand and analyze how you use our website</li>

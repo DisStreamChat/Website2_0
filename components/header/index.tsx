@@ -81,11 +81,11 @@ const Header = () => {
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
-			<styles.navItem name="Commands">
+			{/* <styles.navItem name="Commands">
 				<Link href="/commands">
 					<a>Commands</a>
 				</Link>
-			</styles.navItem>
+			</styles.navItem> */}
 			<styles.navItem name="Community">
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
