@@ -48,6 +48,15 @@ const PluginCard = styled.a`
 		box-shadow: 0 0 0px 5px #24252a, 0 0 0 10px var(--disstreamchat-blue);
 
 	}
+	&.coming-soon:after{
+		content: "Coming Soon";
+		position: absolute;
+		right: -10px;
+		top: -.25rem;
+		background: var(--disstreamchat-blue);
+		padding: .25rem .5rem;
+		border-radius: 100vh;
+	}
 `;
 
 const PluginTitle = styled.div`
@@ -107,7 +116,7 @@ const PluginItem = (props: pluginProps) => {
 	const [hovered, focused, interacted] = useInteraction(cardRef);
 
 	return (
-		<PluginCard ref={cardRef} href={props.active ? `${props.serverId}/${props.id}` : null}>
+		<PluginCard className={`${props.comingSoon ? "coming-soon" : ""}`} ref={cardRef} href={props.active ? `${props.serverId}/${props.id}` : null}>
 			{!props.comingSoon && (
 				<PluginLine
 					active={props.active}
