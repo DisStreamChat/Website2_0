@@ -75,8 +75,8 @@ const Footer = () => {
 					© DisStreamChat 2020-2021
 				</Anchor>
 				<span className="made-by">
-					Made with ❤ by the{" "}
-					<Anchor href="https://github.com/orgs/DisStreamChat/people" newTab>
+					Made with <span className="chl chr">❤</span> by the{" "}
+					<Anchor className="chl" href="https://github.com/orgs/DisStreamChat/people" newTab>
 						DisStreamChat Team
 					</Anchor>
 				</span>

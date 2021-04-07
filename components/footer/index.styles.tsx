@@ -18,6 +18,16 @@ const footer = styled.footer`
 		opacity: 1;
 		color: white;
 	}
+	.made-by {
+		display: flex;
+		align-items: center;
+		.chl {
+			margin-left: 1ch;
+		}
+		.chr {
+			margin-right: 1ch;
+		}
+	}
 `;
 
 const top = styled.div`
