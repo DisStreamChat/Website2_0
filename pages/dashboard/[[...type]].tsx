@@ -13,7 +13,7 @@ const App = dynamic(() => import("../../components/dashboard/App"));
 import { DiscordContextProvider } from "../../components/dashboard/Discord/discordContext";
 import Head from "next/head";
 
-const Dashboard = ({ type, session }) => {
+const Dashboard = ({ type, session, settings, categories }) => {
 	const router = useRouter();
 
 	const [, serverId, pluginName] = router.query.type as string[];
@@ -40,7 +40,9 @@ const Dashboard = ({ type, session }) => {
 				<DashboardContainer>
 					<ContentArea>
 						{type?.[0] === "discord" && <Discord session={session} />}
-						{type?.[0] === "app" && <App session={session} />}
+						{type?.[0] === "app" && (
+							<App settings={settings} categories={categories} session={session} />
+						)}
 					</ContentArea>
 				</DashboardContainer>
 			</DiscordContextProvider>
@@ -102,10 +104,30 @@ export const getServerSideProps: GetServerSideProps = async context => {
 		return { props: {} };
 	}
 
+	const [first, second] = params.type as string[];
+	let settings = {};
+	let categories = [];
+	if (first === "app") {
+		if (!second) {
+			res.writeHead(307, { location: "/dashboard/app/all" }).end();
+			return { props: {} };
+		}
+		const settingsRef = await admin.firestore().collection("defaults").doc("settings").get();
+		settings = settingsRef.data()?.settings;
+		//@ts-ignore
+		categories = [...new Set(Object.values(settings || {}).map(val => val.category))].sort();
+	}
 	if (params.type && !["app", "discord"].includes(params.type[0])) {
 		return { notFound: true };
 	}
-	return { props: { type: params.type || null, session } };
+	return {
+		props: {
+			type: params.type || null,
+			session,
+			settings,
+			categories: ["App", "Discord", ...categories],
+		},
+	};
 };
 
 export default Dashboard;
