@@ -50,6 +50,10 @@ export const gapFunction = (props: gapProps = {}) => `
 	}
 `;
 
+export const heightFunction = () => `
+	min-height: calc(100vh - 128px);
+`
+
 export const gap = styled.div`
 	${(props: gapProps) => gapFunction(props)}
 `;
