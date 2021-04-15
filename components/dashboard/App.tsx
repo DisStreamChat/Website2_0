@@ -182,11 +182,10 @@ const settingReducer = (state, action: Action) => {
 
 const App = (props: AppProps) => {
 	const router = useRouter();
-
 	const [, category] = router.query.type as string[];
 	const [state, dispatch] = useReducer(settingReducer, {});
 
-	const [search, setSearch] = useState("");
+	const [search, setSearch] = useState(router.query.search || "");
 	const { user } = useContext(authContext);
 	const [openItem, setOpenItem] = useState("");
 
@@ -194,6 +193,7 @@ const App = (props: AppProps) => {
 		firebaseClient.db.collection("Streamers").doc(user?.uid)
 	);
 
+	console.log({ router });
 	const { settings: defaultSettings, categories } = props;
 
 	const allSettings: Setting[] = Object.entries(defaultSettings)
@@ -258,7 +258,13 @@ const App = (props: AppProps) => {
 				<SettingSidebar>
 					{categories?.map(cat => (
 						<CategoryItem key={cat} className={`${cat === category ? "active" : ""}`}>
-							<Anchor href={`/dashboard/app/${cat.toLowerCase()}`}>{cat}</Anchor>
+							<Anchor
+								local
+								as={`/dashboard/app/${cat.toLowerCase()}`}
+								href={`/dashboard/app/${cat.toLowerCase()}?search=${search}`}
+							>
+								{cat}
+							</Anchor>
 						</CategoryItem>
 					))}
 				</SettingSidebar>
