@@ -19,6 +19,7 @@ import { useRouter } from "next/router";
 import { Action } from "../../utils/types";
 import { isEqual } from "lodash";
 import SaveBar from "../shared/ui-components/SaveBar";
+import { settings } from "cluster";
 
 const AppContainer = styled.main`
 	display: flex;
@@ -40,8 +41,8 @@ const AppHeader = styled.div`
 
 const SettingsContainer = styled.div`
 	display: flex;
+	gap: 2rem;
 	width: 100%;
-	margin-top: 1rem;
 `;
 
 const Settings = styled.ul`
@@ -49,7 +50,6 @@ const Settings = styled.ul`
 `;
 
 const SettingSidebar = styled.ul`
-	margin-right: 1rem;
 	background: #101010;
 	height: fit-content;
 	padding: 1rem !important;
@@ -57,7 +57,7 @@ const SettingSidebar = styled.ul`
 	display: flex;
 	flex-direction: column;
 	min-width: 15%;
-	margin-top: 1rem;
+	margin-top: 1rem !important;
 	box-shadow: 3px 3px 5px 0 #111;
 	position: sticky;
 	top: 6rem;
@@ -65,6 +65,7 @@ const SettingSidebar = styled.ul`
 `;
 
 const CategoryItem = styled.li`
+	text-transform: capitalize;
 	width: 100%;
 	a {
 		text-decoration: none;
@@ -121,11 +122,11 @@ interface Setting {
 	category: string;
 	name: string;
 	type: string;
-	value?: string;
+	value?: string | { [key: string]: any };
 	placeholder?: string;
 	min?: number;
 	max: number;
-	options?: number;
+	options?: any[];
 	open?: boolean;
 }
 
@@ -144,13 +145,17 @@ const settingMap = {
 	boolean: BooleanSetting,
 	color: ColorSetting,
 	number: RangeSetting,
+	list: ListSetting,
+	selector: SelectSetting,
 };
 
 const SettingComponent = (props: SettingProps) => {
 	const { type } = props;
 	const Elt = useMemo(() => settingMap[type], [type]);
-
-	return Elt ? <Elt {...props}></Elt> : <></>;
+	let val = props.value;
+	console.log(props.category)
+	if (type === "selector") val = { label: props.value, value: props.value };
+	return Elt ? <Elt {...props} value={val}></Elt> : <></>;
 };
 
 enum Actions {
@@ -201,9 +206,18 @@ const App = (props: AppProps) => {
 			const categoryOrder = a.type.localeCompare(b.type);
 			const nameOrder = a.name.localeCompare(b.name);
 			return !!categoryOrder ? categoryOrder : nameOrder;
+		})
+		.filter(setting => {
+			if (category === "all") return true;
+			return setting.category?.includes?.(category);
+		})
+		.filter(setting => {
+			return setting.name
+				.match(/[A-Z][a-z]+|[0-9]+/g)
+				.join(" ")
+				.toLowerCase()
+				.includes(search.toLowerCase());
 		});
-
-	console.log(state);
 
 	const appSettings = data?.appSettings;
 	useEffect(() => {
@@ -213,6 +227,15 @@ const App = (props: AppProps) => {
 	}, [appSettings]);
 
 	const changed = appSettings && !isEqual(appSettings, state);
+
+	const save = async () => {
+		firebaseClient.db.collection("Streamers").doc(user.uid).set(
+			{
+				appSettings: state,
+			},
+			{ merge: true }
+		);
+	};
 
 	return (
 		<AppContainer>
@@ -236,7 +259,7 @@ const App = (props: AppProps) => {
 				<SettingSidebar>
 					{categories?.map(cat => (
 						<CategoryItem key={cat} className={`${cat === category ? "active" : ""}`}>
-							<Anchor href={`/dashboard/app/${cat}`}>{cat}</Anchor>
+							<Anchor href={`/dashboard/app/${cat.toLowerCase()}`}>{cat}</Anchor>
 						</CategoryItem>
 					))}
 				</SettingSidebar>
@@ -247,8 +270,14 @@ const App = (props: AppProps) => {
 							open={openItem === setting.name}
 							onClick={name => setOpenItem(prev => (prev === name ? null : name))}
 							value={state[setting.name]}
+							//@ts-ignore
 							defaultValue={setting.value}
+							options={setting.options?.map(option => ({
+								value: option,
+								label: option,
+							}))}
 							onChange={(name, val) => {
+								if (val.value) val = val.value;
 								dispatch({ type: Actions.UPDATE, key: setting.name, value: val });
 							}}
 						></SettingComponent>
@@ -257,7 +286,7 @@ const App = (props: AppProps) => {
 			</SettingsContainer>
 			<SaveBar
 				changed={changed}
-				save={() => {}}
+				save={save}
 				reset={() => {
 					dispatch({ type: Actions.SET, value: appSettings });
 				}}

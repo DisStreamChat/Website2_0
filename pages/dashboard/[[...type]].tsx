@@ -112,10 +112,14 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			res.writeHead(307, { location: "/dashboard/app/all" }).end();
 			return { props: {} };
 		}
-		const settingsRef = await admin.firestore().collection("defaults").doc("settings").get();
+		const settingsRef = await admin.firestore().collection("defaults").doc("settings16").get();
 		settings = settingsRef.data()?.settings;
-		//@ts-ignore
-		categories = [...new Set(Object.values(settings || {}).map(val => val.category))].sort();
+		categories = [
+			//@ts-ignore
+			...new Set(Object.values(settings || {}).map(val => val.category)),
+		]
+			.filter(Boolean)
+			.sort();
 	}
 	if (params.type && !["app", "discord"].includes(params.type[0])) {
 		return { notFound: true };
@@ -125,7 +129,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			type: params.type || null,
 			session,
 			settings,
-			categories: ["App", "Discord", ...categories],
+			categories: ["all", "discord", ...categories],
 		},
 	};
 };
