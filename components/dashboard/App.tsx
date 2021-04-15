@@ -185,7 +185,7 @@ const App = (props: AppProps) => {
 	const [, category] = router.query.type as string[];
 	const [state, dispatch] = useReducer(settingReducer, {});
 
-	const [search, setSearch] = useState(router.query.search || "");
+	const [search, setSearch] = useState((router.query.search as string) || "");
 	const { user } = useContext(authContext);
 	const [openItem, setOpenItem] = useState("");
 
