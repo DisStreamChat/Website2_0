@@ -153,7 +153,6 @@ const SettingComponent = (props: SettingProps) => {
 	const { type } = props;
 	const Elt = useMemo(() => settingMap[type], [type]);
 	let val = props.value;
-	console.log(props.category)
 	if (type === "selector") val = { label: props.value, value: props.value };
 	return Elt ? <Elt {...props} value={val}></Elt> : <></>;
 };
