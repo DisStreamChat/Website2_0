@@ -242,7 +242,7 @@ const App = (props: AppProps) => {
 				<H3>
 					Adjust the settings of your app. if you don't use the app but want to you can
 					start using it{" "}
-					<Anchor href="/apps/download" className="ul bld" newTab>
+					<Anchor local href="/apps/download" className="ul bld" newTab>
 						here
 					</Anchor>
 				</H3>
