@@ -188,7 +188,7 @@ const LogModal = ({ defaultValue, ...props }) => {
 	>(reducer, defaultValue ?? logRecordFactory(), record => record);
 
 	useEffect(() => {
-		console.log(defaultValue)
+		console.log(defaultValue);
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
 		} else {
@@ -197,6 +197,7 @@ const LogModal = ({ defaultValue, ...props }) => {
 	}, [defaultValue, props.open]);
 
 	const create = async () => {
+		if (!state.action || !state.channel) return;
 		const docRef = firebaseClient.db.collection("logging").doc(serverId);
 		await docRef.set({ [state.id]: state }, { merge: true });
 
@@ -284,26 +285,62 @@ const Logging = () => {
 	const [localActions, setLocalActions] = useState<LogRecords>({});
 
 	const collectionRef = firebaseClient.db.collection("logging");
+	const legacyCollectionRef = firebaseClient.db.collection("loggingChannel");
 
 	const [snapshot, loading, error] = useDocumentData(collectionRef.doc(serverId));
+	const [legacySnaphot] = useDocumentData(legacyCollectionRef.doc(serverId));
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [actionBeingEdited, setActionBeingEdited] = useState<LogRecord>(null);
-	const logRecordList = Object.values(localActions);
+	const logRecordList = Object.values(localActions).sort((a, b) => {
+		return a.channel?.name?.localeCompare(b.channel?.name);
+	});
 	const logRecordCount = logRecordList.length;
 
 	useEffect(() => {
-		if (!snapshot) {
-			collectionRef.doc(serverId).set({}, { merge: true });
-		} else {
-			setLocalActions(snapshot);
-		}
-	}, [snapshot]);
+		(async () => {
+			let allActions = {};
+			console.log((!snapshot || !logRecordCount));
+			if (legacySnaphot && (!snapshot || !logRecordCount)) {
+				const legacyLoggingChannelId = legacySnaphot.server;
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolvechannel?guild=${serverId}&channel=${legacyLoggingChannelId}`
+				);
+				const json = await response.json();
+				const activeActions = logActions.filter(action => {
+					let activeAction =
+						legacySnaphot.activeEvents[action] ??
+						legacySnaphot.activeEvents[action.split("").slice(0, -1).join("")] ??
+						legacySnaphot.activeEvents[action.split("").slice(0, -2).join("")];
+					console.log({ activeAction });
+					return activeAction;
+				});
+				allActions = activeActions.reduce((prev, action) => {
+					const id = uid();
+					return {
+						[id]: {
+							action,
+							actionId: null,
+							channel: json,
+							id,
+						},
+						...prev,
+					};
+				}, {});
+				return setLocalActions(allActions);
+			}
+			if (!snapshot) {
+				collectionRef.doc(serverId).set({}, { merge: true });
+			} else {
+				setLocalActions(snapshot);
+			}
+		})();
+	}, [snapshot, legacySnaphot]);
 
 	const changed = !isEqual(snapshot ?? {}, localActions);
 
 	const deleteMe = key => {
-		console.log(key)
+		console.log(key);
 		setLocalActions(prev => {
 			const copy = { ...prev };
 			delete copy[key];
