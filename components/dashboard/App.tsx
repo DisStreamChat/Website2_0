@@ -13,13 +13,12 @@ import {
 } from "disstreamchat-utils";
 import { authContext } from "../../auth/authContext";
 import firebaseClient from "../../firebase/client";
-import { useDocumentData, useDocumentDataOnce } from "react-firebase-hooks/firestore";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 import { gapFunction } from "../shared/styles";
 import { useRouter } from "next/router";
 import { Action } from "../../utils/types";
 import { isEqual } from "lodash";
 import SaveBar from "../shared/ui-components/SaveBar";
-import { settings } from "cluster";
 
 const AppContainer = styled.main`
 	display: flex;
