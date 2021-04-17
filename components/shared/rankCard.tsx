@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useDocumentData } from "react-firebase-hooks/firestore";
 // import { loadImage } from "canvas";
+import firebaseClient from "../../firebase/client";
 
 const adminIds = {
 	twitch: {
@@ -20,7 +22,6 @@ const adminIds = {
 		],
 	},
 };
-
 
 const getXp = level => (5 / 6) * level * (2 * level * level + 27 * level + 91);
 
@@ -83,127 +84,13 @@ const loadImage = url => {
 	return img;
 };
 
-const generateRankCard = async (canvas: HTMLCanvasElement, userData, user, images) => {
-	console.log(user);
-	const primaryColor = userData.primaryColor || "#c31503";
-	const backgroundColor1 = "#1f2525";
-	const backgroundColor2 = `#090b0b${(userData.backgroundOpacity ?? 255).toString(16)}`;
-	const xpBarBackground = "#484b4e";
-	const black = "#000000";
-	const backgroundImage = userData.backgroundImage;
-
-	const ctx = canvas.getContext("2d");
-	// calculate all required values
-	const xpToNextLevel = getXp(userData.level + 1);
-	const xpForCurrentLevel = getXp(userData.level);
-	const xpLevelDif = Math.abs(xpToNextLevel - xpForCurrentLevel);
-	const xpProgress = Math.abs(userData.xp - xpForCurrentLevel);
-	const percentDone = xpProgress / xpLevelDif;
-	const displayXp =
-	xpProgress > 1000 ? `${(xpProgress / 1000).toFixed(2)}k` : Math.floor(xpProgress);
-	const displayXpToGo = xpLevelDif > 1000 ? `${(xpLevelDif / 1000).toFixed(2)}k` : xpLevelDif;
-	
-	// draw the first background
-	if (backgroundImage) {
-		const backgroundImageFile = await loadImage(backgroundImage);
-		roundCanvas(ctx, 0, 0, canvas.width, canvas.height, 125, () => {
-			//@ts-ignore
-			ctx.drawImage(backgroundImageFile, 0, 0, canvas.width, canvas.height);
-		});
-	} else {
-		ctx.clearRect(0, 0, canvas.width+5, canvas.height+5);
-		ctx.fillStyle = backgroundColor1;
-		roundRect(ctx, 0, 0, canvas.width, canvas.height, 125);
-	}
-
-	// draw the second background
-	ctx.fillStyle = backgroundColor2;
-	const gap = 20;
-	roundRect(ctx, gap, gap, canvas.width - gap * 2, canvas.height - gap * 2, 125);
-
-	// draw xp progress bar
-	const barWidth = canvas.width / 1.75;
-	const barHeight = 25;
-	const barY = 130;
-	ctx.fillStyle = xpBarBackground;
-	roundRect(ctx, canvas.width / 3, barY, barWidth, barHeight, barHeight / 2);
-	ctx.fillStyle = primaryColor;
-	roundRect(
-		ctx,
-		canvas.width / 3,
-		barY,
-		Math.max(barWidth * percentDone, barHeight),
-		barHeight,
-		barHeight / 2
-	);
-
-	// draw nickname
-	ctx.fillStyle = "#ffffff";
-	const name = `${user.nickname || user?.username}${user?.tag?.slice?.(-5)}`;
-	ctx.font = applyText(canvas, name, 24, 8, "Poppins");
-	ctx.fillText(`${name}`, canvas.width / 3, 75);
-
-	// draw line under username
-	ctx.strokeStyle = primaryColor;
-	ctx.lineWidth = 4;
-	ctx.lineCap = "round";
-	ctx.beginPath();
-	const lineY = 87;
-	ctx.moveTo(canvas.width / 3, lineY);
-	ctx.lineTo(canvas.width - canvas.width / 5, lineY);
-	ctx.stroke();
-
-	// draw xp
-	ctx.font = "18px Poppins";
-	const xpText = `${displayXp}/${displayXpToGo} XP`;
-	const xpTextWidth = ctx.measureText(xpText).width;
-	ctx.fillStyle = "#dddddd";
-	const textY = 120;
-	ctx.fillText(xpText, canvas.width - xpTextWidth - 80, textY);
-
-	// draw users and level and rank
-	ctx.fillStyle = "#ffffff";
-	ctx.font = "18px Poppins";
-	const levelText = `Level ${userData.level + 1}`;
-	const levelTextWidth = ctx.measureText(levelText).width;
-	ctx.fillText(levelText, canvas.width / 3, textY);
-	if (userData.rank) {
-		ctx.fillText(`Rank ${userData.rank}`, canvas.width / 3 + levelTextWidth + 20, textY);
-	}
-
-	// draw profile picture
-	ctx.save();
-	ctx.fillStyle = black;
-	ctx.beginPath();
-	ctx.arc(100, 100, 75 / 1.25, 0, Math.PI * 2, true);
-	ctx.fill();
-	ctx.clip();
-
-	//@ts-ignore
-	try {
-		ctx.drawImage(images.avatar, 25 * 1.6, 25 * 1.5, 150 / 1.25, 150 / 1.25);
-	} catch (err) {}
-	ctx.restore();
-
-	// draw status icon
-	const iconWidth = 50;
-	try {
-		ctx.drawImage(
-			//@ts-ignore
-			images.status,
-			200 / 1.25 - iconWidth / 1.15,
-			200 / 1.25 - iconWidth / 1.15,
-			iconWidth,
-			iconWidth
-		);
-	} catch (err) {}
-};
+const generateRankCard = async (canvas: HTMLCanvasElement, userData, user, images) => {};
 
 export const RankCard = props => {
 	const canvasRef = useRef(null);
 	const [images, setImages] = useState<any>({});
 
-	const { user } = props;
+	const { user, userData } = props;
 	useEffect(() => {
 		(async () => {
 			const discordAdmins = adminIds.discord.developers;
@@ -214,23 +101,150 @@ export const RankCard = props => {
 				offline: "https://cdn.discordapp.com/emojis/702707414927015966.png?v=1",
 			};
 			const statusUrl = statuses["online"];
-			const statusImage = await loadImage(statusUrl);
-			images.status = statusImage;
 
 			const profileUrl = user?.avatarURL;
-			const avatar = await loadImage(profileUrl);
-			images.avatar = avatar;
+			setImages({ avatar: profileUrl, status: statusUrl });
 		})();
 	}, [user]);
 
-	useEffect(() => {
-		const canvas = canvasRef.current;
-		const context = canvas.getContext("2d");
+	const primaryColor = userData?.primaryColor || "#c31503";
+	const backgroundColor1 = "#1f2525";
+	const backgroundColor2 = `#090b0b`;
+	const xpBarBackground = "#484b4e";
+	const backgroundImage = userData?.backgroundImage;
 
-		//Our draw come here
-		// draw(context);
-		requestAnimationFrame(() => generateRankCard(canvas, props.userData, props.user, images));
-	}, [props.userData, props.user]);
+	// calculate all required values
+	const xpToNextLevel = getXp(userData?.level + 1);
+	const xpForCurrentLevel = getXp(userData?.level);
+	const xpLevelDif = Math.abs(xpToNextLevel - xpForCurrentLevel);
+	const xpProgress = Math.abs(userData?.xp - xpForCurrentLevel);
+	const percentDone = xpProgress / xpLevelDif;
+	const displayXp =
+		xpProgress > 1000 ? `${(xpProgress / 1000).toFixed(2)}k` : Math.floor(xpProgress);
+	const displayXpToGo = xpLevelDif > 1000 ? `${(xpLevelDif / 1000).toFixed(2)}k` : xpLevelDif;
 
-	return <canvas width={560} height={200} ref={canvasRef} {...props} />;
+	return (
+		<svg
+			version="1.1"
+			xmlns="http://www.w3.org/2000/svg"
+			xmlnsXlink="http://www.w3.org/1999/xlink"
+			width="460px"
+			height="140px"
+		>
+			<defs>
+				<pattern id="bgImage" patternUnits="userSpaceOnUse" width="800" height="850">
+					<image href={backgroundImage} x="0" y="-50" width="490" height="350" />
+				</pattern>
+			</defs>
+			<rect
+				id="rect"
+				width="100%"
+				height="100%"
+				rx="65px"
+				ry="65px"
+				style={{ fill: `${backgroundImage ? "url(#bgImage)" : backgroundColor1}` }}
+			></rect>
+
+			<rect
+				y="5%"
+				x="2%"
+				rx="55"
+				ry="55"
+				width="96%"
+				height="90%"
+				style={{ fill: backgroundColor2, opacity: userData?.backgroundOpacity / 255 }}
+			></rect>
+
+			<circle r="50" cx="65" cy="71" style={{ fill: "black" }}></circle>
+			<clipPath id="clipCircle">
+				<circle r="50" cx="65" cy="71"></circle>
+			</clipPath>
+			<image
+				x="17"
+				y="22"
+				width="100"
+				height="100"
+				clip-path="url(#clipCircle)"
+				xlinkHref={images.avatar}
+			></image>
+
+			<image x="80" y="85" width="40" height="40" xlinkHref={images.status}></image>
+
+			<text
+				x="230"
+				y="85"
+				font-family="Poppins"
+				font-size="12"
+				text-anchor="end"
+				style={{ stroke: "black", strokeWidth: "0.2px" }}
+			>
+				<tspan fill="white">
+					RANK
+					<tspan font-size="15"> {userData.rank}</tspan>
+				</tspan>
+				   
+				<tspan fill="white">
+					{" "}LEVEL
+					<tspan font-size="15"> {userData.level + 1}</tspan>
+				</tspan>
+			</text>
+
+			<text x="137" y="60" font-size="" fill="white">
+				{user.username}
+				<tspan style={{ fill: "#7F8384" }} font-size="12">
+					{user.tag.slice(-5)}
+				</tspan>
+			</text>
+
+			<rect
+				x="135"
+				y="65"
+				rx="2"
+				ry="2"
+				width="295"
+				height="4"
+				style={{ fill: primaryColor }}
+			></rect>
+
+			<text
+				x="425"
+				y="85"
+				font-family="Poppins"
+				font-size="12"
+				fill="white"
+				text-anchor="end"
+			>
+				{displayXp}
+				<tspan style={{ fill: "#7F8384" }}> / {displayXpToGo} XP</tspan>
+			</text>
+
+			<rect
+				x="135"
+				y="95"
+				rx="12"
+				ry="12"
+				width="301"
+				height="20"
+				style={{ fill: "black" }}
+			></rect>
+			<rect
+				x="135"
+				y="96"
+				rx="9"
+				ry="9"
+				width="300"
+				height="18"
+				style={{ fill: xpBarBackground }}
+			></rect>
+			<rect
+				x="130"
+				y="96"
+				rx="9"
+				ry="9"
+				width={300 * percentDone}
+				height="18"
+				style={{ fill: primaryColor }}
+			></rect>
+		</svg>
+	);
 };
