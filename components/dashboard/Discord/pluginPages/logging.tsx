@@ -42,7 +42,7 @@ import { splitByCaps } from "../../../../utils/functions/stringManipulation";
 
 interface LogRecord {
 	channel: channel;
-	action: string;
+	action: { id: string; displayName: string };
 	id: string;
 	actionId?: string;
 }
@@ -152,35 +152,10 @@ const CreateCommandFooter = styled.div`
 	${gapFunction({ gap: "1rem" })}
 `;
 
-const logActions = [
-	"InviteCreated",
-	"InviteDeleted",
-	"MemberAdded",
-	"MemberBanned",
-	"MemberRemoved",
-	"MemberUnbanned",
-	"NicknameChanged",
-	"RolesChanged",
-	"ServerEdited",
-	"ChannelCreated",
-	"ChannelDeleted",
-	"ChannelUpdated",
-	"EmojiCreated",
-	"EmojiDeleted",
-	"EmojiUpdated",
-	"MessageDeleted",
-	"MessageUpdated",
-	"RoleCreated",
-	"RoleDeleted",
-	"RoleUpdated",
-	"UserUpdated",
-];
-
-const LogModal = ({ defaultValue, ...props }) => {
+const LogModal = ({ defaultValue, logActions, ...props }) => {
 	const router = useRouter();
-	const [, serverId, pluginName] = router.query.type as string[];
-	const { serverSettings, roles, allChannels, emotes } = useContext(discordContext);
-	const [emotePickerVisible, setEmotePickerVisible] = useState(false);
+	const [, serverId] = router.query.type as string[];
+	const { allChannels } = useContext(discordContext);
 
 	const [state, dispatch] = useReducer<
 		(state: LogRecord, action: LogAction) => LogRecord,
@@ -222,20 +197,20 @@ const LogModal = ({ defaultValue, ...props }) => {
 								dispatch({
 									type: actions.UPDATE,
 									key: "action",
-									value: value.value,
+									value: { id: value.value, displayName: value.label },
 								});
 							}}
 							value={
 								state.action
 									? {
-											value: state.action,
-											label: splitByCaps(state.action),
+											value: state.action.id,
+											label: state.action.displayName,
 									  }
 									: null
 							}
 							options={logActions.map(action => ({
-								value: action,
-								label: splitByCaps(action),
+								value: action.id,
+								label: action.displayName,
 							}))}
 						/>
 						<hr />
@@ -286,9 +261,18 @@ const Logging = () => {
 
 	const collectionRef = firebaseClient.db.collection("logging");
 	const legacyCollectionRef = firebaseClient.db.collection("loggingChannel");
+	const defaultCollectionRef = firebaseClient.db.collection("defaults");
 
 	const [snapshot, loading, error] = useDocumentData(collectionRef.doc(serverId));
 	const [legacySnaphot] = useDocumentData(legacyCollectionRef.doc(serverId));
+	const [defaultSnapshot] = useDocumentData(defaultCollectionRef.doc("loggingEvents"));
+
+	const logActions = Object.entries(defaultSnapshot || {}).map(([key, value]: [string, any]) => {
+		return {
+			displayName: value.displayName,
+			id: key,
+		};
+	});
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [actionBeingEdited, setActionBeingEdited] = useState<LogRecord>(null);
@@ -312,11 +296,11 @@ const Logging = () => {
 					`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolvechannel?guild=${serverId}&channel=${legacyLoggingChannelId}`
 				);
 				const json = await response.json();
-				const activeActions = logActions.filter(action => {
+				const activeActions = logActions.filter(({ id }) => {
 					let activeAction =
-						legacySnaphot.activeEvents[action] ??
-						legacySnaphot.activeEvents[action.split("").slice(0, -1).join("")] ??
-						legacySnaphot.activeEvents[action.split("").slice(0, -2).join("")];
+						legacySnaphot.activeEvents[id] ??
+						legacySnaphot.activeEvents[id.split("").slice(0, -1).join("")] ??
+						legacySnaphot.activeEvents[id.split("").slice(0, -2).join("")];
 					console.log({ activeAction });
 					return activeAction;
 				});
@@ -370,6 +354,7 @@ const Logging = () => {
 	return (
 		<div>
 			<LogModal
+				logActions={logActions}
 				onClose={() => setModalOpen(false)}
 				open={modalOpen}
 				defaultValue={actionBeingEdited}
@@ -394,7 +379,7 @@ const Logging = () => {
 							edit={() => edit(record)}
 						>
 							<H2>
-								Log {splitByCaps(record.action)} in{" "}
+								Log {record.action.displayName ?? splitByCaps(record.action)} in{" "}
 								<ChannelItem {...record.channel}></ChannelItem>
 							</H2>
 						</ListItem>
