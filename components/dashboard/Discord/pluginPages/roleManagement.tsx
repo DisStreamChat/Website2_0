@@ -1,24 +1,31 @@
-import { ReactNode, ReactNodeArray, useContext, useReducer } from "react";
+import { useContext, useEffect, useReducer, useState } from "react";
 import { discordContext } from "../discordContext";
 import styled from "styled-components";
 import { H1 } from "../../../shared/styles/headings";
 import { Switch } from "@material-ui/core";
-import { get, set, isEqual, cloneDeep } from "lodash";
 import { Action } from "../../../../utils/types";
+import firebaseClient from "../../../../firebase/client";
+import { useRouter } from "next/router";
+import { useDocumentData } from "react-firebase-hooks/firestore";
+import { get, set, isEqual, cloneDeep } from "lodash";
+
+interface settingsBase {
+	open: boolean
+}
 
 interface RoleSettings {
-	reactions: {};
-	commands: {};
-	join: {};
-	descriptions: {};
+	reactions: settingsBase;
+	commands: settingsBase;
+	join: settingsBase;
+	descriptions: settingsBase;
 }
 
 const roleFactory = (): RoleSettings => {
 	return {
-		reactions: {},
-		commands: {},
-		join: {},
-		descriptions: {},
+		reactions: { open: false },
+		commands: { open: false },
+		join: { open: false },
+		descriptions: { open: false },
 	};
 };
 
@@ -26,7 +33,7 @@ interface sectionProps {
 	id: string;
 	title: string;
 	open?: boolean;
-	setOpen?: () => void;
+	setOpen?: (val: boolean) => void;
 }
 
 const StyledRoleSection = styled.section`
@@ -52,9 +59,9 @@ const RoleSection: React.FC<sectionProps> = props => {
 		<StyledRoleSection>
 			<RoleSectionTitle>
 				<h5>{props.title}</h5>
-				<Switch color="primary"></Switch>
+				<Switch color="primary" onChange={e => props.setOpen(e.target.checked)} checked={props.open}></Switch>
 			</RoleSectionTitle>
-			<div></div>
+			<div>{props.children}</div>
 		</StyledRoleSection>
 	);
 };
@@ -83,24 +90,67 @@ const settingsReducer = (state: RoleSettings, action: Action) => {
 	}
 };
 
+const collections = ["reactions", "commands", "join", "descriptions"];
+
 const RoleManagement = () => {
+	const router = useRouter();
+
+	const [, serverId] = router.query.type as string[];
+
 	const { roles, allChannels, emotes } = useContext(discordContext);
 	const [{ reactions, commands, join, descriptions }, dispatch] = useReducer<
 		(state: RoleSettings, action: Action) => RoleSettings,
 		RoleSettings
 	>(settingsReducer, roleFactory(), roleFactory);
+	const [localSettings, setLocalSettings] = useState(() => roleFactory());
+
+	const docRef = firebaseClient.db.collection("roleManagement").doc(serverId);
+
+	const [snapshot] = useDocumentData(docRef);
+
+	useEffect(() => {
+		if (snapshot) {
+			setLocalSettings(cloneDeep(snapshot));
+		} else {
+			docRef.set({}, { merge: true });
+		}
+	}, []);
+
+
 	return (
 		<>
 			<RoleSection
 				title="Let your members get roles by reacting to a message"
-				id="reaction"
+				id="reactions"
+				open={reactions.open}
+				setOpen={(val) => {
+					dispatch({ type: actions.UPDATE, key: "reactions.open", value: val });
+				}}
 			></RoleSection>
 			<RoleSection
 				title="Let your members get roles with commands"
-				id="command"
+				id="commands"
+				open={commands.open}
+				setOpen={(val) => {
+					dispatch({ type: actions.UPDATE, key: "commands.open", value: val });
+				}}
 			></RoleSection>
-			<RoleSection title="Give members a role on join" id="join"></RoleSection>
-			<RoleSection title="Give descriptions to the roles in your server" id=""></RoleSection>
+			<RoleSection
+				title="Give members a role on join"
+				id="join"
+				open={join.open}
+				setOpen={(val) => {
+					dispatch({ type: actions.UPDATE, key: "join.open", value: val });
+				}}
+			></RoleSection>
+			<RoleSection
+				title="Give descriptions to the roles in your server"
+				open={descriptions.open}
+				id="descriptions"
+				setOpen={(val) => {
+					dispatch({ type: actions.UPDATE, key: "descriptions.open", value: val });
+				}}
+			></RoleSection>
 		</>
 	);
 };
