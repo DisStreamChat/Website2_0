@@ -24,7 +24,7 @@ const ServerArea = styled.div``;
 
 const Discord = ({ session }: dashboardProps) => {
 	const [refreshed, setRefreshed] = useState(false);
-	const [servers, setServers] = useState([]);
+	const [servers, setServers] = useState(null);
 
 	const router = useRouter();
 
@@ -63,7 +63,7 @@ const Discord = ({ session }: dashboardProps) => {
 		// 	});
 	}, [adminServers, guilds]);
 
-	const server = servers.find(server => server.id === serverId);
+	const server = servers?.find(server => server.id === serverId);
 
 	const refreshToken = user?.refreshToken;
 	const userId = user.uid;
