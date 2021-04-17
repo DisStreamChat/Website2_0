@@ -300,8 +300,13 @@ const Logging = () => {
 	useEffect(() => {
 		(async () => {
 			let allActions = {};
-			console.log((!snapshot || !logRecordCount));
-			if (legacySnaphot && (!snapshot || !logRecordCount)) {
+			console.log(!snapshot || !logRecordCount);
+			console.log(legacySnaphot);
+			if (
+				legacySnaphot &&
+				Object.keys(legacySnaphot || {}).length &&
+				(!snapshot || !logRecordCount)
+			) {
 				const legacyLoggingChannelId = legacySnaphot.server;
 				const response = await fetch(
 					`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolvechannel?guild=${serverId}&channel=${legacyLoggingChannelId}`
