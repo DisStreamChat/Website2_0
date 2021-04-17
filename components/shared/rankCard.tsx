@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { loadImage } from "canvas";
+// import { loadImage } from "canvas";
 
 const adminIds = {
 	twitch: {
@@ -77,11 +77,11 @@ const roundCanvas = function (ctx, x, y, w, h, r = 0, cb) {
 	return ctx;
 };
 
-// const loadImage = url => {
-// 	const img = new window.Image();
-// 	img.src = url;
-// 	return img;
-// };
+const loadImage = url => {
+	const img = new window.Image();
+	img.src = url;
+	return img;
+};
 
 const generateRankCard = async (canvas: HTMLCanvasElement, userData, user, images) => {
 	console.log(user);
