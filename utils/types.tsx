@@ -34,7 +34,7 @@ export interface command {
 	message: string;
 	name: string;
 	permittedRoles: string[];
-	role: false;
+	roles?: role[];
 	type: string;
 }
 

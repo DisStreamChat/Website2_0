@@ -14,7 +14,10 @@ const ListBody = styled.li<HTMLProps<HTMLLIElement>>`
 	background: #1f1f1f;
 	margin: 1rem 0 !important;
 	display: flex;
-	align-items: center;
+	&,
+	& > * {
+		align-items: center;
+	}
 	justify-content: space-between;
 	position: relative;
 	padding: 0.5rem 1rem !important;
@@ -30,7 +33,7 @@ export interface ListItemProps extends HTMLProps<HTMLLIElement> {
 	edit: () => void;
 }
 
-const ListItem = ({ delete: deleteMe, edit, children, ...props }: ListItemProps) => {
+export const ListItem = ({ delete: deleteMe, edit, children, ...props }: ListItemProps) => {
 	return (
 		//@ts-ignore
 		<ListBody {...props}>

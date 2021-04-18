@@ -1,7 +1,7 @@
-import { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { discordContext } from "../discordContext";
 import styled from "styled-components";
-import { H1, H2 } from "../../../shared/styles/headings";
+import { H1, H2, H3 } from "../../../shared/styles/headings";
 import { Switch, TextField } from "@material-ui/core";
 import { Action, role } from "../../../../utils/types";
 import firebaseClient from "../../../../firebase/client";
@@ -13,6 +13,10 @@ import StyledSelect from "../../../shared/styles/styled-select";
 import RoleItem, { RoleOption } from "../RoleItem";
 import { parseSelectValue, TransformObjectToSelectValue } from "../../../../utils/functions";
 import SaveBar from "../../../shared/ui-components/SaveBar";
+import { ListItem } from "../../../shared/ui-components/ListItem";
+import { BlueButton } from "../../../shared/ui-components/Button";
+import { CommandModal, CommandsHeader } from "./customCommands";
+import Select from "../Select";
 
 interface settingsBase {
 	open: boolean;
@@ -26,9 +30,13 @@ interface JoinModel extends settingsBase {
 	roles: role[];
 }
 
+interface CommandsModel extends settingsBase {
+	commands: any[];
+}
+
 interface RoleSettings {
 	reactions: settingsBase;
-	commands: settingsBase;
+	commands: CommandsModel;
 	join: JoinModel;
 	descriptions: DescriptionModel;
 }
@@ -36,7 +44,7 @@ interface RoleSettings {
 const roleFactory = (): RoleSettings => {
 	return {
 		reactions: { open: false },
-		commands: { open: false },
+		commands: { open: false, commands: [] },
 		join: { open: false, roles: [] },
 		descriptions: { open: false, roles: {} },
 	};
@@ -178,6 +186,8 @@ const RoleManagement = () => {
 		RoleSettings
 	>(settingsReducer, roleFactory(), roleFactory);
 	const [localSettings, setLocalSettings] = useState(() => roleFactory());
+	const [commandModalOpen, setCommandModalOpen] = useState(false);
+	const [commandBeingEdited, setCommandBeingEdited] = useState(null);
 
 	const docRef = firebaseClient.db.collection("roleManagement").doc(serverId);
 
@@ -207,6 +217,16 @@ const RoleManagement = () => {
 		docRef.update({ reactions, commands, join, descriptions });
 	};
 
+	const createCommand = () => {
+		setCommandBeingEdited(null);
+		setCommandModalOpen(true);
+	};
+
+	const edit = command => {
+		setCommandBeingEdited(command);
+		setCommandModalOpen(true);
+	};
+
 	return (
 		<>
 			<RoleSection
@@ -226,7 +246,57 @@ const RoleManagement = () => {
 				setOpen={val => {
 					dispatch({ type: actions.UPDATE, key: "commands.open", value: val });
 				}}
-			></RoleSection>
+			>
+				<CommandModal
+					role
+					open={commandModalOpen}
+					onClose={() => setCommandModalOpen(false)}
+					onSuccess={async state => {
+						docRef.update({
+							commands: {
+								open: true,
+								commands: { ...(commands?.commands || {}), [state.name]: state },
+							},
+						});
+					}}
+					defaultValue={commandBeingEdited}
+				></CommandModal>
+				<CommandsHeader>
+					<span>
+						<H2>Role Command</H2>
+						<h4>allow users to give/remove roles from themselves with a command</h4>
+					</span>
+					<span>
+						<BlueButton onClick={createCommand}>Create Command</BlueButton>
+					</span>
+				</CommandsHeader>
+				<span>
+					<H2>Commands - {Object.entries(commands.commands || {})?.length || 0}</H2>
+					<ul>
+						{Object.entries(commands.commands || {}).map(([key, val]) => (
+							<ListItem
+								delete={() => {}}
+								edit={() => {
+									edit(val);
+								}}
+							>
+								<div>
+									<img src="/role.svg" alt="" width="50" />
+								</div>
+								<div>
+									<H3>{key}</H3>
+									<div>{val.description}</div>
+								</div>
+								<div style={{ marginLeft: "2rem" }}>
+									{val.roles.map(role => (
+										<RoleItem {...role}></RoleItem>
+									))}
+								</div>
+							</ListItem>
+						))}
+					</ul>
+				</span>
+			</RoleSection>
 			<RoleSection
 				title="Give members a role on join"
 				id="join"
@@ -235,29 +305,38 @@ const RoleManagement = () => {
 					dispatch({ type: actions.UPDATE, key: "join.open", value: val });
 				}}
 			>
-				<StyledSelect
-					isMulti
+				<Select
 					closeMenuOnSelect={false}
-					placeholder="Select Roles"
 					options={notManaged
 						.filter(role => !join.roles.find(({ id }) => role.id == id))
 						.map(role => ({
 							value: TransformObjectToSelectValue(role),
 							label: <RoleOption color={role.color}>{role.name}</RoleOption>,
 						}))}
-					onChange={options => {
-						const transformedOptions = options.map(op => parseSelectValue(op, true));
+					onChange={opt => {
+						const value = parseSelectValue(opt, true);
 						dispatch({
 							type: actions.UPDATE,
 							key: "join.roles",
-							value: transformedOptions,
+							value: prev => [...prev, value],
 						});
 					}}
 					value={join.roles?.map(role => ({
 						value: TransformObjectToSelectValue(role),
-						label: <RoleOption {...role}>{role.name}</RoleOption>,
+						label: (
+							<RoleItem
+								onClick={() => {
+									dispatch({
+										type: actions.UPDATE,
+										key: "join.roles",
+										value: join.roles.filter(r => r.id !== role.id),
+									});
+								}}
+								{...role}
+							></RoleItem>
+						),
 					}))}
-				></StyledSelect>
+				></Select>
 			</RoleSection>
 			<RoleSection
 				title="Give descriptions to the roles in your server"

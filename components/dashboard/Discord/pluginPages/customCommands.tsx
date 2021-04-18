@@ -19,16 +19,22 @@ import { parseSelectValue, transformObjectToSelectValue } from "../../../../util
 import RoleItem, { RoleOption } from "../RoleItem";
 import { gapFunction } from "../../../shared/styles";
 import { SectionTitle, SectionSubtitle } from "../../../shared/styles/plugins";
-import { ChannelItem } from "../ChannelItem";
+import { ChannelItem, ChannelOption } from "../ChannelItem";
 import {
 	channelAutoComplete,
 	emoteAutoComplete,
 	generalItems,
 	roleAutoComplete,
 } from "../../../../utils/functions/autocomplete";
-import { EmoteParent, EmotePicker, EmotePickerOpener } from "../../../shared/ui-components/emotePicker";
+import {
+	EmoteParent,
+	EmotePicker,
+	EmotePickerOpener,
+} from "../../../shared/ui-components/emotePicker";
+import StyledSelect from "../../../shared/styles/styled-select";
+import { transform } from "framer-motion";
 
-const CommandsHeader = styled(PluginSubHeader)`
+export const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -101,7 +107,7 @@ const commandReducer = (state: command, action: action) => {
 	}
 };
 
-const CommandHeader = styled.div`
+export const CommandHeader = styled.div`
 	box-sizing: border-box !important;
 	display: flex;
 	align-items: center;
@@ -123,7 +129,7 @@ const CommandHeader = styled.div`
 	}
 `;
 
-const CreateCommandArea = styled.div`
+export const CreateCommandArea = styled.div`
 	padding: 2rem;
 	padding-bottom: 6rem;
 	scroll-behavior: smooth;
@@ -135,7 +141,7 @@ const CreateCommandArea = styled.div`
 	max-height: calc(100vh - 70px);
 `;
 
-const CreateCommandFooter = styled.div`
+export const CreateCommandFooter = styled.div`
 	position: absolute;
 	bottom: 0;
 	width: 100%;
@@ -146,9 +152,7 @@ const CreateCommandFooter = styled.div`
 	${gapFunction({ gap: "1rem" })}
 `;
 
-
-
-const CommandModal = ({ defaultValue, ...props }) => {
+export const CommandModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
 	const [, serverId, pluginName] = router.query.type as string[];
 	const { serverSettings, roles, allChannels, emotes } = useContext(discordContext);
@@ -169,10 +173,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 	}, [defaultValue]);
 
 	const create = async () => {
-		const docRef = firebaseClient.db.collection("customCommands").doc(serverId);
-
-		await docRef.set({ [state.name]: state }, { merge: true });
-
+		props.onSuccess(state, props.role);
 		props.onClose();
 	};
 
@@ -202,62 +203,93 @@ const CommandModal = ({ defaultValue, ...props }) => {
 						}}
 					/>
 					<hr />
-					<SectionTitle>Command Response</SectionTitle>
-					<EmoteParent>
-						<EmotePickerOpener onClick={() => setEmotePickerVisible(true)}>
-							<img width="24" height="24" src="/smile.svg" alt="" />
-						</EmotePickerOpener>
-						<EmotePicker
-							onClickAway={() => {
-								setEmotePickerVisible(false);
-							}}
-							visible={emotePickerVisible}
-							emotes={emotes}
-							onEmoteSelect={emote => {
-								dispatch({
-									type: actions.UPDATE,
-									value: prev => `${prev} ${emote.colons}`,
-									key: "message",
-								});
-								setEmotePickerVisible(false);
-							}}
-						/>
-						<TextArea
-							value={state.message}
-							onChange={e => {
-								dispatch({
-									type: actions.UPDATE,
-									value: e.target.value,
-									key: "message",
-								});
-							}}
-							trigger={{
-								"{": {
-									dataProvider: token => {
-										return generalItems
-											.filter(chatter => chatter.includes(token))
-											.map(chatter => ({
-												name: `${chatter}`,
-												char: `{${chatter}}`,
-											}));
-									},
-									component: ({ selected, entity: { name, char } }) => (
-										<div
-											className={`text-area-item ${
-												selected ? "selected" : ""
-											}`}
-										>
-											{name}
-										</div>
-									),
-									output: (item, trigger) => item.char,
-								},
-								"#": channelAutoComplete(allChannels),
-								"@": roleAutoComplete(roles),
-								":": emoteAutoComplete(emotes)
-							}}
-						></TextArea>
-					</EmoteParent>
+					{!props.role ? (
+						<>
+							<SectionTitle>Command Response</SectionTitle>
+							<EmoteParent>
+								<EmotePickerOpener onClick={() => setEmotePickerVisible(true)}>
+									<img width="24" height="24" src="/smile.svg" alt="" />
+								</EmotePickerOpener>
+								<EmotePicker
+									onClickAway={() => {
+										setEmotePickerVisible(false);
+									}}
+									visible={emotePickerVisible}
+									emotes={emotes}
+									onEmoteSelect={emote => {
+										dispatch({
+											type: actions.UPDATE,
+											value: prev => `${prev} ${emote.colons}`,
+											key: "message",
+										});
+										setEmotePickerVisible(false);
+									}}
+								/>
+								<TextArea
+									value={state.message}
+									onChange={e => {
+										dispatch({
+											type: actions.UPDATE,
+											value: e.target.value,
+											key: "message",
+										});
+									}}
+									trigger={{
+										"{": {
+											dataProvider: token => {
+												return generalItems
+													.filter(chatter => chatter.includes(token))
+													.map(chatter => ({
+														name: `${chatter}`,
+														char: `{${chatter}}`,
+													}));
+											},
+											component: ({ selected, entity: { name, char } }) => (
+												<div
+													className={`text-area-item ${
+														selected ? "selected" : ""
+													}`}
+												>
+													{name}
+												</div>
+											),
+											output: (item, trigger) => item.char,
+										},
+										"#": channelAutoComplete(allChannels),
+										"@": roleAutoComplete(roles),
+										":": emoteAutoComplete(emotes),
+									}}
+								></TextArea>
+							</EmoteParent>
+						</>
+					) : (
+						<>
+							<SectionTitle>Command Roles</SectionTitle>
+							<Select
+								closeMenuOnSelect
+								options={roles
+									.filter(role => role.name !== "@everyone" && !role.managed)
+									.map(role => ({
+										value: transformObjectToSelectValue(role),
+										label: <RoleOption {...role}>{role.name}</RoleOption>,
+									}))}
+								value={state.roles?.map(role => ({
+									value: transformObjectToSelectValue(role),
+									label: <RoleItem {...role}></RoleItem>,
+								}))}
+								onChange={option => {
+									dispatch({
+										type: actions.UPDATE,
+										key: "roles",
+										value: prev => [
+											...(prev || []),
+											parseSelectValue(option, true),
+										],
+									});
+								}}
+							/>
+						</>
+					)}
 					<hr />
 					<SectionTitle>Command Description</SectionTitle>
 					<TextInput
@@ -363,7 +395,7 @@ const CommandModal = ({ defaultValue, ...props }) => {
 							if (!role) return { value: "", label: "" };
 							return {
 								label: (
-									<RoleItem
+									<ChannelOption
 										onClick={id => {
 											dispatch({
 												type: actions.REMOVEARRAY,
@@ -372,20 +404,20 @@ const CommandModal = ({ defaultValue, ...props }) => {
 											});
 										}}
 										{...role}
-									></RoleItem>
+									></ChannelOption>
 								),
 								value: transformObjectToSelectValue(role),
 							};
 						})}
-						options={roles.map(role => ({
+						options={allChannels.map(role => ({
 							value: transformObjectToSelectValue(role),
-							label: <RoleOption {...role}>{role.name}</RoleOption>,
+							label: <ChannelItem {...role}>{role.name}</ChannelItem>,
 						}))}
 						onChange={value => {
 							const roleId = parseSelectValue(value);
 							dispatch({
 								type: actions.UPDATEARRAY,
-								key: "permittedRoles",
+								key: "allowedChannels",
 								value: roleId,
 							});
 						}}
@@ -451,6 +483,14 @@ const CustomCommands = () => {
 			<CommandModal
 				open={commandModalOpen}
 				onClose={() => setCommandModalOpen(false)}
+				onSuccess={async (state, isRole) => {
+					const docRef = firebaseClient.db.collection("customCommands").doc(serverId);
+
+					await docRef.set(
+						{ [state.name]: { ...state, type: isRole ? "role" : "text" } },
+						{ merge: true }
+					);
+				}}
 				defaultValue={commandBeingEdited}
 			></CommandModal>
 			<CommandsHeader>

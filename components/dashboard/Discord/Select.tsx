@@ -154,7 +154,7 @@ const Select = (props: selectProps) => {
 	const options = useMemo(
 		() =>
 			props.options.filter(
-				option => !props.value.find(value => value.value === option.value)
+				option => !props.value?.find(value => value.value === option.value)
 			),
 		[props.options, props.value]
 	);
