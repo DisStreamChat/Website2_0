@@ -35,6 +35,10 @@ const Discord = ({ session }: dashboardProps) => {
 	const { adminServers, guilds } = user;
 
 	useEffect(() => {
+		const localServers = localStorage.getItem(`servers - ${user.id ?? user.uid}`);
+		if (localServers) {
+			setServers(JSON.parse(localServers));
+		}
 		(async () => {
 			const getServers = firebaseClient.app.functions().httpsCallable("getServers");
 			const data = await getServers({
@@ -50,7 +54,9 @@ const Discord = ({ session }: dashboardProps) => {
 					return { ...server, botIn: json.result };
 				})
 			);
-			setServers(mappedServers.sort((a, b) => (!a.botIn ? 1 : -1)));
+			const sortedServers = mappedServers.sort((a, b) => (!a.botIn ? 1 : -1));
+			setServers(sortedServers);
+			localStorage.setItem(`servers - ${user.id ?? user.uid}`, JSON.stringify(sortedServers));
 		})();
 
 		// adminServers ??
