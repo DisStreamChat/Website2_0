@@ -132,8 +132,8 @@ export const RankCard = props => {
 			height="140px"
 		>
 			<defs>
-				<pattern id="bgImage" patternUnits="userSpaceOnUse" width="800" height="850">
-					<image href={backgroundImage} x="0" y="-50" width="490" height="350" />
+				<pattern id="bgImage" patternUnits="userSpaceOnUse" width="460" height="140">
+					<image href={backgroundImage} x="0" y="-50" width="460" height="250" />
 				</pattern>
 			</defs>
 			<rect
