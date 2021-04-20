@@ -53,6 +53,10 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing: border-box;
 		scroll-behavior: smooth;
 	}
+
+	.bigify {
+		width: 2.5rem;
+	}
 	
 	::-webkit-scrollbar {
 		width: 1rem;

@@ -29,22 +29,26 @@ const ListItemSection = styled.div`
 `;
 
 export interface ListItemProps extends HTMLProps<HTMLLIElement> {
-	delete: () => void;
-	edit: () => void;
+	delete?: () => void;
+	edit?: () => void;
 }
 
 export const ListItem = ({ delete: deleteMe, edit, children, ...props }: ListItemProps) => {
 	return (
 		//@ts-ignore
 		<ListBody {...props}>
-			<Gap gap="1rem">{children}</Gap>
+			<Gap gap="1rem" style={{marginRight: "2rem"}}>{children}</Gap>
 			<Gap gap="1rem">
-				<BlueButton onClick={edit}>
-					<EditIcon /> Edit
-				</BlueButton>
-				<DeleteButton onClick={deleteMe}>
-					<DeleteIcon /> Delete
-				</DeleteButton>
+				{edit && (
+					<BlueButton onClick={edit}>
+						<EditIcon /> Edit
+					</BlueButton>
+				)}
+				{deleteMe && (
+					<DeleteButton onClick={deleteMe}>
+						<DeleteIcon /> Delete
+					</DeleteButton>
+				)}
 			</Gap>
 		</ListBody>
 	);

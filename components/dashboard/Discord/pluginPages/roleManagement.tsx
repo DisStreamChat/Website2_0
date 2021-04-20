@@ -3,7 +3,7 @@ import { discordContext } from "../discordContext";
 import styled from "styled-components";
 import { H1, H2, H3 } from "../../../shared/styles/headings";
 import { Switch, TextField } from "@material-ui/core";
-import { Action, role } from "../../../../utils/types";
+import { Action, channel, role } from "../../../../utils/types";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
 import { useDocumentData } from "react-firebase-hooks/firestore";
@@ -11,12 +11,42 @@ import { unset, get, set, isEqual, cloneDeep } from "lodash";
 import { motion } from "framer-motion";
 import StyledSelect from "../../../shared/styles/styled-select";
 import RoleItem, { RoleOption } from "../RoleItem";
-import { parseSelectValue, TransformObjectToSelectValue } from "../../../../utils/functions";
+import {
+	parseSelectValue,
+	transformObjectToSelectValue,
+	TransformObjectToSelectValue,
+} from "../../../../utils/functions";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import { ListItem } from "../../../shared/ui-components/ListItem";
-import { BlueButton } from "../../../shared/ui-components/Button";
-import { CommandModal, CommandsHeader } from "./customCommands";
+import { BlueButton, DeleteButton, PaddingButton } from "../../../shared/ui-components/Button";
+import {
+	CommandHeader,
+	CommandModal,
+	CommandModalBody,
+	CommandsHeader,
+	CreateCommandArea,
+	CreateCommandFooter,
+} from "./customCommands";
 import Select from "../Select";
+import Modal from "../../../shared/ui-components/Modal";
+import ClearIcon from "@material-ui/icons/Clear";
+import { SectionSubtitle, SectionTitle } from "../../../shared/styles/plugins";
+import {
+	generalItems,
+	channelAutoComplete,
+	roleAutoComplete,
+	emoteAutoComplete,
+} from "../../../../utils/functions/autocomplete";
+import {
+	EmoteParent,
+	EmotePickerOpener,
+	EmotePicker,
+} from "../../../shared/ui-components/emotePicker";
+import { TextArea } from "../../../shared/ui-components/TextField";
+import { ChannelItem, ChannelOption } from "../ChannelItem";
+import { gapFunction } from "../../../shared/styles";
+import Twemoji from "react-twemoji";
+import { uid } from "uid";
 
 interface settingsBase {
 	open: boolean;
@@ -34,8 +64,12 @@ interface CommandsModel extends settingsBase {
 	commands: any[];
 }
 
+interface ReactionsModel extends settingsBase {
+	messages: { [key: string]: any };
+}
+
 interface RoleSettings {
-	reactions: settingsBase;
+	reactions: ReactionsModel;
 	commands: CommandsModel;
 	join: JoinModel;
 	descriptions: DescriptionModel;
@@ -43,7 +77,7 @@ interface RoleSettings {
 
 const roleFactory = (): RoleSettings => {
 	return {
-		reactions: { open: false },
+		reactions: { open: false, messages: {} },
 		commands: { open: false, commands: [] },
 		join: { open: false, roles: [] },
 		descriptions: { open: false, roles: {} },
@@ -144,7 +178,7 @@ function deletePropertyPath(obj, path) {
 	delete obj[path.pop()];
 }
 
-const settingsReducer = (state: RoleSettings, action: Action) => {
+const settingsReducer = (state: any, action: Action) => {
 	switch (action.type) {
 		case actions.UPDATE:
 			const obj = set(
@@ -163,6 +197,8 @@ const settingsReducer = (state: RoleSettings, action: Action) => {
 			const copy = cloneDeep(state);
 			unset(copy, action.key);
 			return copy;
+		default:
+			return state;
 	}
 };
 
@@ -174,6 +210,224 @@ const DescriptionItem = styled.li`
 	max-width: 30%;
 	align-items: center;
 `;
+
+interface ReactionRoleModel {
+	message: string;
+	channel: channel;
+	reactions: { [emote: string]: { emoteData: any; roles: string[] | string | role | role[] } };
+}
+
+const reactionFactory = () => ({
+	message: "",
+	channel: null,
+	reactions: {},
+});
+
+const ButtonContainer = styled.div`
+	display: flex;
+	${gapFunction({ gap: "1rem" })}
+`;
+
+const ReactionRoleModal = ({ defaultValue, ...props }) => {
+	const router = useRouter();
+	const [, serverId, pluginName] = router.query.type as string[];
+	const { serverSettings, roles, allChannels, emotes } = useContext(discordContext);
+	const [emotePickerVisible, setEmotePickerVisible] = useState(false);
+	const [creatingReaction, setCreatingReaction] = useState(null);
+
+	const [state, dispatch] = useReducer(
+		settingsReducer,
+		defaultValue ?? reactionFactory(),
+		reaction => reaction
+	);
+
+	useEffect(() => {
+		if (defaultValue) {
+			dispatch({ type: actions.SET, value: cloneDeep(defaultValue) });
+		} else {
+			dispatch({ type: actions.SET, value: reactionFactory() });
+		}
+	}, [defaultValue]);
+
+	const create = async () => {
+		props.onSuccess(state);
+		props.onClose();
+	};
+
+	return (
+		<Modal open={props.open} onClose={props.onClose}>
+			<CommandModalBody>
+				<CommandHeader>
+					<H2>{defaultValue ? "Edit" : "Create"} Reaction Role Message</H2>
+					<button onClick={props.onClose}>
+						<ClearIcon />
+					</button>
+				</CommandHeader>
+				<CreateCommandArea className="small">
+					<SectionTitle>Message Channel</SectionTitle>
+					<StyledSelect
+						placeholder="Select a Channel"
+						value={
+							state.channel
+								? {
+										value: transformObjectToSelectValue(state.channel),
+										label: <ChannelItem {...state.channel} />,
+								  }
+								: undefined
+						}
+						options={allChannels.map(channel => ({
+							value: transformObjectToSelectValue(channel),
+							label: <ChannelItem {...channel}>{channel.name}</ChannelItem>,
+						}))}
+						onChange={value => {
+							const channel = parseSelectValue(value, true);
+							dispatch({
+								type: actions.UPDATE,
+								key: "channel",
+								value: channel,
+							});
+						}}
+					></StyledSelect>
+					<hr></hr>
+					<SectionTitle>Message Content</SectionTitle>
+					<EmoteParent>
+						<EmotePickerOpener onClick={() => setEmotePickerVisible(true)}>
+							<img width="24" height="24" src="/smile.svg" alt="" />
+						</EmotePickerOpener>
+						<EmotePicker
+							onClickAway={() => {
+								setEmotePickerVisible(false);
+							}}
+							visible={emotePickerVisible}
+							emotes={emotes}
+							onEmoteSelect={emote => {
+								dispatch({
+									type: actions.UPDATE,
+									value: prev => `${prev ?? ""} ${emote.colons}`,
+									key: "message",
+								});
+								setEmotePickerVisible(false);
+							}}
+						/>
+						<TextArea
+							value={state.message}
+							onChange={e => {
+								dispatch({
+									type: actions.UPDATE,
+									value: e.target.value,
+									key: "message",
+								});
+							}}
+							trigger={{
+								"#": channelAutoComplete(allChannels),
+								"@": roleAutoComplete(roles),
+								":": emoteAutoComplete(emotes),
+							}}
+						></TextArea>
+					</EmoteParent>
+					<hr />
+					<SectionTitle>Reactions</SectionTitle>
+					<SectionSubtitle>
+						A catch all reaction will run when any reaction is made, while a regular
+						reaction will only run on when its emoji is reacted with
+					</SectionSubtitle>
+					<ButtonContainer>
+						<div style={{ position: "relative" }}>
+							<BlueButton onClick={() => setCreatingReaction({ type: "normal" })}>
+								Add a Reaction
+							</BlueButton>
+							{creatingReaction?.type === "normal" && (
+								<EmotePicker
+									onClickAway={() => {
+										setCreatingReaction(false);
+									}}
+									left=".5rem"
+									visible={!creatingReaction?.emote}
+									emotes={emotes}
+									onEmoteSelect={emote => {
+										dispatch({
+											type: actions.UPDATE,
+											value: { roles: [], emoteData: emote },
+											key: `reactions[${emote.id}]`,
+										});
+										setCreatingReaction(prev => ({
+											...prev,
+											emote: emote.id,
+										}));
+									}}
+								/>
+							)}
+						</div>
+						<BlueButton onClick={() => setCreatingReaction({ type: "catch-all" })}>
+							Add a catch all Reaction
+						</BlueButton>
+					</ButtonContainer>
+					{Object.entries(state.reactions || {}).map(([emote, data]: [string, any]) => (
+						<ListItem
+							delete={() => {
+								dispatch({ type: actions.DELETE, key: `reactions[${emote}]` });
+							}}
+						>
+							{data.emoteData.native ? (
+								<Twemoji options={{ className: "bigify" }}>
+									{data.emoteData.native}
+								</Twemoji>
+							) : (
+								<img
+									draggable="false"
+									className="bigify"
+									src={data.emoteData.imageUrl}
+									alt={data.emoteData.id}
+								></img>
+							)}
+							<Select
+								value={data.roles.map(role => {
+									if (!role) return { value: "", label: "" };
+									return {
+										label: (
+											<RoleItem
+												onClick={id => {
+													dispatch({
+														type: actions.UPDATE,
+														value: prev =>
+															prev.filter(item => item.id !== id.id),
+														key: `reactions[${emote}].roles`,
+													});
+												}}
+												{...role}
+											></RoleItem>
+										),
+										value: transformObjectToSelectValue(role),
+									};
+								})}
+								options={roles
+									.filter(
+										channel => !channel.managed && channel.name !== "@everyone"
+									)
+									.map(role => ({
+										value: transformObjectToSelectValue(role),
+										label: <RoleOption {...role}>{role.name}</RoleOption>,
+									}))}
+								onChange={value => {
+									const roleId = parseSelectValue(value, true);
+									dispatch({
+										type: actions.UPDATE,
+										key: `reactions[${emote}].roles`,
+										value: prev => [...(prev || []), roleId],
+									});
+								}}
+							/>
+						</ListItem>
+					))}
+				</CreateCommandArea>
+				<CreateCommandFooter>
+					<DeleteButton onClick={props.onClose}>Cancel</DeleteButton>
+					<BlueButton onClick={create}>{defaultValue ? "Update" : "Create"}</BlueButton>
+				</CreateCommandFooter>
+			</CommandModalBody>
+		</Modal>
+	);
+};
 
 const RoleManagement = () => {
 	const router = useRouter();
@@ -188,6 +442,8 @@ const RoleManagement = () => {
 	const [localSettings, setLocalSettings] = useState(() => roleFactory());
 	const [commandModalOpen, setCommandModalOpen] = useState(false);
 	const [commandBeingEdited, setCommandBeingEdited] = useState(null);
+	const [reactionModalOpen, setReactionModalOpen] = useState(false);
+	const [reactionBeingEdited, setReactionBeingEdited] = useState(null);
 
 	const docRef = firebaseClient.db.collection("roleManagement").doc(serverId);
 
@@ -195,7 +451,6 @@ const RoleManagement = () => {
 
 	useEffect(() => {
 		if (snapshot && Object.keys(snapshot).length) {
-			console.log(snapshot);
 			setLocalSettings(cloneDeep(snapshot));
 			dispatch({ type: actions.SET, value: cloneDeep(snapshot) });
 		} else {
@@ -227,6 +482,13 @@ const RoleManagement = () => {
 		setCommandModalOpen(true);
 	};
 
+	const createReactionRole = () => {
+		setReactionBeingEdited(null);
+		setReactionModalOpen(true);
+	};
+
+	console.log(reactions.messages);
+
 	return (
 		<>
 			<RoleSection
@@ -237,7 +499,64 @@ const RoleManagement = () => {
 					dispatch({ type: actions.UPDATE, key: "reactions.open", value: val });
 				}}
 			>
-				<div style={{ height: "100px", background: "black" }}></div>
+				<ReactionRoleModal
+					defaultValue=""
+					open={reactionModalOpen}
+					onClose={() => setReactionModalOpen(false)}
+					onSuccess={state => {
+						docRef.update({
+							reactions: {
+								open: true,
+								messages: { ...(reactions?.messages || []), [uid()]: state },
+							},
+						});
+					}}
+				></ReactionRoleModal>
+				<CommandsHeader>
+					<span>
+						<H2>Reaction Roles</H2>
+						<h4>
+							allow users to give/remove roles from themselves by reacting to a
+							message
+						</h4>
+					</span>
+					<span>
+						<BlueButton onClick={createReactionRole}>
+							Create Reaction Role Message
+						</BlueButton>
+					</span>
+				</CommandsHeader>
+				<span>
+					<H2>Messages - {Object.entries(reactions.messages || {})?.length || 0}</H2>
+					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
+						<ListItem>
+							<div>
+								<ChannelItem {...value.channel}></ChannelItem>
+								{Object.entries(value.reactions || {}).map(
+									([emote, data]: [string, any]) => (
+										<ListItem edit={() => {}} delete={() => {}}>
+											{data.emoteData.native ? (
+												<Twemoji options={{ className: "bigify" }}>
+													{data.emoteData.native}
+												</Twemoji>
+											) : (
+												<img
+													draggable="false"
+													className="bigify"
+													src={data.emoteData.imageUrl}
+													alt={data.emoteData.id}
+												></img>
+											)}
+											{data.roles.map(role => (
+												<RoleItem {...role}></RoleItem>
+											))}
+										</ListItem>
+									)
+								)}
+							</div>
+						</ListItem>
+					))}
+				</span>
 			</RoleSection>
 			<RoleSection
 				title="Let your members get roles with commands"
@@ -354,7 +673,6 @@ const RoleManagement = () => {
 						label: <RoleOption color={role.color}>{role.name}</RoleOption>,
 					}))}
 					onChange={option => {
-						console.log(option);
 						dispatch({
 							type: actions.UPDATE,
 							value: "",

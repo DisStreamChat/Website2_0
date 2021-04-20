@@ -2,16 +2,26 @@ import "emoji-mart/css/emoji-mart.css";
 import { Picker } from "emoji-mart";
 import { useMemo } from "react";
 import { ClickAwayListener } from "@material-ui/core";
-import styled from "styled-components"
+import styled from "styled-components";
 
 interface EmotePickerProps {
 	emotes: any[];
 	visible?: boolean;
 	onClickAway?: () => void;
 	onEmoteSelect: (emote: any) => void;
+	top?: string;
+	left?: string;
+	right?: string;
+	bottom?: string;
 }
 
-export const EmotePicker = ({ emotes, visible, onClickAway, onEmoteSelect }: EmotePickerProps) => {
+export const EmotePicker = ({
+	emotes,
+	visible,
+	onClickAway,
+	onEmoteSelect,
+	...props
+}: EmotePickerProps) => {
 	const customEmojis = useMemo(() => {
 		return emotes
 			.map(emote => ({
@@ -35,7 +45,14 @@ export const EmotePicker = ({ emotes, visible, onClickAway, onEmoteSelect }: Emo
 				custom={customEmojis}
 				theme="dark"
 				include={[]}
-				style={{ position: "absolute", top: ".5rem", right: ".5rem", zIndex: 100 }}
+				style={{
+					position: "absolute",
+					top: props.top ?? ".5rem",
+					right: props.top ?? ".5rem",
+					bottom: props.bottom,
+					left: props.left,
+					zIndex: 100,
+				}}
 				set="twitter"
 				title="Pick your emote…"
 				emoji="point_up"

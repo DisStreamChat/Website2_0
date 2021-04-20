@@ -13,4 +13,5 @@ export const SectionSubtitle = styled.div`
 	color: #aaa;
 	margin-bottom: 8px;
 	font-size: 14px;
+	max-width: 50ch;
 `;

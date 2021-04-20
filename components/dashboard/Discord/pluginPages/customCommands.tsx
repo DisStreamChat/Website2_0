@@ -31,8 +31,6 @@ import {
 	EmotePicker,
 	EmotePickerOpener,
 } from "../../../shared/ui-components/emotePicker";
-import StyledSelect from "../../../shared/styles/styled-select";
-import { transform } from "framer-motion";
 
 export const CommandsHeader = styled(PluginSubHeader)`
 	display: flex;
@@ -47,7 +45,7 @@ export const CommandsHeader = styled(PluginSubHeader)`
 	margin-bottom: 1rem;
 `;
 
-const CommandModalBody = styled.div`
+export const CommandModalBody = styled.div`
 	width: 100vw;
 	height: 100vh;
 	background: var(--background-light-gray);
@@ -138,7 +136,11 @@ export const CreateCommandArea = styled.div`
 		margin: 1rem 0;
 	}
 	overflow: auto;
-	max-height: calc(100vh - 70px);
+	&.small{
+		min-height: calc(100vh - 140px)
+	}
+	
+	max-height: calc(100vh - 140px);
 `;
 
 export const CreateCommandFooter = styled.div`
