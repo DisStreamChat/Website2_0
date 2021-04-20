@@ -529,12 +529,12 @@ const RoleManagement = () => {
 				<span>
 					<H2>Messages - {Object.entries(reactions.messages || {})?.length || 0}</H2>
 					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
-						<ListItem>
+						<ListItem edit={() => {}} delete={() => {}}>
 							<div>
 								<ChannelItem {...value.channel}></ChannelItem>
 								{Object.entries(value.reactions || {}).map(
 									([emote, data]: [string, any]) => (
-										<ListItem edit={() => {}} delete={() => {}}>
+										<ListItem >
 											{data.emoteData.native ? (
 												<Twemoji options={{ className: "bigify" }}>
 													{data.emoteData.native}
