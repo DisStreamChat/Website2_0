@@ -345,10 +345,14 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 									visible={!creatingReaction?.emote}
 									emotes={emotes}
 									onEmoteSelect={emote => {
+										const id = emote.imageUrl
+											? emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)
+											: emote.native;
+										console.log({ id, emote });
 										dispatch({
 											type: actions.UPDATE,
 											value: { roles: [], emoteData: emote },
-											key: `reactions[${emote.id}]`,
+											key: `reactions[${id}]`,
 										});
 										setCreatingReaction(prev => ({
 											...prev,
@@ -487,8 +491,6 @@ const RoleManagement = () => {
 		setReactionModalOpen(true);
 	};
 
-	console.log(reactions.messages);
-
 	return (
 		<>
 			<RoleSection
@@ -510,6 +512,21 @@ const RoleManagement = () => {
 								messages: { ...(reactions?.messages || []), [uid()]: state },
 							},
 						});
+						fetch(
+							`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
+							{
+								method: "POST",
+								body: JSON.stringify({
+									server: serverId,
+									reactions: Object.keys(state.reactions),
+									message: state.message,
+									channel: state.channel.id,
+								}),
+								headers: {
+									"content-type": "application/json",
+								},
+							}
+						);
 					}}
 				></ReactionRoleModal>
 				<CommandsHeader>
@@ -534,7 +551,7 @@ const RoleManagement = () => {
 								<ChannelItem {...value.channel}></ChannelItem>
 								{Object.entries(value.reactions || {}).map(
 									([emote, data]: [string, any]) => (
-										<ListItem >
+										<ListItem>
 											{data.emoteData.native ? (
 												<Twemoji options={{ className: "bigify" }}>
 													{data.emoteData.native}
