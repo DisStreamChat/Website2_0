@@ -177,8 +177,6 @@ const Select = (props: selectProps) => {
 		outState.x = "50%";
 	}
 
-	console.log(overflowBottom);
-
 	if (overflowBottom) {
 		inState.y = (height + 50) * -1;
 		outState.y = (height + 38) * -1;

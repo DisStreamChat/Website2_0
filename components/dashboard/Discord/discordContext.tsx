@@ -81,7 +81,6 @@ export const DiscordContextProvider = ({ children }) => {
 			);
 			const emoteResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/emotes`)
 			const emoteJson = await emoteResponse.json()
-			console.log(emoteJson)
 			setEmotes(emoteJson)
 		};
 		const fetchFromFirebase = async () => {

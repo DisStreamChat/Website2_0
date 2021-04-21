@@ -38,8 +38,6 @@ export const EmotePicker = ({
 			.sort(emote => (emote.customCategory === "Twitch" ? 1 : -1));
 	}, [emotes]);
 
-	console.log({customEmojis})
-
 	return visible ? (
 		<ClickAwayListener onClickAway={onClickAway}>
 			<Picker

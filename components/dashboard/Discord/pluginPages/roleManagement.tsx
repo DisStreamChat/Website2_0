@@ -7,7 +7,7 @@ import { Action, channel, role } from "../../../../utils/types";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
 import { useDocumentData } from "react-firebase-hooks/firestore";
-import { unset, get, set, isEqual, cloneDeep } from "lodash";
+import { unset, get, set, isEqual, cloneDeep, isEmpty } from "lodash";
 import { motion } from "framer-motion";
 import StyledSelect from "../../../shared/styles/styled-select";
 import RoleItem, { RoleOption } from "../RoleItem";
@@ -228,12 +228,39 @@ const ButtonContainer = styled.div`
 	${gapFunction({ gap: "1rem" })}
 `;
 
+const Warning = styled.div`
+	margin-bottom: 5px;
+	margin-top: 10px;
+	background-color: rgba(250, 165, 27, 0.3);
+	color: rgb(250, 165, 27);
+	border-radius: 3px;
+	border: 1px solid rgb(250, 165, 27);
+	padding: 10px;
+	display: flex;
+	flex-direction: row;
+`;
+
+const Error = styled.div`
+	margin-bottom: 5px;
+	margin-top: 10px;
+	background-color: rgba(250, 27, 27, 0.07);
+	color: rgb(252, 79, 79);
+	border-radius: 3px;
+	border: 1px solid rgb(255, 48, 48);
+	padding: 10px;
+	display: flex;
+	flex-direction: row;
+`;
+
 const ReactionRoleModal = ({ defaultValue, ...props }) => {
 	const router = useRouter();
 	const [, serverId, pluginName] = router.query.type as string[];
 	const { serverSettings, roles, allChannels, emotes } = useContext(discordContext);
 	const [emotePickerVisible, setEmotePickerVisible] = useState(false);
 	const [creatingReaction, setCreatingReaction] = useState(null);
+	const [roleErrors, setRoleErrors] = useState<any>({});
+	const [positions, setPositions] = useState(null);
+	const [formErrors, setFormErrors] = useState<any>({});
 
 	const [state, dispatch] = useReducer(
 		settingsReducer,
@@ -250,9 +277,55 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 	}, [defaultValue]);
 
 	const create = async () => {
+		const errors: any = {};
+		if (!state.channel) {
+			errors.channel = "Required";
+		}
+		if (!state.message?.length) {
+			errors.message = "Required";
+		}
+		if (isEmpty(state.reactions)) {
+			errors.reactions = "Required";
+		} else {
+			for (const reaction of Object.entries(state.reactions)) {
+				const [emote, data]: [string, any] = reaction;
+				if (!data.roles?.length) {
+					errors[emote] = "Required";
+				}
+			}
+		}
+		setFormErrors(errors);
+		if (!isEmpty(errors)) return;
 		props.onSuccess(state);
 		props.onClose();
 	};
+
+	useEffect(() => {
+		(async () => {
+			try {
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/position?server=${serverId}`
+				);
+				const json = await response.json();
+				setPositions(json);
+			} catch (err) {
+				console.log(err.message);
+			}
+		})();
+	}, [serverId]);
+
+	useEffect(() => {
+		for (const entry of Object.entries(state.reactions || {})) {
+			const [key, value]: [string, any] = entry;
+			let hasError = false;
+			for (const role of value.roles) {
+				if (role.rawPosition > positions?.rawPosition) {
+					hasError = true;
+				}
+			}
+			setRoleErrors(prev => ({ ...prev, [key]: hasError }));
+		}
+	}, [state]);
 
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
@@ -288,6 +361,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 							});
 						}}
 					></StyledSelect>
+					{formErrors.channel === "Required" && <Error>Please Select a channel</Error>}
 					<hr></hr>
 					<SectionTitle>Message Content</SectionTitle>
 					<EmoteParent>
@@ -325,6 +399,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 							}}
 						></TextArea>
 					</EmoteParent>
+					{formErrors.message === "Required" && <Error>Message is required</Error>}
 					<hr />
 					<SectionTitle>Reactions</SectionTitle>
 					<SectionSubtitle>
@@ -365,62 +440,86 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 							Add a catch all Reaction
 						</BlueButton>
 					</ButtonContainer>
+					{formErrors.reactions === "Required" && (
+						<Error>Please add atleast one reaction</Error>
+					)}
 					{Object.entries(state.reactions || {}).map(([emote, data]: [string, any]) => (
-						<ListItem
-							delete={() => {
-								dispatch({ type: actions.DELETE, key: `reactions[${emote}]` });
-							}}
-						>
-							{data.emoteData.native ? (
-								<Twemoji options={{ className: "bigify" }}>
-									{data.emoteData.native}
-								</Twemoji>
-							) : (
-								<img
-									draggable="false"
-									className="bigify"
-									src={data.emoteData.imageUrl}
-									alt={data.emoteData.id}
-								></img>
-							)}
-							<Select
-								value={data.roles.map(role => {
-									if (!role) return { value: "", label: "" };
-									return {
-										label: (
-											<RoleItem
-												onClick={id => {
-													dispatch({
-														type: actions.UPDATE,
-														value: prev =>
-															prev.filter(item => item.id !== id.id),
-														key: `reactions[${emote}].roles`,
-													});
-												}}
-												{...role}
-											></RoleItem>
-										),
-										value: transformObjectToSelectValue(role),
-									};
-								})}
-								options={roles
-									.filter(
-										channel => !channel.managed && channel.name !== "@everyone"
-									)
-									.map(role => ({
-										value: transformObjectToSelectValue(role),
-										label: <RoleOption {...role}>{role.name}</RoleOption>,
-									}))}
-								onChange={value => {
-									const roleId = parseSelectValue(value, true);
-									dispatch({
-										type: actions.UPDATE,
-										key: `reactions[${emote}].roles`,
-										value: prev => [...(prev || []), roleId],
-									});
+						<>
+							<ListItem
+								delete={() => {
+									dispatch({ type: actions.DELETE, key: `reactions[${emote}]` });
 								}}
-							/>
-						</ListItem>
+							>
+								{data.emoteData.native ? (
+									<Twemoji options={{ className: "bigify" }}>
+										{data.emoteData.native}
+									</Twemoji>
+								) : (
+									<img
+										draggable="false"
+										className="bigify"
+										src={data.emoteData.imageUrl}
+										alt={data.emoteData.id}
+									></img>
+								)}
+								<div>
+									<Select
+										value={data.roles?.map(role => {
+											if (!role) return { value: "", label: "" };
+											return {
+												label: (
+													<RoleItem
+														onClick={id => {
+															console.log(id);
+															dispatch({
+																type: actions.UPDATE,
+																value: prev =>
+																	prev.filter(
+																		item => item.id !== id
+																	),
+																key: `reactions[${emote}].roles`,
+															});
+														}}
+														{...role}
+													></RoleItem>
+												),
+												value: transformObjectToSelectValue(role),
+											};
+										})}
+										options={roles
+											.filter(
+												channel =>
+													!channel.managed && channel.name !== "@everyone"
+											)
+											.map(role => ({
+												value: transformObjectToSelectValue(role),
+												label: (
+													<RoleOption {...role}>{role.name}</RoleOption>
+												),
+											}))}
+										onChange={value => {
+											const roleId = parseSelectValue(value, true);
+											dispatch({
+												type: actions.UPDATE,
+												key: `reactions[${emote}].roles`,
+												value: prev => [...(prev || []), roleId],
+											});
+										}}
+									/>
+									{roleErrors[emote] && (
+										<Warning>
+											Whoops, it looks like I can't give one of the roles
+											listed here. Please fix that by putting my role above
+											all the roles listed here, or remove any roles above
+											mine from the list.
+										</Warning>
+									)}
+								</div>
+							</ListItem>
+							{formErrors[emote] === "Required" && (
+								<Error>Please add atleast one role</Error>
+							)}
+						</>
 					))}
 				</CreateCommandArea>
 				<CreateCommandFooter>
@@ -490,6 +589,11 @@ const RoleManagement = () => {
 		setReactionModalOpen(true);
 	};
 
+	const editReactionRole = reaction => {
+		setReactionBeingEdited(reaction);
+		setReactionModalOpen(true);
+	};
+
 	return (
 		<>
 			<RoleSection
@@ -501,7 +605,7 @@ const RoleManagement = () => {
 				}}
 			>
 				<ReactionRoleModal
-					defaultValue=""
+					defaultValue={reactionBeingEdited}
 					open={reactionModalOpen}
 					onClose={() => setReactionModalOpen(false)}
 					onSuccess={async state => {
@@ -520,12 +624,15 @@ const RoleManagement = () => {
 								},
 							}
 						);
-						const json = await res.json()
+						const json = await res.json();
 
 						docRef.update({
 							reactions: {
 								open: true,
-								messages: { ...(reactions?.messages || []), [json.messageId]: state },
+								messages: {
+									...(reactions?.messages || []),
+									[json.messageId]: state,
+								},
 							},
 						});
 					}}
@@ -547,7 +654,7 @@ const RoleManagement = () => {
 				<span>
 					<H2>Messages - {Object.entries(reactions.messages || {})?.length || 0}</H2>
 					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
-						<ListItem edit={() => {}} delete={() => {}}>
+						<ListItem edit={() => editReactionRole(value)} delete={() => {}}>
 							<div>
 								<ChannelItem {...value.channel}></ChannelItem>
 								{Object.entries(value.reactions || {}).map(
