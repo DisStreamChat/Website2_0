@@ -504,14 +504,8 @@ const RoleManagement = () => {
 					defaultValue=""
 					open={reactionModalOpen}
 					onClose={() => setReactionModalOpen(false)}
-					onSuccess={state => {
-						docRef.update({
-							reactions: {
-								open: true,
-								messages: { ...(reactions?.messages || []), [uid()]: state },
-							},
-						});
-						fetch(
+					onSuccess={async state => {
+						const res = await fetch(
 							`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
 							{
 								method: "POST",
@@ -526,6 +520,14 @@ const RoleManagement = () => {
 								},
 							}
 						);
+						const json = await res.json()
+
+						docRef.update({
+							reactions: {
+								open: true,
+								messages: { ...(reactions?.messages || []), [json.messageId]: state },
+							},
+						});
 					}}
 				></ReactionRoleModal>
 				<CommandsHeader>
