@@ -348,7 +348,6 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 										const id = emote.imageUrl
 											? emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)
 											: emote.native;
-										console.log({ id, emote });
 										dispatch({
 											type: actions.UPDATE,
 											value: { roles: [], emoteData: emote },
