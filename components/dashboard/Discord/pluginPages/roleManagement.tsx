@@ -786,7 +786,10 @@ const RoleManagement = () => {
 						docRef.update({
 							commands: {
 								open: true,
-								commands: { ...(commands?.commands || {}), [state.name]: state },
+								commands: {
+									...(commands?.commands || {}),
+									[state.name]: { ...state, type: "role" },
+								},
 							},
 						});
 					}}
@@ -806,7 +809,11 @@ const RoleManagement = () => {
 					<ul>
 						{Object.entries(commands.commands || {}).map(([key, val]) => (
 							<ListItem
-								delete={() => {}}
+								delete={() => {
+									docRef.update({
+										[`commands.commands.${val.name}`]: firebaseClient.app.firestore.FieldValue.delete(),
+									});
+								}}
 								edit={() => {
 									edit(val);
 								}}
