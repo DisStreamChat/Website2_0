@@ -45,7 +45,7 @@ export const emoteAutoComplete = emotes => ({
 			.map(emote => ({
 				...emote,
 				name: `${emote.name}`,
-				char: `:${emote.name}:`,
+				char: `<:${emote.name}:${emote.id}>`,
 			}));
 	},
 	component: ({ selected, entity }) => (

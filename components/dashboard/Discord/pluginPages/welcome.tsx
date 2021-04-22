@@ -12,7 +12,12 @@ import { discordContext } from "../discordContext";
 import SaveBar from "../../../shared/ui-components/SaveBar";
 import { TextArea } from "../../../shared/ui-components/TextField";
 import styled from "styled-components";
-import { channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete } from "../../../../utils/functions/autocomplete";
+import {
+	channelAutoComplete,
+	emoteAutoComplete,
+	generalItems,
+	roleAutoComplete,
+} from "../../../../utils/functions/autocomplete";
 import {
 	EmoteParent,
 	EmotePicker,
@@ -142,10 +147,17 @@ const Welcome = () => {
 					</EmotePickerOpener>
 					<EmotePicker
 						onEmoteSelect={emote => {
+							const emoteText = emote.imageUrl
+								? `<${emote.colons}${emote.imageUrl
+										.split("/")
+										.slice(-1)[0]
+										.slice(0, -4)}>`
+								: emote.colons;
+
 							dispatch({
 								type: actions.UPDATE,
 								key: "message",
-								value: prev => `${prev} ${emote.colons}`,
+								value: prev => `${prev} ${emoteText}`,
 							});
 						}}
 						visible={emotePickerOpen}
@@ -180,7 +192,7 @@ const Welcome = () => {
 							},
 							"#": channelAutoComplete(allChannels),
 							"@": roleAutoComplete(roles),
-							":": emoteAutoComplete(emotes)
+							":": emoteAutoComplete(emotes),
 						}}
 					></TextArea>
 				</EmoteParent>

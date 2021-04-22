@@ -273,10 +273,12 @@ const Leveling = () => {
 							onClickAway={() => setEmotePickerOpen(false)}
 							visible={emotePickerOpen}
 							onEmoteSelect={emote => {
+								const emoteText = emote.imageUrl ? `<${emote.colons}${emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)}>` : emote.colons
+
 								dispatch({
 									type: actions.UPDATE,
 									key: "general.message",
-									value: prev => `${prev} ${emote.colons}`,
+									value: prev => `${prev} ${emoteText}`,
 								});
 							}}
 						/>

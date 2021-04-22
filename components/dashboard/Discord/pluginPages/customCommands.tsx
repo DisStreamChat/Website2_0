@@ -219,9 +219,11 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 									visible={emotePickerVisible}
 									emotes={emotes}
 									onEmoteSelect={emote => {
+								const emoteText = emote.imageUrl ? `<${emote.colons}${emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)}>` : emote.colons
+
 										dispatch({
 											type: actions.UPDATE,
-											value: prev => `${prev} ${emote.colons}`,
+											value: prev => `${prev} <${emoteText}>`,
 											key: "message",
 										});
 										setEmotePickerVisible(false);
