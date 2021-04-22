@@ -383,7 +383,12 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 							visible={emotePickerVisible}
 							emotes={emotes}
 							onEmoteSelect={emote => {
-								const emoteText = emote.imageUrl ? `<${emote.colons}${emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)}>` : emote.colons
+								const emoteText = emote.imageUrl
+									? `<${emote.colons}${emote.imageUrl
+											.split("/")
+											.slice(-1)[0]
+											.slice(0, -4)}>`
+									: emote.colons;
 								dispatch({
 									type: actions.UPDATE,
 									value: prev => `${prev ?? ""} ${emoteText}`,
@@ -679,7 +684,7 @@ const RoleManagement = () => {
 									reactions: Object.keys(state.reactions),
 									message: state.message,
 									channel: state.channel.id,
-									messageId: editingReaction?.id
+									messageId: editingReaction?.id,
 								}),
 								headers: {
 									"content-type": "application/json",
@@ -717,7 +722,25 @@ const RoleManagement = () => {
 					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
 						<ListItem
 							edit={() => editReactionRole({ id: key, ...value })}
-							delete={() => {}}
+							delete={async () => {
+								await fetch(
+									`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
+									{
+										method: "DELETE",
+										body: JSON.stringify({
+											server: serverId,
+											message: key,
+											channel: value.channel.id,
+										}),
+										headers: {
+											"content-type": "application/json",
+										},
+									}
+								);
+								docRef.update({
+									[`reactions.messages.${key}`]: firebaseClient.app.firestore.FieldValue.delete(),
+								});
+							}}
 						>
 							<div>
 								<ChannelItem {...value.channel}></ChannelItem>
