@@ -436,7 +436,15 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 								/>
 							)}
 						</div>
-						<BlueButton onClick={() => setCreatingReaction({ type: "catch-all" })}>
+						<BlueButton
+							onClick={() => {
+								dispatch({
+									type: actions.UPDATE,
+									key: "reactions[catch-all]",
+									value: { roles: [], emoteData: {catchAll: true, imageUrl: "/asterisk.webp"} },
+								});
+							}}
+						>
 							Add a catch all Reaction
 						</BlueButton>
 					</ButtonContainer>
