@@ -56,6 +56,12 @@ const GlobalStyle = createGlobalStyle`
 
 	.bigify {
 		width: 2.5rem;
+		& + * {
+			min-width: 50%;
+			& + * {
+				min-width: 50%;
+			}
+		}
 	}
 	
 	::-webkit-scrollbar {

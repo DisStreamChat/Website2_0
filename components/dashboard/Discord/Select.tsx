@@ -135,7 +135,7 @@ const calculateSizeAndPosition = (
 	optionsLength: number,
 	buttonRef: MutableRefObject<HTMLButtonElement>
 ) => {
-	const height = 264;
+	const height = Math.min(264, 57*optionsLength);
 	const width = 250;
 	if (!buttonRef?.current) return {};
 	const rect = buttonRef.current.getBoundingClientRect();

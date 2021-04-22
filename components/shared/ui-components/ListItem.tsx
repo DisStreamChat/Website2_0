@@ -37,7 +37,9 @@ export const ListItem = ({ delete: deleteMe, edit, children, ...props }: ListIte
 	return (
 		//@ts-ignore
 		<ListBody {...props}>
-			<Gap gap="1rem" style={{marginRight: "2rem"}}>{children}</Gap>
+			<Gap gap="1rem" style={{ marginRight: "2rem", flex: 1 }}>
+				{children}
+			</Gap>
 			<Gap gap="1rem">
 				{edit && (
 					<BlueButton onClick={edit}>

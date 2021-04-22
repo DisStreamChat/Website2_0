@@ -47,6 +47,7 @@ import { ChannelItem, ChannelOption } from "../ChannelItem";
 import { gapFunction } from "../../../shared/styles";
 import Twemoji from "react-twemoji";
 import { uid } from "uid";
+import { REACTION_ROLE_ACTION_TYPES } from "../../../../utils/constants";
 
 interface settingsBase {
 	open: boolean;
@@ -292,6 +293,9 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 				if (!data.roles?.length) {
 					errors[emote] = "Required";
 				}
+				if (!data.type) {
+					errors[`${emote}-type`] = "Required";
+				}
 			}
 		}
 		setFormErrors(errors);
@@ -327,6 +331,8 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 		}
 	}, [state]);
 
+	console.log(formErrors);
+
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
 			<CommandModalBody>
@@ -359,6 +365,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 								key: "channel",
 								value: channel,
 							});
+							setFormErrors(prev => ({ ...prev, channel: null }));
 						}}
 					></StyledSelect>
 					{formErrors.channel === "Required" && <Error>Please Select a channel</Error>}
@@ -391,6 +398,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 									value: e.target.value,
 									key: "message",
 								});
+								setFormErrors(prev => ({ ...prev, message: null }));
 							}}
 							trigger={{
 								"#": channelAutoComplete(allChannels),
@@ -437,20 +445,25 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 							)}
 						</div>
 						<BlueButton
+							disabled={state.reactions["catch-all"]}
 							onClick={() => {
 								dispatch({
 									type: actions.UPDATE,
 									key: "reactions[catch-all]",
-									value: { roles: [], emoteData: {catchAll: true, imageUrl: "/asterisk.webp"} },
+									value: {
+										roles: [],
+										emoteData: { catchAll: true, imageUrl: "/asterisk.webp" },
+									},
 								});
 							}}
 						>
 							Add a catch all Reaction
 						</BlueButton>
 					</ButtonContainer>
-					{formErrors.reactions === "Required" && (
-						<Error>Please add atleast one reaction</Error>
-					)}
+					{formErrors.reactions === "Required" &&
+						Object.entries(state.reactions || {}).length === 0 && (
+							<Error>Please add atleast one reaction</Error>
+						)}
 					{Object.entries(state.reactions || {}).map(([emote, data]: [string, any]) => (
 						<>
 							<ListItem
@@ -470,7 +483,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 										alt={data.emoteData.id}
 									></img>
 								)}
-								<div>
+								<div style={{ minWidth: "50%" }}>
 									<Select
 										value={data.roles?.map(role => {
 											if (!role) return { value: "", label: "" };
@@ -512,8 +525,12 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 												key: `reactions[${emote}].roles`,
 												value: prev => [...(prev || []), roleId],
 											});
+											setFormErrors(prev => ({ ...prev, [emote]: null }));
 										}}
 									/>
+									{formErrors[emote] === "Required" && (
+										<Error>Please add atleast one role</Error>
+									)}
 									{roleErrors[emote] && (
 										<Warning>
 											Whoops, it looks like I can't give one of the roles
@@ -523,10 +540,44 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 										</Warning>
 									)}
 								</div>
+								<div style={{ minWidth: "50%" }}>
+									<StyledSelect
+										placeholder="Select Action Type"
+										value={
+											data?.type
+												? {
+														value: data?.type,
+														label: `Action Type: ${
+															REACTION_ROLE_ACTION_TYPES[data?.type]
+														}`,
+												  }
+												: ""
+										}
+										options={Object.entries(
+											REACTION_ROLE_ACTION_TYPES || {}
+										)?.map(([key, value]) => ({
+											value: key,
+											label: value,
+										}))}
+										onChange={e => {
+											dispatch({
+												type: actions.UPDATE,
+												key: `reactions[${emote}].type`,
+												value: e.value,
+											});
+											setFormErrors(prev => ({
+												...prev,
+												[`${emote}-type`]: null,
+											}));
+										}}
+									></StyledSelect>
+									{formErrors[`${emote}-type`] === "Required" && (
+										<Error style={{ maxWidth: "80%" }}>
+											Please select a type
+										</Error>
+									)}
+								</div>
 							</ListItem>
-							{formErrors[emote] === "Required" && (
-								<Error>Please add atleast one role</Error>
-							)}
 						</>
 					))}
 				</CreateCommandArea>
