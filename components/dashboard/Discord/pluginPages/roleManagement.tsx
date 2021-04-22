@@ -262,6 +262,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 	const [roleErrors, setRoleErrors] = useState<any>({});
 	const [positions, setPositions] = useState(null);
 	const [formErrors, setFormErrors] = useState<any>({});
+	const [savedDefault, setSavedDefault] = useState({});
 
 	const [state, dispatch] = useReducer(
 		settingsReducer,
@@ -272,8 +273,10 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 	useEffect(() => {
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: cloneDeep(defaultValue) });
+			setSavedDefault(cloneDeep(defaultValue));
 		} else {
 			dispatch({ type: actions.SET, value: reactionFactory() });
+			setSavedDefault(null);
 		}
 	}, [defaultValue]);
 
@@ -300,7 +303,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 		}
 		setFormErrors(errors);
 		if (!isEmpty(errors)) return;
-		props.onSuccess(state);
+		props.onSuccess(state, savedDefault);
 		props.onClose();
 	};
 
@@ -330,8 +333,6 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 			setRoleErrors(prev => ({ ...prev, [key]: hasError }));
 		}
 	}, [state]);
-
-	console.log(formErrors);
 
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
@@ -667,16 +668,17 @@ const RoleManagement = () => {
 					defaultValue={reactionBeingEdited}
 					open={reactionModalOpen}
 					onClose={() => setReactionModalOpen(false)}
-					onSuccess={async state => {
+					onSuccess={async (state, editingReaction) => {
 						const res = await fetch(
 							`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
 							{
-								method: "POST",
+								method: editingReaction ? "PATCH" : "POST",
 								body: JSON.stringify({
 									server: serverId,
 									reactions: Object.keys(state.reactions),
 									message: state.message,
 									channel: state.channel.id,
+									messageId: editingReaction?.id
 								}),
 								headers: {
 									"content-type": "application/json",
@@ -684,7 +686,6 @@ const RoleManagement = () => {
 							}
 						);
 						const json = await res.json();
-
 						docRef.update({
 							reactions: {
 								open: true,
@@ -713,7 +714,10 @@ const RoleManagement = () => {
 				<span>
 					<H2>Messages - {Object.entries(reactions.messages || {})?.length || 0}</H2>
 					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
-						<ListItem edit={() => editReactionRole(value)} delete={() => {}}>
+						<ListItem
+							edit={() => editReactionRole({ id: key, ...value })}
+							delete={() => {}}
+						>
 							<div>
 								<ChannelItem {...value.channel}></ChannelItem>
 								{Object.entries(value.reactions || {}).map(
