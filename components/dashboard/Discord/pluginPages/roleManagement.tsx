@@ -618,6 +618,7 @@ const RoleManagement = () => {
 	const [snapshot] = useDocumentData(docRef);
 
 	useEffect(() => {
+		
 		if (snapshot && Object.keys(snapshot).length) {
 			setLocalSettings(cloneDeep(snapshot));
 			dispatch({ type: actions.SET, value: cloneDeep(snapshot) });
@@ -846,8 +847,8 @@ const RoleManagement = () => {
 				<Select
 					closeMenuOnSelect={false}
 					options={notManaged
-						.filter(role => !join.roles.find(({ id }) => role.id == id))
-						.map(role => ({
+						?.filter(role => !join.roles?.find(({ id }) => role.id == id))
+						?.map(role => ({
 							value: TransformObjectToSelectValue(role),
 							label: <RoleOption color={role.color}>{role.name}</RoleOption>,
 						}))}

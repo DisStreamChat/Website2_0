@@ -2,7 +2,7 @@ FROM node:12 AS base
 WORKDIR /base
 COPY package*.json ./
 RUN npx browserslist@latest --update-db
-RUN npm install --force
+RUN npm install
 COPY . .
 
 FROM base AS build

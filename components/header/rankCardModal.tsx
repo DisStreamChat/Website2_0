@@ -175,8 +175,8 @@ const RankCardModal = ({ open, onClose }) => {
 
 	useEffect(() => {
 		(async () => {
-			if(!user) return
-			const { discordId } = user
+			if (!user) return;
+			const { discordId } = user;
 
 			const response = await fetch(
 				`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveuser?user=${discordId}`
@@ -279,11 +279,13 @@ const RankCardModal = ({ open, onClose }) => {
 					<Images>
 						{defaultImages.map(src => (
 							<div
+								key={src}
 								className={`${
 									customizationData.backgroundImage === src ? "selected" : ""
 								}`}
 							>
 								<ImageContainer
+									key={src}
 									onClick={() =>
 										setCustomizationData(prev => ({
 											...prev,
