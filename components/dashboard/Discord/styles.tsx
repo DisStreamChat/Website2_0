@@ -1,5 +1,12 @@
 import styled from "styled-components";
-import { Avatar, createStyles, makeStyles, Theme, useMediaQuery, withStyles } from "@material-ui/core";
+import {
+	Avatar,
+	createStyles,
+	makeStyles,
+	Theme,
+	useMediaQuery,
+	withStyles,
+} from "@material-ui/core";
 import { H1, H2 } from "../../shared/styles/headings";
 import { motion } from "framer-motion";
 
@@ -22,6 +29,8 @@ export const Title = styled(H2)`
 `;
 
 export const ServerItemBody = styled.div`
+	/* width: 49%; */
+	max-width: 49%;
 	flex: 1 1 49%;
 	align-items: center;
 	background: #17181b;
@@ -103,7 +112,6 @@ export const MediumAvatar = withStyles((theme: Theme) =>
 		},
 	})
 )(Avatar);
-
 
 export const ServerModal = styled.div`
 	width: 50vw;
