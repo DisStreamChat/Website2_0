@@ -15,8 +15,15 @@ const ErrorMain = styled.div`
 const Oauth = props => {
 	const { user } = useAuth();
 	useEffect(() => {
+		console.log(props.details);
 		if (typeof window !== "undefined" && user) {
-			window.close();
+			fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/details?id=${user.uid}`, {
+				method: "POST",
+				body: props.details,
+				headers: { "content-type": "application/json" },
+			}).then(() => {
+				window.close();
+			});
 		}
 		setTimeout(() => {}, 200);
 	}, [user]);
@@ -52,23 +59,11 @@ export const getServerSideProps = async context => {
 			const clone = response.clone();
 			if (response.ok) {
 				const json = await response.json();
-				let discordUser;
 				if (!isSignedIn) {
-					discordUser = verifyIdToken(json.token) as any;
 					nookies.set(context, "temp-token", json.token, { maxAge: 60, path: "/" });
-					// const user = await firebaseClient.auth.signInWithCustomToken(json.token)
-					// console.log(user)
 					nookies.set(context, "auth-token", json.token, { sameSite: "lax", path: "/" });
 				}
-				await admin
-					.firestore()
-					.collection("Streamers")
-					.doc(user?.uid || discordUser?.uid || " ")
-					.collection("discord")
-					.doc("data")
-					.set(json);
-				console.log("success");
-				return { props: {} };
+				return { props: { details: JSON.stringify(json) } };
 			}
 			return { props: { error: true } };
 		} else {
@@ -76,11 +71,8 @@ export const getServerSideProps = async context => {
 			const json = await response.json();
 			if (response.ok) {
 				nookies.set(context, "temp-token", json.token, { maxAge: 60, path: "/" });
-				// const user = await firebaseClient.auth.signInWithCustomToken(json.token)
-				// console.log(user)
 				nookies.set(context, "auth-token", json.token, { sameSite: "lax", path: "/" });
 			}
-			// res.writeHead(307, { location: "/dashboard/app" }).end();
 		}
 	} catch (err) {}
 	return { props: {} };
