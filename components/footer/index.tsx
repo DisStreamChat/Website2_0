@@ -56,9 +56,9 @@ const Footer = () => {
 					</styles.column>
 					<styles.column>
 						<styles.heading>Team</styles.heading>
-						<Link href="/members" passHref>
+						{/* <Link href="/members" passHref>
 							<Anchor>Members</Anchor>
-						</Link>
+						</Link> */}
 
 						<Anchor href="https://github.com/DisStreamChat/Contributors" newTab>
 							Contributors
