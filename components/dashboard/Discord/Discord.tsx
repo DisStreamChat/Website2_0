@@ -42,7 +42,7 @@ const Discord = ({ session }: dashboardProps) => {
 		(async () => {
 			const getServers = firebaseClient.app.functions().httpsCallable("getServers");
 			const data = await getServers({
-				discordId: user.discordId,
+				discordId: "440222101014577173",
 			});
 			const allServers = data.data.adminServers;
 			const mappedServers: any[] = await Promise.all(

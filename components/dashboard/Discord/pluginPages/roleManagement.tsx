@@ -291,7 +291,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 		if (isEmpty(state.reactions)) {
 			errors.reactions = "Required";
 		} else {
-			for (const reaction of Object.entries(state.reactions)) {
+			for (const reaction of Object.entries(state.reactions || {})) {
 				const [emote, data]: [string, any] = reaction;
 				if (!data.roles?.length) {
 					errors[emote] = "Required";
@@ -619,7 +619,7 @@ const RoleManagement = () => {
 
 	useEffect(() => {
 		
-		if (snapshot && Object.keys(snapshot).length) {
+		if (snapshot && Object.keys(snapshot||{}).length) {
 			setLocalSettings(cloneDeep(snapshot));
 			dispatch({ type: actions.SET, value: cloneDeep(snapshot) });
 		} else {
@@ -682,7 +682,7 @@ const RoleManagement = () => {
 								method: editingReaction ? "PATCH" : "POST",
 								body: JSON.stringify({
 									server: serverId,
-									reactions: Object.keys(state.reactions),
+									reactions: Object.keys(state.reactions ||{}),
 									message: state.message,
 									channel: state.channel.id,
 									messageId: editingReaction?.id,

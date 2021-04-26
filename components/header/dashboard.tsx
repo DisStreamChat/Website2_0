@@ -49,7 +49,7 @@ const DashboardHeader = ({ user }) => {
 	const { activePlugins } = useDiscordContext();
 	const [, serverId] = router.query.type as string[];
 
-	const plugins: item[] = Object.entries(activePlugins)
+	const plugins: item[] = Object.entries(activePlugins||{})
 		.filter(([key, value]) => value)
 		.map(([key, value]) => ({
 			name: key,

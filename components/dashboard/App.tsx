@@ -195,7 +195,7 @@ const App = (props: AppProps) => {
 	console.log({ router });
 	const { settings: defaultSettings, categories } = props;
 
-	const allSettings: Setting[] = Object.entries(defaultSettings)
+	const allSettings: Setting[] = Object.entries(defaultSettings ||{})
 		.map(([key, val]) => ({
 			...val,
 			name: key,

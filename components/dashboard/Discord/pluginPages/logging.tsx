@@ -276,7 +276,7 @@ const Logging = () => {
 
 	const [modalOpen, setModalOpen] = useState(false);
 	const [actionBeingEdited, setActionBeingEdited] = useState<LogRecord>(null);
-	const logRecordList = Object.values(localActions).sort((a, b) => {
+	const logRecordList = Object.values(localActions || {}).sort((a, b) => {
 		return a.channel?.name?.localeCompare(b.channel?.name);
 	});
 	const logRecordCount = logRecordList.length;
