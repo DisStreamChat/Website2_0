@@ -21,11 +21,11 @@ const PrivacyPolicy = styled.div`
 	a {
 		text-decoration: underline;
 	}
-	h2{
+	h2 {
 		font-size: 2rem;
 		font-weight: bold;
 	}
-	ul{
+	ul {
 		padding-left: 1rem;
 	}
 `;

@@ -7,7 +7,7 @@ const PrivacyPolicy = styled.div`
 	margin: 3rem;
 	padding: 3rem;
 	background: var(--background-dark-gray);
-	border-radius: .5rem;
+	border-radius: 0.5rem;
 	color: white;
 	width: 50vw;
 	.biggest {
@@ -20,11 +20,11 @@ const PrivacyPolicy = styled.div`
 	a {
 		text-decoration: underline;
 	}
-	h2{
+	h2 {
 		font-size: 2rem;
 		font-weight: bold;
 	}
-	ul{
+	ul {
 		padding-left: 1rem;
 	}
 `;
@@ -97,7 +97,7 @@ const Privacy = () => {
 
 					<p>We use the information we collect in various ways, including to:</p>
 
-					<ul >
+					<ul>
 						<li>Provide, operate, and maintain our website</li>
 						<li>Improve, personalize, and expand our website</li>
 						<li>Understand and analyze how you use our website</li>

@@ -39,10 +39,11 @@ const Discord = ({ session }: dashboardProps) => {
 		if (localServers) {
 			setServers(JSON.parse(localServers));
 		}
+		//test 
 		(async () => {
 			const getServers = firebaseClient.app.functions().httpsCallable("getServers");
 			const data = await getServers({
-				discordId: "440222101014577173",
+				discordId: user.discordId,
 			});
 			const allServers = data.data.adminServers;
 			const mappedServers: any[] = await Promise.all(

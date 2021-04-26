@@ -2,8 +2,6 @@ import nookies from "nookies";
 import { useEffect } from "react";
 import { useAuth } from "../auth/authContext";
 import { verifyIdToken } from "../firebase/admin";
-import firebaseClient from "../firebase/client";
-import admin from "firebase-admin";
 import { redirect_uri } from "../utils/constants";
 import styled from "styled-components";
 import Error from "../components/shared/error";
