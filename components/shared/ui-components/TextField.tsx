@@ -79,6 +79,7 @@ export const TextArea = forwardRef(
 			<TextAreaParent>
 				<ReactTextareaAutocomplete
 					{...props}
+					ref={ref}
 					movePopupAsYouType
 					className="my-textarea"
 					loadingComponent={() => <span>Loading</span>}

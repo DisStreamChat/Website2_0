@@ -1,5 +1,5 @@
-import { Switch, useMediaQuery } from "@material-ui/core";
-import React, { useState, useContext, useEffect, useReducer } from "react";
+import { Switch, TextareaAutosize, useMediaQuery } from "@material-ui/core";
+import React, { useState, useContext, useEffect, useReducer, useRef } from "react";
 import { H2 } from "../../../shared/styles/headings";
 import { PluginSection, PluginSubHeader, SubSectionTitle } from "./styles";
 import Select from "../../../shared/styles/styled-select";
@@ -13,7 +13,11 @@ import RoleItem, { RoleOption } from "../RoleItem";
 import PrettoSlider from "../../../shared/ui-components/PrettoSlider";
 import firebaseClient from "../../../../firebase/client";
 import { useRouter } from "next/router";
-import { allItems, channelAutoComplete, emoteAutoComplete } from "../../../../utils/functions/autocomplete";
+import {
+	allItems,
+	channelAutoComplete,
+	emoteAutoComplete,
+} from "../../../../utils/functions/autocomplete";
 import { Action } from "../../../../utils/types";
 import { get, set, isEqual, cloneDeep } from "lodash";
 import SaveBar from "../../../shared/ui-components/SaveBar";
@@ -207,6 +211,9 @@ const Leveling = () => {
 
 	const changed = !isEqual(defaultValues, state);
 
+	const textAreaRef = useRef<any>();
+	console.log(textAreaRef)
+
 	return (
 		<div>
 			<PluginSubHeader>
@@ -265,7 +272,12 @@ const Leveling = () => {
 				<div style={{ zIndex: 100 }}>
 					<SubSectionTitle>Announcement Message</SubSectionTitle>
 					<EmoteParent>
-						<EmotePickerOpener onClick={() => setEmotePickerOpen(true)}>
+						<EmotePickerOpener
+							onClick={() => {
+								setEmotePickerOpen(true);
+								textAreaRef.current.focus?.();
+							}}
+						>
 							<img width="24" height="24" src="/smile.svg" alt="" />
 						</EmotePickerOpener>
 						<EmotePicker
@@ -273,17 +285,28 @@ const Leveling = () => {
 							onClickAway={() => setEmotePickerOpen(false)}
 							visible={emotePickerOpen}
 							onEmoteSelect={emote => {
-								const emoteText = emote.imageUrl ? `<${emote.colons}${emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)}>` : emote.colons
+								const position = textAreaRef.current.getCaretPosition();
+								const emoteText = emote.imageUrl
+									? `<${emote.colons}${emote.imageUrl
+											.split("/")
+											.slice(-1)[0]
+											.slice(0, -4)}>`
+									: emote.colons;
 
 								dispatch({
 									type: actions.UPDATE,
 									key: "general.message",
-									value: prev => `${prev} ${emoteText}`,
+									value: prev => {
+										const start = prev.slice(0, position);
+										const end = prev.slice(position);
+										return `${start}${emoteText}${end}`;
+									},
 								});
 							}}
 						/>
 					</EmoteParent>
 					<TextArea
+						ref={textAreaRef}
 						value={state.general.message}
 						onChange={e =>
 							dispatch({
@@ -310,7 +333,7 @@ const Leveling = () => {
 								output: (item, trigger) => item.char,
 							},
 							"#": channelAutoComplete(allChannels),
-							":": emoteAutoComplete(emotes)
+							":": emoteAutoComplete(emotes),
 						}}
 					/>
 				</div>

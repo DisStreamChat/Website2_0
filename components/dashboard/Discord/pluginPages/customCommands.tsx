@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useRef, useState } from "react";
 import styled from "styled-components";
 import { H1, H2, H3, H4 } from "../../../shared/styles/headings";
 import { BlueButton, DeleteButton } from "../../../shared/ui-components/Button";
@@ -136,10 +136,10 @@ export const CreateCommandArea = styled.div`
 		margin: 1rem 0;
 	}
 	overflow: auto;
-	&.small{
-		min-height: calc(100vh - 140px)
+	&.small {
+		min-height: calc(100vh - 140px);
 	}
-	
+
 	max-height: calc(100vh - 140px);
 `;
 
@@ -167,7 +167,7 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 	);
 
 	useEffect(() => {
-		console.log({defaultValue})
+		console.log({ defaultValue });
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
 		} else {
@@ -179,6 +179,8 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 		props.onSuccess(state, props.role);
 		props.onClose();
 	};
+
+	const textAreaRef = useRef<any>();
 
 	return (
 		<Modal open={props.open} onClose={props.onClose}>
@@ -210,7 +212,12 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 						<>
 							<SectionTitle>Command Response</SectionTitle>
 							<EmoteParent>
-								<EmotePickerOpener onClick={() => setEmotePickerVisible(true)}>
+								<EmotePickerOpener
+									onClick={() => {
+										setEmotePickerVisible(true);
+										textAreaRef.current.focus();
+									}}
+								>
 									<img width="24" height="24" src="/smile.svg" alt="" />
 								</EmotePickerOpener>
 								<EmotePicker
@@ -220,17 +227,28 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 									visible={emotePickerVisible}
 									emotes={emotes}
 									onEmoteSelect={emote => {
-								const emoteText = emote.imageUrl ? `<${emote.colons}${emote.imageUrl.split("/").slice(-1)[0].slice(0, -4)}>` : emote.colons
+										const position = textAreaRef.current.getCaretPosition();
+										const emoteText = emote.imageUrl
+											? `<${emote.colons}${emote.imageUrl
+													.split("/")
+													.slice(-1)[0]
+													.slice(0, -4)}>`
+											: emote.colons;
 
 										dispatch({
 											type: actions.UPDATE,
-											value: prev => `${prev} <${emoteText}>`,
+											value: prev => {
+												const start = prev.slice(0, position);
+												const end = prev.slice(position);
+												return `${start}${emoteText}${end}`;
+											},
 											key: "message",
 										});
 										setEmotePickerVisible(false);
 									}}
 								/>
 								<TextArea
+									ref={textAreaRef}
 									value={state.message}
 									onChange={e => {
 										dispatch({
