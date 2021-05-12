@@ -53,6 +53,7 @@ const Header = () => {
 	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
 	const { isLoggedIn } = useAuth();
+	console.log("hello world")
 
 	const router = useRouter();
 
@@ -107,6 +108,7 @@ const Header = () => {
 	}, [isLoggedIn]);
 
 	const classes = useStyles();
+	console.log({redirect_uri})
 
 	return (
 		<styles.Header

@@ -13,14 +13,14 @@ const ErrorMain = styled.div`
 const Oauth = props => {
 	const { user } = useAuth();
 	useEffect(() => {
-		console.log(props.details);
+		console.log(JSON.parse(props.details));
 		if (typeof window !== "undefined" && user) {
 			fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/details?id=${user.uid}`, {
 				method: "POST",
 				body: props.details,
 				headers: { "content-type": "application/json" },
 			}).then(() => {
-				window.close();
+				// window.close();
 			});
 		}
 		setTimeout(() => {}, 200);

@@ -27,7 +27,7 @@ const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 			<GuildIcon size={smallScreen ? 64 : 128} id={id} icon={icon} name={name} />
 			<div>
 				<H2>{name}</H2>
-				{botIn ? (
+				{true ? (
 					<Link href={`discord/${id}`}>
 						<a>
 							<Button tabIndex={-1}>Manage</Button>

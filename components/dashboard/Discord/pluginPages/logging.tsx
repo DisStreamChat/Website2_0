@@ -284,39 +284,39 @@ const Logging = () => {
 	useEffect(() => {
 		(async () => {
 			let allActions = {};
-			console.log(!snapshot || !logRecordCount);
-			console.log(legacySnaphot);
-			if (
-				legacySnaphot &&
-				Object.keys(legacySnaphot || {}).length &&
-				(!snapshot || !logRecordCount)
-			) {
-				const legacyLoggingChannelId = legacySnaphot.server;
-				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolvechannel?guild=${serverId}&channel=${legacyLoggingChannelId}`
-				);
-				const json = await response.json();
-				const activeActions = logActions.filter(({ id }) => {
-					let activeAction =
-						legacySnaphot.activeEvents[id] ??
-						legacySnaphot.activeEvents[id.split("").slice(0, -1).join("")] ??
-						legacySnaphot.activeEvents[id.split("").slice(0, -2).join("")];
-					console.log({ activeAction });
-					return activeAction;
-				});
-				allActions = activeActions.reduce((prev, action) => {
-					const id = uid();
-					return {
-						[id]: {
-							action,
-							actionId: null,
-							channel: json,
-							id,
-						},
-						...prev,
-					};
-				}, {});
-				return setLocalActions(allActions);
+			const snapshotExists = Object.keys(snapshot || {}).length > 0;
+			const legacySnapshotExists = Object.keys(legacySnaphot || {}).length > 0;
+			if (legacySnapshotExists && (!snapshotExists || !logRecordCount)) {
+				try{
+
+					const legacyLoggingChannelId = legacySnaphot.server;
+					const response = await fetch(
+						`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolvechannel?guild=${serverId}&channel=${legacyLoggingChannelId}`
+					);
+					const json = await response.json();
+					const activeActions = logActions.filter(({ id }) => {
+						let activeAction =
+							legacySnaphot.activeEvents[id] ??
+							legacySnaphot.activeEvents[id.split("").slice(0, -1).join("")] ??
+							legacySnaphot.activeEvents[id.split("").slice(0, -2).join("")];
+						return activeAction;
+					});
+					allActions = activeActions.reduce((prev, action) => {
+						const id = uid();
+						return {
+							[id]: {
+								action,
+								actionId: null,
+								channel: json,
+								id,
+							},
+							...prev,
+						};
+					}, {});
+					return setLocalActions(allActions);
+				}catch(err){
+					console.log(err.message)
+				}
 			}
 			if (!snapshot) {
 				collectionRef.doc(serverId).set({}, { merge: true });
