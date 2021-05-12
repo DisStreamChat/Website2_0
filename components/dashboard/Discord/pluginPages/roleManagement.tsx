@@ -137,12 +137,12 @@ const RoleSection: React.FC<sectionProps> = props => {
 				<Switch
 					color="primary"
 					onChange={e => props.setOpen(e.target.checked)}
-					checked={props.open}
+					checked={props?.open}
 				></Switch>
 			</RoleSectionTitle>
 			<RoleSectionBody
 				variants={roleSectionVariants}
-				animate={props.open ? "open" : "closed"}
+				animate={props?.open ? "open" : "closed"}
 			>
 				<RoleSectionPadding>
 					<div>{props.children}</div>
@@ -335,7 +335,7 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
 	}, [state]);
 
 	return (
-		<Modal open={props.open} onClose={props.onClose}>
+		<Modal open={props?.open} onClose={props.onClose}>
 			<CommandModalBody>
 				<CommandHeader>
 					<H2>{defaultValue ? "Edit" : "Create"} Reaction Role Message</H2>
@@ -666,7 +666,7 @@ const RoleManagement = () => {
 			<RoleSection
 				title="Let your members get roles by reacting to a message"
 				id="reactions"
-				open={reactions.open}
+				open={reactions?.open}
 				setOpen={val => {
 					dispatch({ type: actions.UPDATE, key: "reactions.open", value: val });
 				}}
@@ -774,7 +774,7 @@ const RoleManagement = () => {
 			<RoleSection
 				title="Let your members get roles with commands"
 				id="commands"
-				open={commands.open}
+				open={commands?.open}
 				setOpen={val => {
 					dispatch({ type: actions.UPDATE, key: "commands.open", value: val });
 				}}
@@ -839,7 +839,7 @@ const RoleManagement = () => {
 			<RoleSection
 				title="Give members a role on join"
 				id="join"
-				open={join.open}
+				open={join?.open}
 				setOpen={val => {
 					dispatch({ type: actions.UPDATE, key: "join.open", value: val });
 				}}
@@ -879,7 +879,7 @@ const RoleManagement = () => {
 			</RoleSection>
 			<RoleSection
 				title="Give descriptions to the roles in your server"
-				open={descriptions.open}
+				open={descriptions?.open}
 				id="descriptions"
 				setOpen={val => {
 					dispatch({ type: actions.UPDATE, key: "descriptions.open", value: val });
