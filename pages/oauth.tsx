@@ -20,7 +20,7 @@ const Oauth = props => {
 				body: props.details,
 				headers: { "content-type": "application/json" },
 			}).then(() => {
-				// window.close();
+				window.close();
 			});
 		}
 		setTimeout(() => {}, 200);

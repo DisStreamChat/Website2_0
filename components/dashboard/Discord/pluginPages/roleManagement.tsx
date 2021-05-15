@@ -618,8 +618,7 @@ const RoleManagement = () => {
 	const [snapshot] = useDocumentData(docRef);
 
 	useEffect(() => {
-		
-		if (snapshot && Object.keys(snapshot||{}).length) {
+		if (snapshot && Object.keys(snapshot || {}).length) {
 			setLocalSettings(cloneDeep(snapshot));
 			dispatch({ type: actions.SET, value: cloneDeep(snapshot) });
 		} else {
@@ -638,7 +637,12 @@ const RoleManagement = () => {
 	);
 
 	const save = () => {
-		docRef.update({ reactions, commands, join, descriptions });
+		docRef.update({
+			reactions: reactions || {},
+			commands: commands || {},
+			join: join || {},
+			descriptions: descriptions || {},
+		});
 	};
 
 	const createCommand = () => {
@@ -682,7 +686,7 @@ const RoleManagement = () => {
 								method: editingReaction ? "PATCH" : "POST",
 								body: JSON.stringify({
 									server: serverId,
-									reactions: Object.keys(state.reactions ||{}),
+									reactions: Object.keys(state.reactions || {}),
 									message: state.message,
 									channel: state.channel.id,
 									messageId: editingReaction?.id,
@@ -719,56 +723,59 @@ const RoleManagement = () => {
 					</span>
 				</CommandsHeader>
 				<span>
-					<H2>Messages - {Object.entries(reactions.messages || {})?.length || 0}</H2>
-					{Object.entries(reactions.messages || {}).map(([key, value]: [string, any]) => (
-						<ListItem
-							edit={() => editReactionRole({ id: key, ...value })}
-							delete={async () => {
-								await fetch(
-									`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
-									{
-										method: "DELETE",
-										body: JSON.stringify({
-											server: serverId,
-											message: key,
-											channel: value.channel.id,
-										}),
-										headers: {
-											"content-type": "application/json",
-										},
-									}
-								);
-								docRef.update({
-									[`reactions.messages.${key}`]: firebaseClient.app.firestore.FieldValue.delete(),
-								});
-							}}
-						>
-							<div>
-								<ChannelItem {...value.channel}></ChannelItem>
-								{Object.entries(value.reactions || {}).map(
-									([emote, data]: [string, any]) => (
-										<ListItem>
-											{data.emoteData.native ? (
-												<Twemoji options={{ className: "bigify" }}>
-													{data.emoteData.native}
-												</Twemoji>
-											) : (
-												<img
-													draggable="false"
-													className="bigify"
-													src={data.emoteData.imageUrl}
-													alt={data.emoteData.id}
-												></img>
-											)}
-											{data.roles.map(role => (
-												<RoleItem {...role}></RoleItem>
-											))}
-										</ListItem>
-									)
-								)}
-							</div>
-						</ListItem>
-					))}
+					<H2>Messages - {Object.entries(reactions?.messages || {})?.length || 0}</H2>
+					{Object.entries(reactions?.messages || {}).map(
+						([key, value]: [string, any]) => (
+							<ListItem
+								edit={() => editReactionRole({ id: key, ...value })}
+								delete={async () => {
+									await fetch(
+										`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/reactionmessage?key=caba961043ffe91c46d08b1a8e8d060de7617c07`,
+										{
+											method: "DELETE",
+											body: JSON.stringify({
+												server: serverId,
+												message: key,
+												channel: value.channel.id,
+											}),
+											headers: {
+												"content-type": "application/json",
+											},
+										}
+									);
+									docRef.update({
+										[`reactions.messages.${key}`]:
+											firebaseClient.app.firestore.FieldValue.delete(),
+									});
+								}}
+							>
+								<div>
+									<ChannelItem {...value.channel}></ChannelItem>
+									{Object.entries(value.reactions || {}).map(
+										([emote, data]: [string, any]) => (
+											<ListItem>
+												{data.emoteData.native ? (
+													<Twemoji options={{ className: "bigify" }}>
+														{data.emoteData.native}
+													</Twemoji>
+												) : (
+													<img
+														draggable="false"
+														className="bigify"
+														src={data.emoteData.imageUrl}
+														alt={data.emoteData.id}
+													></img>
+												)}
+												{data.roles.map(role => (
+													<RoleItem {...role}></RoleItem>
+												))}
+											</ListItem>
+										)
+									)}
+								</div>
+							</ListItem>
+						)
+					)}
 				</span>
 			</RoleSection>
 			<RoleSection
@@ -806,13 +813,14 @@ const RoleManagement = () => {
 					</span>
 				</CommandsHeader>
 				<span>
-					<H2>Commands - {Object.entries(commands.commands || {})?.length || 0}</H2>
+					<H2>Commands - {Object.entries(commands?.commands || {})?.length || 0}</H2>
 					<ul>
-						{Object.entries(commands.commands || {}).map(([key, val]) => (
+						{Object.entries(commands?.commands || {}).map(([key, val]) => (
 							<ListItem
 								delete={() => {
 									docRef.update({
-										[`commands.commands.${val.name}`]: firebaseClient.app.firestore.FieldValue.delete(),
+										[`commands.commands.${val.name}`]:
+											firebaseClient.app.firestore.FieldValue.delete(),
 									});
 								}}
 								edit={() => {
@@ -847,7 +855,7 @@ const RoleManagement = () => {
 				<Select
 					closeMenuOnSelect={false}
 					options={notManaged
-						?.filter(role => !join.roles?.find(({ id }) => role.id == id))
+						?.filter(role => !join?.roles?.find(({ id }) => role.id == id))
 						?.map(role => ({
 							value: TransformObjectToSelectValue(role),
 							label: <RoleOption color={role.color}>{role.name}</RoleOption>,
@@ -856,11 +864,11 @@ const RoleManagement = () => {
 						const value = parseSelectValue(opt, true);
 						dispatch({
 							type: actions.UPDATE,
-							key: "join.roles",
+							key: "join?.roles",
 							value: prev => [...prev, value],
 						});
 					}}
-					value={join.roles?.map(role => ({
+					value={join?.roles?.map(role => ({
 						value: TransformObjectToSelectValue(role),
 						label: (
 							<RoleItem
@@ -868,7 +876,7 @@ const RoleManagement = () => {
 									dispatch({
 										type: actions.UPDATE,
 										key: "join.roles",
-										value: join.roles.filter(r => r.id !== role.id),
+										value: join?.roles.filter(r => r.id !== role.id),
 									});
 								}}
 								{...role}
@@ -905,7 +913,7 @@ const RoleManagement = () => {
 					Roles with descriptions - {roles.length - roleOptions.length - 1}
 				</H2>
 				<ul>
-					{Object.entries(descriptions.roles || {})
+					{Object.entries(descriptions?.roles || {})
 						.sort()
 						.map(([key, value]) => {
 							const role = JSON.parse(key.split("=")[1]);

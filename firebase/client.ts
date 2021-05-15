@@ -3,7 +3,7 @@ import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/performance";
-import "firebase/functions"
+import "firebase/functions";
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBYf5_N6811jS6vRSeakY4atZnoOJKwfq8",
@@ -25,6 +25,13 @@ class Firebase {
 	constructor() {
 		if (!app.apps.length) {
 			app.initializeApp(firebaseConfig);
+			try {
+				app.firestore().settings({
+					ignoreUndefinedProperties: true,
+				});
+			} catch (err) {
+				console.log(err.message)
+			}
 		}
 		if (typeof window !== "undefined") {
 			app.analytics();
