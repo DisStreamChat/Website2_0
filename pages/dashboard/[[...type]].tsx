@@ -11,9 +11,12 @@ import { useRouter } from "next/router";
 const Discord = dynamic(() => import("../../components/dashboard/Discord/Discord"));
 const App = dynamic(() => import("../../components/dashboard/App"));
 import { DiscordContextProvider } from "../../components/dashboard/Discord/discordContext";
+import Head from "next/head";
 
-const Dashboard = ({ type, session }) => {
+const Dashboard = ({ type, session, settings, categories }) => {
 	const router = useRouter();
+
+	const [, serverId, pluginName] = router.query.type as string[];
 
 	useEffect(() => {
 		if (!type?.[0]) {
@@ -23,21 +26,26 @@ const Dashboard = ({ type, session }) => {
 
 	return (
 		<>
-			{session && (
-				<HeaderContextProvider>
-					<DashboardHeader user={session.user} serverId={type[1]} />
-				</HeaderContextProvider>
-			)}
-			<DashboardContainer>
-				<ContentArea>
-					{type?.[0] === "discord" && (
-						<DiscordContextProvider>
-							<Discord session={session} />
-						</DiscordContextProvider>
-					)}
-					{type?.[0] === "app" && <App session={session} />}
-				</ContentArea>
-			</DashboardContainer>
+			<DiscordContextProvider>
+				{session && (
+					<HeaderContextProvider>
+						<DashboardHeader user={session.user} />
+					</HeaderContextProvider>
+				)}
+				<Head>
+					<title>
+						DisStreamChat | Dashboard {pluginName && "-"} {pluginName}
+					</title>
+				</Head>
+				<DashboardContainer>
+					<ContentArea>
+						{type?.[0] === "discord" && <Discord session={session} />}
+						{type?.[0] === "app" && (
+							<App settings={settings} categories={categories} session={session} />
+						)}
+					</ContentArea>
+				</DashboardContainer>
+			</DiscordContextProvider>
 		</>
 	);
 };
@@ -75,7 +83,11 @@ export const getServerSideProps: GetServerSideProps = async context => {
 			const userDiscordDoc = await userDisordRef.get();
 			const userData = userDoc.data();
 			const userDiscordData = userDiscordDoc.data();
-			session.user = { ...userData, ...userDiscordData };
+			session.user = {
+				...userData,
+				...(userDiscordData || {}),
+				discordConnected: !!userDiscordData,
+			};
 		}
 	} catch (err) {
 		console.log("error: ", err.message);
@@ -84,14 +96,42 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	}
 
 	if (!params.type) {
-		res.writeHead(307, { location: "/dashboard/discord" }).end();
+		if (session.user?.discordConnected) {
+			res.writeHead(307, { location: "/dashboard/discord" }).end();
+		} else {
+			res.writeHead(307, { location: "/dashboard/app" }).end();
+		}
 		return { props: {} };
 	}
 
+	const [first, second] = params.type as string[];
+	let settings = {};
+	let categories = [];
+	if (first === "app") {
+		if (!second) {
+			res.writeHead(307, { location: "/dashboard/app/all" }).end();
+			return { props: {} };
+		}
+		const settingsRef = await admin.firestore().collection("defaults").doc("settings16").get();
+		settings = settingsRef.data()?.settings;
+		categories = [
+			//@ts-ignore
+			...new Set(Object.values(settings || {}).map(val => val.category)),
+		]
+			.filter(Boolean)
+			.sort();
+	}
 	if (params.type && !["app", "discord"].includes(params.type[0])) {
 		return { notFound: true };
 	}
-	return { props: { type: params.type || null, session } };
+	return {
+		props: {
+			type: params.type || null,
+			session,
+			settings,
+			categories: ["all", "discord", ...categories],
+		},
+	};
 };
 
 export default Dashboard;

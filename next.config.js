@@ -5,6 +5,7 @@ module.exports = {
 		domains: ["localhost", "disstreamchat.com"],
 	},
 	optimization: {
-		minimize: true
+		minimize: true,
+		fonts: false
 	}
 };

@@ -1,4 +1,12 @@
-import { JSXElementConstructor, useEffect, useMemo, useState } from "react";
+import {
+	JSXElementConstructor,
+	MutableRefObject,
+	useEffect,
+	useLayoutEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import styled from "styled-components";
 import AddIcon from "@material-ui/icons/Add";
 import { ClickAwayListener } from "@material-ui/core";
@@ -60,6 +68,10 @@ const AddButton = styled.button`
 	width: 28px;
 	height: 28px;
 	justify-content: center;
+	:focus,
+	:hover {
+		background: #66666666;
+	}
 `;
 
 const AddItem = styled.li`
@@ -67,15 +79,16 @@ const AddItem = styled.li`
 `;
 
 const SelectArea = styled(motion.div)`
+	z-index: 10000;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
-	width: 250px;
+	min-width: 250px;
 	background: rgb(39, 43, 46);
 	border-radius: 4px;
 	box-shadow: rgb(0 0 0 / 50%) 0px 2px 10px 0px, rgb(32 34 37 / 60%) 0px 0px 0px 1px;
 	right: 0;
-	height: 264px;
+	max-height: 264px;
 	overflow: auto;
 	/* padding: 1rem 0; */
 	cursor: pointer;
@@ -104,16 +117,73 @@ const outState = {
 	x: "50%",
 };
 
+const SearchArea = styled.div`
+	background: var(--background-dark-gray);
+	position: sticky;
+	top: 0;
+	input {
+		padding: 1rem;
+		color: white;
+		background: none;
+		outline: none;
+		border: none;
+		font-family: "Open sans";
+	}
+`;
+
+const calculateSizeAndPosition = (
+	optionsLength: number,
+	buttonRef: MutableRefObject<HTMLButtonElement>
+) => {
+	const height = Math.min(264, 57*optionsLength);
+	const width = 250;
+	if (!buttonRef?.current) return {};
+	const rect = buttonRef.current.getBoundingClientRect();
+	const buttonBottom = rect.bottom;
+	const buttonCenterX = rect.left + Math.abs(rect.left - rect.right) / 2;
+
+	const boxTop = buttonBottom + 25;
+	return { height, width, top: boxTop, center: buttonCenterX };
+};
+
 const Select = (props: selectProps) => {
 	const [open, setOpen] = useState(false);
+	const [searchValue, setSearchValue] = useState("");
+	const buttonRef = useRef<HTMLButtonElement>();
 
 	const options = useMemo(
 		() =>
 			props.options.filter(
-				option => !props.value.find(value => value.value === option.value)
+				option => !props.value?.find(value => value.value === option.value)
 			),
 		[props.options, props.value]
 	);
+
+	const { width, height, top, center } = calculateSizeAndPosition(
+		props.options?.length || 0,
+		buttonRef
+	);
+
+	const overflowLeft = center < width / 2;
+	const overflowRight = center > width / 2 + window?.innerWidth;
+
+	const overflowBottom = top > window?.innerHeight - height;
+
+	if (overflowLeft) {
+		inState.x = `${width / 1.25}px`;
+		outState.x = `${width / 1.25}px`;
+	} else {
+		inState.x = "50%";
+		outState.x = "50%";
+	}
+
+	if (overflowBottom) {
+		inState.y = (height + 50) * -1;
+		outState.y = (height + 38) * -1;
+	} else {
+		inState.y = 12;
+		outState.y = 20;
+	}
 
 	useEffect(() => {
 		if (!options?.length) {
@@ -124,12 +194,17 @@ const Select = (props: selectProps) => {
 	return (
 		<SelectBody>
 			<ul className="">
-				{props.value.map(item => (
+				{props?.value?.map?.(item => (
 					<li key={item.value}>{item.label}</li>
 				))}
 				{!!options?.length && (
 					<AddItem>
-						<AddButton onClick={() => setOpen(prev => !prev)}>
+						<AddButton
+							ref={buttonRef as any}
+							onMouseDown={e => e.preventDefault()}
+							onFocus={() => buttonRef.current.scrollIntoView()}
+							onClick={() => setOpen(prev => !prev)}
+						>
 							<AddIcon />
 						</AddButton>
 						<AnimatePresence>
@@ -140,20 +215,34 @@ const Select = (props: selectProps) => {
 										exit={outState}
 										animate={inState}
 									>
+										<SearchArea>
+											<input
+												placeholder="Search"
+												type="text"
+												value={searchValue}
+												onChange={e => setSearchValue(e.target.value)}
+											/>
+										</SearchArea>
 										<ul className="">
-											{options.map(option => (
-												<li
-													key={option.value}
-													onClick={() => {
-														props.onChange(option);
-														if (props.closeMenuOnSelect) {
-															setOpen(false);
-														}
-													}}
-												>
-													{option.label}
-												</li>
-											))}
+											{options
+												.filter(option =>
+													option.value
+														?.toLowerCase()
+														?.includes?.(searchValue?.toLowerCase())
+												)
+												.map(option => (
+													<li
+														key={option.value}
+														onClick={() => {
+															props.onChange(option);
+															if (props.closeMenuOnSelect) {
+																setOpen(false);
+															}
+														}}
+													>
+														{option.label}
+													</li>
+												))}
 										</ul>
 									</SelectArea>
 								</ClickAwayListener>

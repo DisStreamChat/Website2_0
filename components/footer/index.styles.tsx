@@ -6,6 +6,7 @@ const footer = styled.footer`
 	flex-direction: column;
 	background: var(--background-dark-gray);
 	color: white;
+	margin-top: 3rem;
 	a:hover,
 	a:focus {
 		text-underline-position: under;
@@ -16,6 +17,16 @@ const footer = styled.footer`
 		outline: 1px solid !important;
 		opacity: 1;
 		color: white;
+	}
+	.made-by {
+		display: flex;
+		align-items: center;
+		.chl {
+			margin-left: 1ch;
+		}
+		.chr {
+			margin-right: 1ch;
+		}
 	}
 `;
 

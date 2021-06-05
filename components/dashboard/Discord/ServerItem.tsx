@@ -5,6 +5,7 @@ import { ServerItemBody } from "./styles";
 import Link from "next/link";
 import { useMediaQuery } from "@material-ui/core";
 import Anchor from "../../shared/ui-components/Anchor";
+import { useEffect, useState } from "react";
 
 interface ServerProps {
 	id: string;
@@ -16,6 +17,9 @@ interface ServerProps {
 const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 	const smallScreen = useMediaQuery("(max-width: 425px)");
 
+
+
+
 	const Button = botIn ? BlueButton : PaddingButton;
 
 	return (
@@ -23,13 +27,14 @@ const ServerItem = ({ id, name, icon, botIn }: ServerProps) => {
 			<GuildIcon size={smallScreen ? 64 : 128} id={id} icon={icon} name={name} />
 			<div>
 				<H2>{name}</H2>
-				{botIn ? (
+				{true ? (
 					<Link href={`discord/${id}`}>
 						<a>
 							<Button tabIndex={-1}>Manage</Button>
 						</a>
 					</Link>
 				) : (
+					// TODO: change to use a button with a popup
 					<Anchor href="https://invite.disstreamchat.com" newTab>
 						<Button tabIndex={-1}>Invite</Button>
 					</Anchor>

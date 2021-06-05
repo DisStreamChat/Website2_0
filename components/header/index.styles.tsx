@@ -2,7 +2,8 @@ import styled from "styled-components";
 import { AnimatePresence, motion } from "framer-motion";
 import { H2 } from "../shared/styles/headings";
 import chroma from "chroma-js";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { useInteraction } from "../../hooks/useInteraction";
 
 const Header = styled(motion.header)`
 	padding: 0 1rem;
@@ -38,22 +39,24 @@ const NavItem = styled(motion.div)`
 	flex-direction: column;
 	align-items: center;
 	padding: 0.5rem 1rem;
+	&:focus {
+	}
 	cursor: pointer;
 	button:focus-within {
 		color: white;
-		outline: 1px solid white;
+		outline: 1px solid white !important;
+		outline-offset: 2px;
 	}
 	a {
 		&:focus {
 			color: white;
-			outline: 1px solid white;
+			outline: 2px solid white !important;
+			outline-offset: 2px !important;
 		}
 	}
 	.underline {
 		position: absolute;
 		border: 1px solid white;
-		/* left: 0;
-		right: 0; */
 		bottom: 10%;
 		width: 80%;
 		transform-origin: center;
@@ -61,23 +64,16 @@ const NavItem = styled(motion.div)`
 `;
 
 const navItem = ({ children, overrideUnderline = false, noUnderline = false, ...props }) => {
-	const [focused, setFocused] = useState(false);
-	const [hovered, setHovered] = useState(false);
+	const navRef = useRef();
 
-	const underlined = focused || hovered;
+	const [hovered, focused, interacted] = useInteraction(navRef);
 
 	return (
-		<NavItem
-			onHoverStart={() => setHovered(true)}
-			onHoverEnd={() => setHovered(false)}
-			onFocus={() => setFocused(true)}
-			onBlur={() => setFocused(false)}
-			{...props}
-		>
+		<NavItem ref={navRef} {...props}>
 			{children}
 			<AnimatePresence>
 				{!noUnderline ? (
-					(underlined || overrideUnderline) && (
+					(hovered || overrideUnderline) && (
 						<motion.div
 							initial={{ scaleX: 0 }}
 							exit={{ scaleX: 0 }}
@@ -117,7 +113,6 @@ const sidebar = styled(motion.nav)`
 	flex-direction: column;
 	align-items: flex-end;
 	gap: 2rem;
-	justify-content: center;
 	padding: 2rem;
 	button {
 		margin-right: 0.5rem;

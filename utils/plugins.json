@@ -77,7 +77,7 @@
 	},
 	{
 		"id": "utils",
-		"title": "Utilites",
+		"title": "Utilities",
 		"image": "gear.svg",
 		"description": "Manage utility functions built into DisStreamBot",
 		"comingSoon": true

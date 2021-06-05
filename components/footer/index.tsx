@@ -15,10 +15,10 @@ const Footer = () => {
 						DisStreamChat is the easiest way to link your Discord with your Stream chat
 					</styles.h4>
 					<styles.icons>
-						<Anchor aria-label="Github" href="https://github.com/DisStreamChat">
+						<Anchor newTab aria-label="Github" href="https://github.com/DisStreamChat">
 							<GitHubIcon />
 						</Anchor>
-						<Anchor aria-label="Twitter" href="https://twitter.com/DisStreamChat">
+						<Anchor newTab aria-label="Twitter" href="https://twitter.com/DisStreamChat">
 							<TwitterIcon />
 						</Anchor>
 					</styles.icons>
@@ -56,9 +56,9 @@ const Footer = () => {
 					</styles.column>
 					<styles.column>
 						<styles.heading>Team</styles.heading>
-						<Link href="/members" passHref>
+						{/* <Link href="/members" passHref>
 							<Anchor>Members</Anchor>
-						</Link>
+						</Link> */}
 
 						<Anchor href="https://github.com/DisStreamChat/Contributors" newTab>
 							Contributors
@@ -75,8 +75,8 @@ const Footer = () => {
 					© DisStreamChat 2020-2021
 				</Anchor>
 				<span className="made-by">
-					Made with ❤ by the{" "}
-					<Anchor href="https://github.com/orgs/DisStreamChat/people" newTab>
+					Made with <span className="chl chr">❤</span> by the{" "}
+					<Anchor className="chl" href="https://github.com/orgs/DisStreamChat/people" newTab>
 						DisStreamChat Team
 					</Anchor>
 				</span>

@@ -1,5 +1,6 @@
 import { DetailedHTMLProps, forwardRef, InputHTMLAttributes } from "react";
 import styled from "styled-components";
+import ReactTextareaAutocomplete from "@webscopeio/react-textarea-autocomplete";
 
 const TextInputBody = styled.div`
 	display: flex;
@@ -33,7 +34,7 @@ const StyledTextArea = styled.textarea`
 	font-family: "Open Sans", sans-serif, Helvetica, arial, sans-serif;
 	color: rgb(255, 255, 255);
 	border: 1px solid rgb(26, 26, 26);
-	background-color: rgb(43, 47, 51);
+	background: #3e4349;
 	border-radius: 3px;
 	padding: 15px 15px 35px;
 	font-weight: 500;
@@ -44,11 +45,16 @@ const StyledTextArea = styled.textarea`
 	resize: none;
 `;
 
+export interface TextProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+	prefix?: string
+}
+
 export const TextInput = forwardRef(
-	(props: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, ref) => {
+	({prefix, value, ...props}: TextProps, ref) => {
+		const hasValue = value != undefined
 		return (
 			<TextInputBody className={props.className}>
-				<InnerTextInput {...props} ref={ref as any} type="text" />
+				<InnerTextInput value={hasValue ? `${prefix||""}${value}` : undefined} {...props} ref={ref as any} type="text" />
 			</TextInputBody>
 		);
 	}
@@ -62,14 +68,30 @@ interface textareaProps
 	extends DetailedHTMLProps<InputHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
 	emojiPicker?: boolean;
 	maxCharacters?: number;
+	trigger: {
+		[key: string]: any
+	}
 }
 
-export const TextArea = forwardRef(({emojiPicker, maxCharacters, ...props}: textareaProps, ref) => {
-	return (
-		<TextAreaParent>
-			<StyledTextArea {...props} ref={ref as any}></StyledTextArea>
-			{/* emojiPicker && <EmojiPicker/> */}
-			{/* maxCharacters ?? <CharCounter max={maxCharacters} text={value}/> */}
-		</TextAreaParent>
-	);
-});
+export const TextArea = forwardRef(
+	({ emojiPicker, maxCharacters, ...props }: textareaProps, ref) => {
+		return (
+			<TextAreaParent>
+				<ReactTextareaAutocomplete
+					{...props}
+					ref={ref}
+					movePopupAsYouType
+					className="my-textarea"
+					loadingComponent={() => <span>Loading</span>}
+					trigger={props.trigger}
+					textAreaComponent={StyledTextArea}
+					listClassName="text-area-list"
+					itemClassName="text-area-item"
+				/>
+				{/* <StyledTextArea {...props} ref={ref as any}></StyledTextArea> */}
+				{/* emojiPicker && <EmojiPicker/> */}
+				{/* maxCharacters ?? <CharCounter max={maxCharacters} text={value}/> */}
+			</TextAreaParent>
+		);
+	}
+);

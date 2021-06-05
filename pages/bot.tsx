@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import React from "react";
 import styled from "styled-components";
-import { Main, Hero } from "../components/shared/styles";
+import { Main, Hero, gapFunction } from "../components/shared/styles";
 import { H1 } from "../components/shared/styles/headings";
 import Anchor from "../components/shared/ui-components/Anchor";
 import { OrangeButton } from "../components/shared/ui-components/Button";
@@ -93,7 +93,7 @@ const BotHero = styled(Hero)`
 		display: flex;
 		flex-wrap: wrap;
 		margin-top: 1rem;
-		gap: 1.5rem;
+		${gapFunction({gap: "1.5rem"})}
 	}
 `;
 

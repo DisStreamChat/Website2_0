@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
 		--disstreamchat-purple: #462b45;
 		--background-dark-gray: #17181b;
 		--background-light-gray: #24252a;
+		--warning-red: #9b0e11;
 		--header-height: 134px;
 		--youtube-background: linear-gradient(320.75deg, rgb(255, 0, 0) 8.4%, rgb(182, 0, 52) 100.11%);
 		--twitch-background: linear-gradient(
@@ -50,6 +51,17 @@ const GlobalStyle = createGlobalStyle`
 
     * {
     	box-sizing: border-box;
+		scroll-behavior: smooth;
+	}
+
+	.bigify {
+		width: 2.5rem;
+		& + * {
+			min-width: 50%;
+			& + * {
+				min-width: 50%;
+			}
+		}
 	}
 	
 	::-webkit-scrollbar {
@@ -90,6 +102,35 @@ const GlobalStyle = createGlobalStyle`
 
 	.css-fac07y-container, .css-fac07y-container *{
 		color: white !important;
+	}
+
+	.text-area-list{
+		position: absolute;
+		background: #3e4349;
+		opacity: 1;
+		z-index: 10000;
+		max-height: 400px;
+		width: 100%;
+		overflow: auto;
+	}
+
+	.text-area-item{
+		z-index: 10000;
+		padding: .5rem;
+		opacity: 1;
+		cursor: pointer;
+		&.selected{
+			background: #17181b;
+		}
+	}
+
+	.emoji-mart-search input{
+		box-sizing: border-box;
+	}
+
+	hr {
+		width: 100%;
+		border-color: grey;
 	}
 `;
 

@@ -15,7 +15,6 @@ import { useHeaderContext } from "./context";
 import { useAuth } from "../../auth/authContext";
 import dynamic from "next/dynamic";
 import { redirect_uri } from "../../utils/constants";
-import { redirect } from "next/dist/next-server/server/api-utils";
 const Profile = dynamic(() => import("./Profile"));
 const Sidebar = dynamic(() => import("./sidebar"));
 
@@ -54,6 +53,7 @@ const Header = () => {
 	const { loginModalOpen, setLoginModalOpen } = useHeaderContext();
 
 	const { isLoggedIn } = useAuth();
+	console.log("hello world")
 
 	const router = useRouter();
 
@@ -74,7 +74,7 @@ const Header = () => {
 		<>
 			<styles.navItem name="Chat Manager">
 				<Link href="/apps/download">
-					<a>Chat Manager</a>
+					<a>Download</a>
 				</Link>
 			</styles.navItem>
 			<styles.navItem name="Discord Bot">
@@ -82,16 +82,17 @@ const Header = () => {
 					<a>Discord Bot</a>
 				</Link>
 			</styles.navItem>
+			{/* <styles.navItem name="Commands">
+				<Link href="/commands">
+					<a>Commands</a>
+				</Link>
+			</styles.navItem> */}
 			<styles.navItem name="Community">
 				<Anchor newTab href="https://discord.disstreamchat.com">
 					Community
 				</Anchor>
 			</styles.navItem>
-			<styles.navItem name="Support Us">
-				<Anchor newTab href="https://www.patreon.com/disstreamchat?fan_landing=true">
-					Support Us
-				</Anchor>
-			</styles.navItem>
+
 			{isLoggedIn && (
 				<styles.navItem name="Dashboard">
 					<Link href="/dashboard">
@@ -103,10 +104,11 @@ const Header = () => {
 	);
 
 	useEffect(() => {
-		if(isLoggedIn) setLoginModalOpen(false)
-	}, [isLoggedIn])
+		if (isLoggedIn) setLoginModalOpen(false);
+	}, [isLoggedIn]);
 
 	const classes = useStyles();
+	console.log({redirect_uri})
 
 	return (
 		<styles.Header
@@ -153,7 +155,7 @@ const Header = () => {
 									window.open(
 										`https://discord.com/api/oauth2/authorize?client_id=702929032601403482&redirect_uri=${encodeURIComponent(
 											redirect_uri
-										)}${encodeURIComponent(
+										)}/${encodeURIComponent(
 											"?discord=true"
 										)}&response_type=code&scope=identify%20guilds`,
 										"discord",

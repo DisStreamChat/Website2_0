@@ -3,6 +3,7 @@ import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/performance";
+import "firebase/functions"
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBYf5_N6811jS6vRSeakY4atZnoOJKwfq8",

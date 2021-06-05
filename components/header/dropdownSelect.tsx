@@ -5,8 +5,9 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Anchor from "../shared/ui-components/Anchor";
+import { ClickAwayListener } from "@material-ui/core";
 
-interface item {
+export interface item {
 	name: string;
 	link: string;
 	local?: boolean;
@@ -28,8 +29,8 @@ const DropDownMenu = styled(motion.div)`
 	position: absolute;
 	overflow: hidden;
 	background: #121212;
-	padding: .5rem;
-	left: .75rem;
+	padding: 0.5rem;
+	left: 0.75rem;
 `;
 
 const DropdownSelect = (props: dropdownProps) => {
@@ -47,24 +48,29 @@ const DropdownSelect = (props: dropdownProps) => {
 			</styles.Chevron>
 			<AnimatePresence>
 				{isOpen && (
-					<styles.menuDropDown
-					exit={{ y: -50, opacity: 0 }}
-					initial={{ y: -50, opacity: 0 }}
-					animate={{ y: 15, opacity: 1 }}
+					<ClickAwayListener
+						onClickAway={() => {
+							setIsOpen(false);
+						}}
 					>
-						{props.items.map(item =>
-							<styles.menuItem>
-
-								{item.local ? (
-									<Link href={item.link}>
-										<a>{item.name}</a>
-									</Link>
-								) : (
-									<Anchor href={item.link}>{item.name}</Anchor>
-								)}
-							</styles.menuItem>
-						)}
-					</styles.menuDropDown>
+						<styles.menuDropDown
+							exit={{ y: -50, opacity: 0 }}
+							initial={{ y: -50, opacity: 0 }}
+							animate={{ y: 15, opacity: 1 }}
+						>
+							{props.items.map(item => (
+								<styles.menuItem>
+									{item.local ? (
+										<Link href={item.link}>
+											<a>{item.name}</a>
+										</Link>
+									) : (
+										<Anchor href={item.link}>{item.name}</Anchor>
+									)}
+								</styles.menuItem>
+							))}
+						</styles.menuDropDown>
+					</ClickAwayListener>
 				)}
 			</AnimatePresence>
 		</DropDownMain>

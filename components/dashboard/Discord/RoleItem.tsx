@@ -3,10 +3,9 @@ import styled from "styled-components";
 const colorify = number =>
 	`#${number === 0 ? "99aab5" : number?.toString?.(16)?.padStart?.(6, "0") || "black"}`;
 
-
 interface styledRoleProps {
-	disabled?: boolean,
-	color: string
+	disabled?: boolean;
+	color: string;
 }
 
 const StyledRoleItem = styled.div`
@@ -22,10 +21,10 @@ const StyledRoleItem = styled.div`
 	position: relative;
 	font-weight: 600;
 	color: #ccc;
-	filter: brightness(${(props: styledRoleProps) => props.disabled ? "75%" : "100%" });
+	filter: brightness(${(props: styledRoleProps) => (props.disabled ? "75%" : "100%")});
 	&:hover {
 		.button {
-			${(props: styledRoleProps) => !props.disabled ? "color: white;" : ""}
+			${(props: styledRoleProps) => (!props.disabled ? "color: white;" : "")}
 		}
 	}
 	.button {
@@ -54,20 +53,25 @@ interface roleProps {
 	name: string;
 	id: string;
 	onClick?: (e: any) => void;
-	disabled?: boolean
+	disabled?: boolean;
 }
 
 const RoleItem = (props: roleProps) => {
 	return (
 		<StyledRoleItem disabled={!!props.disabled} color={props.color}>
-			<div onClick={() => props?.onClick?.(props.id)} className="button">x</div>
+			<div onClick={() => props?.onClick?.(props.id)} className="button">
+				{props?.onClick && "x"}
+			</div>
 			{props.name}
 		</StyledRoleItem>
 	);
 };
 
 export const RoleOption = styled.div`
-	color: ${props => colorify(props.color)};
+	&:after {
+		content: ${props => props.color};
+	}
+	color: ${props => colorify(props.color)} !important;
 `;
 
 export default RoleItem;

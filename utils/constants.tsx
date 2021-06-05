@@ -26,7 +26,7 @@ export const colorStyles = {
 		opacity: isDisabled ? 0.5 : 1,
 	}),
 	valueContainer: styles => ({ ...styles, minHeight: 50 }),
-	menu: styles => ({ ...styles, backgroundColor: "#17181b" }),
+	menu: styles => ({ ...styles, backgroundColor: "#17181b", zIndex: 10000000000 }),
 	multiValue: styles => ({
 		...styles,
 		backgroundColor: chroma("#17181b").brighten(1).css(),
@@ -63,4 +63,5 @@ export const colorStyles = {
 	singleValue: styles => ({ ...styles, color: "white" }),
 };
 
-export const redirect_uri = process.env.NODE_ENV === "production" ? "https://dev.disstreamchat.com/oauth" : "http://localhost:3000/oauth" 
+// export const redirect_uri = process.env.NODE_ENV === "production" ? "https://www.disstreamchat.com/oauth" : "http://localhost:3000/oauth" 
+export const redirect_uri = "http://localhost:3000/oauth" 

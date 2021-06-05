@@ -21,6 +21,13 @@ const PrivacyPolicy = styled.div`
 	a {
 		text-decoration: underline;
 	}
+	h2 {
+		font-size: 2rem;
+		font-weight: bold;
+	}
+	ul {
+		padding-left: 1rem;
+	}
 `;
 
 const PrivacyMain = styled(Main)`
@@ -249,7 +256,7 @@ const Terms = () => {
 						to our designated Copyright Agent:
 					</p>
 
-					<ul className="">
+					<ul>
 						<li>your physical or electronic signature;</li>
 						<li>
 							identification of the copyrighted work(s) that you claim to have been

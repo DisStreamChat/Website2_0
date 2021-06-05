@@ -101,7 +101,7 @@ const SEO = () => {
 				crossOrigin="anonymous"
 			/>
 			<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"></link>
-			<title>DisStreamChat</title>
+			<title>DisStreamChat | the best Discord/Stream Tool</title>
 		</Head>
 	);
 };

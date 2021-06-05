@@ -29,4 +29,31 @@ export const DiscordMention = styled.span`
 
 export const Vr = styled.div`
 	border-left: 1px solid currentColor;
+`;
+
+interface gapProps {
+	gap?: string;
+	grid?: boolean;
+}
+
+export const gapFunction = (props: gapProps = {}) => `
+	display: ${props.grid ? "grid" : "flex"};
+	--gap: ${props.gap ?? ".5rem"};
+	& > * + * {
+		margin-left: var(--gap);
+	}
+	@supports (gap: 10px) {
+		& > * + * {
+			margin-left: 0;
+		}
+		gap: var(--gap);
+	}
+`;
+
+export const heightFunction = () => `
+	min-height: calc(100vh - 128px);
 `
+
+export const gap = styled.div`
+	${(props: gapProps) => gapFunction(props)}
+`;

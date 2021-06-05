@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import Switch from "@material-ui/core/Switch";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { useInteraction } from "../../../hooks/useInteraction";
 
 export interface pluginProps {
 	id: string;
@@ -10,7 +12,7 @@ export interface pluginProps {
 	comingSoon?: boolean;
 	active: boolean;
 	setActive?: (value: boolean) => void;
-	serverId?: string
+	serverId?: string;
 }
 
 const PluginCard = styled.a`
@@ -25,6 +27,8 @@ const PluginCard = styled.a`
 	min-width: 350px;
 	min-height: 120px;
 	padding: 20px;
+	padding-top: 1.5rem;
+	padding-bottom: 1.5rem;
 	/* align-items: center; */
 	box-shadow: 3px 3px 5px 0 #111;
 	& > * + * {
@@ -40,6 +44,19 @@ const PluginCard = styled.a`
 	div:first-child {
 		align-self: start;
 	}
+	&:focus{
+		box-shadow: 0 0 0px 5px #24252a, 0 0 0 10px var(--disstreamchat-blue);
+
+	}
+	&.coming-soon:after{
+		content: "Coming Soon";
+		position: absolute;
+		right: -10px;
+		top: -.25rem;
+		background: var(--disstreamchat-blue);
+		padding: .25rem .5rem;
+		border-radius: 100vh;
+	}
 `;
 
 const PluginTitle = styled.div`
@@ -53,22 +70,62 @@ const PluginBody = styled.div`
 	color: #aaa;
 	margin-top: 0.25rem;
 	line-height: 1.5;
-	font-size: .85rem;
+	font-size: 0.85rem;
 `;
 
 const PluginSwitch = styled.div`
 	position: absolute;
-	/* top: 25px; */
+	top: 5px;
 	right: 0;
 `;
 
-const PluginItem = (props: pluginProps) => {
+interface lineProps {
+	active?: boolean
+}
 
+const PluginLine = styled(motion.div)`
+	height: 5px;
+	background: ${({active}: lineProps) => `var(${active ? "--disstreamchat-blue" : "--warning-red"})`};
+	width: 100%;
+	position: absolute;
+	transform-origin: left center;
+	border-radius: 0.25rem;
+
+	&.bottom {
+		bottom: 0;
+	}
+`;
+
+const lineTransition = {
+	duration: 0.5,
+};
+
+const lineVariants = {
+	interacted: {
+		scaleX: 1,
+		transition: lineTransition,
+	},
+	ignored: {
+		scaleX: 0,
+		transition: lineTransition,
+	},
+};
+
+const PluginItem = (props: pluginProps) => {
+	const cardRef = useRef();
+	const [hovered, focused, interacted] = useInteraction(cardRef);
 
 	return (
-		<PluginCard href={props.active ? `${props.serverId}/${props.id}` : null}>
+		<PluginCard className={`${props.comingSoon ? "coming-soon" : ""}`} ref={cardRef} href={props.active ? `${props.serverId}/${props.id}` : null}>
+			{!props.comingSoon && (
+				<PluginLine
+					active={props.active}
+					variants={lineVariants}
+					animate={hovered ? "ignored" : "interacted"}
+				/>
+			)}
 			<div>
-				<img alt={props.title} src={`/${props.image}`}  width={50} height={50} />
+				<img alt={props.title} src={`/${props.image}`} width={50} height={50} />
 			</div>
 			<div>
 				<PluginTitle>{props.title}</PluginTitle>
@@ -84,6 +141,14 @@ const PluginItem = (props: pluginProps) => {
 					inputProps={{ "aria-label": `${props.title} activity switch` }}
 				/>
 			</PluginSwitch>
+			{!props.comingSoon && (
+				<PluginLine
+					active={props.active}
+					className="bottom"
+					variants={lineVariants}
+					animate={!hovered ? "ignored" : "interacted"}
+				/>
+			)}
 		</PluginCard>
 	);
 };
