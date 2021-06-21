@@ -8,7 +8,7 @@ const GlobalStyle = createGlobalStyle`
 		--background-dark-gray: #17181b;
 		--background-light-gray: #24252a;
 		--warning-red: #9b0e11;
-		--header-height: 134px;
+		--header-height: 80px;
 		--youtube-background: linear-gradient(320.75deg, rgb(255, 0, 0) 8.4%, rgb(182, 0, 52) 100.11%);
 		--twitch-background: linear-gradient(
 			198.87deg,

@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import admin from "../firebase/admin";
 import styled from "styled-components";
 import { motion } from "framer-motion";
@@ -5,6 +6,11 @@ import { Main } from "../components/shared/styles";
 import firebaseClient from "../firebase/client";
 import { useAuth } from "../auth/authContext";
 import { loadStripe } from "@stripe/stripe-js";
+import {
+    EmptyButton,
+    GreenButton,
+	OrangeButton,
+} from "../components/shared/ui-components/Button";
 
 enum PriceType {
     ONE_TIME = "one_time",
@@ -27,7 +33,16 @@ interface Product {
 }
 
 const PremiumMain = styled(Main)`
-    padding: 6rem 3rem;
+    padding-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: calc(100vh - var(--header-height));
+    h1 {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 3rem;
+    }
 `;
 
 const ProductContainer = styled.div`
@@ -37,6 +52,13 @@ const ProductContainer = styled.div`
     width: 100%;
     align-items: center;
     justify-content: center;
+    background: #1d1e22;
+    padding: 4rem 2rem;
+    height: 100%;
+    flex: 1;
+    z-index: 2;
+    margin-bottom: 2rem;
+    /* align-items: stretch; */
 `;
 
 const PriceCard = styled.div`
@@ -46,6 +68,7 @@ const PriceCard = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 3rem;
 `;
 
 const PriceTypeToTitleMap = {
@@ -54,17 +77,62 @@ const PriceTypeToTitleMap = {
     year: "1-year plan",
 };
 
-const PriceTitle = styled.h1`
+const PriceTitle = styled.h2`
     font-weight: bold;
+    margin-bottom: 1rem;
 `;
 
-const PriceDisplay = styled.h2`
-    font-weight: bold;
-    font-size: 1.25rem;
+const PriceDisplay = styled.h3`
+    font-weight: 600;
+    font-size: 3.25rem;
+    &:before {
+        content: "$";
+    }
+`;
+
+const ProductsSelector = styled.div`
+    display: flex;
+    transform: translateY(3px);
+`;
+
+const ProductSelection = styled.div`
+    &.active {
+        background: #1d1e22;
+        box-shadow: 0px 0px 15px 0px #000000;
+    }
+    padding: 2rem;
+    border-radius: 1rem 1rem 0 0;
+`;
+
+const PerksContainer = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+`;
+
+const Perks = styled.ul`
+    border: solid;
+    width: 60vw;
+`;
+
+const PerkItem = styled.li`
+    border: 1px solid;
+`;
+
+const PriceTop = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const PaymentType = styled.div`
+    transform: translateY(-1rem);
+    opacity: 0.7;
 `;
 
 const Premium = ({ products }) => {
     const { user } = useAuth();
+    const [selectedProduct, setSelectedProduct] = useState<any>(products[0]);
 
     const purchasePlan = async (price) => {
         const docRef = await firebaseClient.db
@@ -97,31 +165,102 @@ const Premium = ({ products }) => {
 
     return (
         <PremiumMain>
+            <h1>DisStreamChat Premium</h1>
+            <ProductsSelector>
+                {products.map((product) => (
+                    <EmptyButton onClick={() => setSelectedProduct(product)}>
+                        <ProductSelection
+                            className={`${
+                                selectedProduct.name === product.name
+                                    ? "active"
+                                    : ""
+                            }`}
+                        >
+                            {product.name}
+                        </ProductSelection>
+                    </EmptyButton>
+                ))}
+            </ProductsSelector>
             <ProductContainer>
-                {products.map((product) =>
-                    product.prices.map((price) => (
-                        <PriceCard>
+                {selectedProduct?.prices?.map((price) => (
+                    <PriceCard>
+                        <PriceTop>
                             <PriceTitle>
                                 {price.type === PriceType.ONE_TIME
                                     ? PriceTypeToTitleMap[price.type]
                                     : PriceTypeToTitleMap[price.interval]}
                             </PriceTitle>
-                            <PriceDisplay>${price.cost / 100}</PriceDisplay>
-                            <div>
+                            <PriceDisplay>{price.cost / 100}</PriceDisplay>
+                            <PaymentType>
                                 {price.type === PriceType.ONE_TIME
                                     ? "single payment"
                                     : "per month"}
-                            </div>
-                            <button onClick={() => purchasePlan(price)}>
-                                Get{" "}
-                                {price.type === PriceType.ONE_TIME
-                                    ? PriceTypeToTitleMap[price.type]
-                                    : PriceTypeToTitleMap[price.interval]}
-                            </button>
-                        </PriceCard>
-                    ))
-                )}
+                            </PaymentType>
+                        </PriceTop>
+                        <OrangeButton onClick={() => purchasePlan(price)}>
+                            Get{" "}
+                            {price.type === PriceType.ONE_TIME
+                                ? PriceTypeToTitleMap[price.type]
+                                : PriceTypeToTitleMap[price.interval]}
+                        </OrangeButton>
+                    </PriceCard>
+                ))}
             </ProductContainer>
+            <PerksContainer>
+                <h1>Premium Perks</h1>
+                <Perks>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                    <PerkItem>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </PerkItem>
+                </Perks>
+            </PerksContainer>
         </PremiumMain>
     );
 };
