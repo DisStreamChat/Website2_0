@@ -13,7 +13,6 @@ const ErrorMain = styled.div`
 const Oauth = props => {
 	const { user } = useAuth();
 	useEffect(() => {
-		console.log(JSON.parse(props.details));
 		if (typeof window !== "undefined" && user) {
 			fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/details?id=${user.uid}`, {
 				method: "POST",

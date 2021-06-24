@@ -108,7 +108,6 @@ const Header = () => {
 	}, [isLoggedIn]);
 
 	const classes = useStyles();
-	console.log({redirect_uri})
 
 	return (
 		<styles.Header

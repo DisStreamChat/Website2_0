@@ -167,7 +167,6 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 	);
 
 	useEffect(() => {
-		console.log({ defaultValue });
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
 		} else {

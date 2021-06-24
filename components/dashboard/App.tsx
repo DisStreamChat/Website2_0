@@ -192,7 +192,6 @@ const App = (props: AppProps) => {
 		firebaseClient.db.collection("Streamers").doc(user?.uid)
 	);
 
-	console.log({ router });
 	const { settings: defaultSettings, categories } = props;
 
 	const allSettings: Setting[] = Object.entries(defaultSettings ||{})

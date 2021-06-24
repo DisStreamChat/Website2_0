@@ -163,7 +163,6 @@ const LogModal = ({ defaultValue, logActions, ...props }) => {
 	>(reducer, defaultValue ?? logRecordFactory(), record => record);
 
 	useEffect(() => {
-		console.log(defaultValue);
 		if (defaultValue) {
 			dispatch({ type: actions.SET, value: { ...defaultValue } });
 		} else {

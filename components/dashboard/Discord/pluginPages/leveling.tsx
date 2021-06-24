@@ -212,7 +212,6 @@ const Leveling = () => {
 	const changed = !isEqual(defaultValues, state);
 
 	const textAreaRef = useRef<any>();
-	console.log(textAreaRef)
 
 	return (
 		<div>

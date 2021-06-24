@@ -92,9 +92,7 @@ const Discord = ({ session }: dashboardProps) => {
 			if (!response.ok) return;
 
 			const json = await response.json();
-			console.log(json);
 			if (!json) return;
-			console.log(userId);
 			await firebaseClient.db
 				.collection("Streamers")
 				.doc(userId || " ")
