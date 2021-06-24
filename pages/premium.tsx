@@ -9,7 +9,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import {
     EmptyButton,
     GreenButton,
-	OrangeButton,
+    OrangeButton,
 } from "../components/shared/ui-components/Button";
 
 enum PriceType {
@@ -119,7 +119,7 @@ const PerkItem = styled.li`
     border: 1px solid;
 `;
 
-const PriceTop = styled.div`
+const PriceSection = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -130,9 +130,30 @@ const PaymentType = styled.div`
     opacity: 0.7;
 `;
 
+const intervalMap = {
+    month: 1,
+    year: 12,
+};
+
+const dollarify = (cost: string | number): string => {
+    if (typeof cost === "number") cost = `${cost}`;
+    const split = cost.split(".");
+    const dollars = split[0];
+    const cents = split[1];
+    return `${dollars}.${cents.slice(0, 2)}`;
+};
+
+const BottomDollar = styled.div`
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.25rem;
+    font-size: 90%;
+`;
+
 const Premium = ({ products }) => {
     const { user } = useAuth();
-    const [selectedProduct, setSelectedProduct] = useState<any>(products[0]);
+    const [selectedProduct, setSelectedProduct] = useState<Product>(
+        products[0]
+    );
 
     const purchasePlan = async (price) => {
         const docRef = await firebaseClient.db
@@ -183,26 +204,43 @@ const Premium = ({ products }) => {
             </ProductsSelector>
             <ProductContainer>
                 {selectedProduct?.prices?.map((price) => (
-                    <PriceCard>
-                        <PriceTop>
+                    <PriceCard key={price.id}>
+                        <PriceSection>
                             <PriceTitle>
                                 {price.type === PriceType.ONE_TIME
                                     ? PriceTypeToTitleMap[price.type]
                                     : PriceTypeToTitleMap[price.interval]}
                             </PriceTitle>
-                            <PriceDisplay>{price.cost / 100}</PriceDisplay>
+                            <PriceDisplay>
+                                {dollarify(
+                                    price.cost /
+                                        100 /
+                                        (price.interval
+                                            ? intervalMap[price.interval]
+                                            : 1)
+                                )}
+                            </PriceDisplay>
                             <PaymentType>
                                 {price.type === PriceType.ONE_TIME
                                     ? "single payment"
                                     : "per month"}
                             </PaymentType>
-                        </PriceTop>
-                        <OrangeButton onClick={() => purchasePlan(price)}>
-                            Get{" "}
-                            {price.type === PriceType.ONE_TIME
-                                ? PriceTypeToTitleMap[price.type]
-                                : PriceTypeToTitleMap[price.interval]}
-                        </OrangeButton>
+                        </PriceSection>
+                        <PriceSection>
+                            <OrangeButton onClick={() => purchasePlan(price)}>
+                                Get{" "}
+                                {price.type === PriceType.ONE_TIME
+                                    ? PriceTypeToTitleMap[price.type]
+                                    : PriceTypeToTitleMap[price.interval]}
+                            </OrangeButton>
+                            <BottomDollar>
+                                {price.interval
+                                    ? `$${price.cost / 100} billed every ${
+                                          price.interval
+                                      }`
+                                    : `$${price.cost / 100} paid only once`}
+                            </BottomDollar>
+                        </PriceSection>
                     </PriceCard>
                 ))}
             </ProductContainer>
