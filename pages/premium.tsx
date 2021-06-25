@@ -140,7 +140,7 @@ const dollarify = (cost: string | number): string => {
     const split = cost.split(".");
     const dollars = split[0];
     const cents = split[1];
-    return `${dollars}.${cents.slice(0, 2)}`;
+    return `${dollars}.${cents ? cents.slice(0, 2) : "00"}`;
 };
 
 const BottomDollar = styled.div`

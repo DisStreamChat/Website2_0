@@ -1,55 +1,82 @@
 import { useState, useEffect, useContext, createContext } from "react";
-import nookies, {parseCookies, destroyCookie} from "nookies";
+import nookies, { parseCookies, destroyCookie } from "nookies";
 import firebaseClient from "../firebase/client";
 import firebase from "firebase";
 
-
 export interface User extends firebase.User, firebase.firestore.DocumentData {
-	profilePicture: string,
-	name: string,
+    profilePicture: string;
+    name: string;
+}
+interface Subscription {
+	status: string;
+	product: firebase.firestore.DocumentReference
 }
 interface authType {
-	user: User;
-	isLoggedIn: boolean
+    user: User;
+    isLoggedIn: boolean;
 }
 
 export const authContext = createContext<authType>(null);
 
 export const AuthContextProvider = ({ children }) => {
-	const [user, setUser] = useState<User>(null);
+    const [user, setUser] = useState<User>(null);
 
-	useEffect(() => {
-		const cookies = parseCookies()
-		if(cookies["temp-token"]){
-			const signInToken = cookies["temp-token"]
-			firebaseClient.auth.signInWithCustomToken(signInToken)
-			destroyCookie(null, "temp-token")
-		}
-	}, [])
+    useEffect(() => {
+        const cookies = parseCookies();
+        if (cookies["temp-token"]) {
+            const signInToken = cookies["temp-token"];
+            firebaseClient.auth.signInWithCustomToken(signInToken);
+            destroyCookie(null, "temp-token");
+        }
+    }, []);
 
-	useEffect(() => {
-		return firebaseClient.auth.onIdTokenChanged(async (user: User) => {
-			if (!user) {
-				setUser(null);
-				destroyCookie(null, "auth-token")
-				return;
-			}
-			const userId = user.uid
-			const userDbRef = firebaseClient.db.collection("Streamers").doc(userId)
-			const userDbObject = await userDbRef.get()
-			const userDbData = userDbObject.data()
-			setUser({...user, ...userDbData});
-			
-			const token = await user.getIdToken();
-			nookies.set(undefined, "auth-token", token, {sameSite: "lax", path: "/"});
-		});
-	}, []);
+    useEffect(() => {
+        return firebaseClient.auth.onIdTokenChanged(async (user: User) => {
+            if (!user) {
+                setUser(null);
+                destroyCookie(null, "auth-token");
+                return;
+            }
+            const userId = user.uid;
+            const userDbRef = firebaseClient.db
+                .collection("Streamers")
+                .doc(userId);
+            const userDbObject = await userDbRef.get();
+            const userDbData = userDbObject.data();
 
-	return <authContext.Provider value={{ user, isLoggedIn: !!user }}>{children}</authContext.Provider>;
+            const customerRef = firebaseClient.db
+                .collection("customers")
+                .doc(userId);
+            const customerSnapshot = await customerRef.get();
+            const customer = customerSnapshot.data();
+
+            const subscriptionsRef = await customerRef
+                .collection("subscriptions")
+                .get();
+
+            const subscriptionsDocs = subscriptionsRef.docs;
+			const subscriptions = 
+
+            setUser({ ...user, ...userDbData });
+
+            const token = await user.getIdToken();
+            nookies.set(undefined, "auth-token", token, {
+                sameSite: "lax",
+                path: "/",
+            });
+        });
+    }, []);
+
+    return (
+        <authContext.Provider value={{ user, isLoggedIn: !!user }}>
+            {children}
+        </authContext.Provider>
+    );
 };
 
 export const useAuth = () => {
-	const context = useContext(authContext);
-	if (!context) throw new Error("useAuth must be used within a auth context provider");
-	return context;
+    const context = useContext(authContext);
+    if (!context)
+        throw new Error("useAuth must be used within a auth context provider");
+    return context;
 };
