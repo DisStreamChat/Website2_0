@@ -620,7 +620,7 @@ const RoleManagement = () => {
 	useEffect(() => {
 		
 		if (snapshot && Object.keys(snapshot||{}).length) {
-			setLocalSettings(cloneDeep(snapshot));
+			setLocalSettings(cloneDeep(snapshot) as any);
 			dispatch({ type: actions.SET, value: cloneDeep(snapshot) });
 		} else {
 			docRef.set({}, { merge: true });

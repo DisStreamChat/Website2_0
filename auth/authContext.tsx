@@ -54,8 +54,8 @@ export const AuthContextProvider = ({ children }) => {
                 .collection("subscriptions")
                 .get();
 
-            const subscriptionsDocs = subscriptionsRef.docs;
-			const subscriptions = 
+            // const subscriptionsDocs = subscriptionsRef.docs;
+			// const subscriptions = 
 
             setUser({ ...user, ...userDbData });
 
