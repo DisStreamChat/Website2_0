@@ -24,6 +24,8 @@ import { Action } from "../../../../utils/types";
 import {
     ColorPickerBlock,
     ColorPickers,
+    ImageContainer,
+    Images,
     roleColors,
 } from "../../../header/rankCardModal";
 import { SectionTitle } from "../../../shared/styles/plugins";
@@ -59,6 +61,14 @@ interface welcomeMessage {
     type?: string;
 }
 
+const defaultImages = [
+    null,
+    "https://media.discordapp.net/attachments/727356806552092675/858445996936396810/iaoPLSX_1.png?width=1173&height=670",
+    "https://media.discordapp.net/attachments/727356806552092675/858444072431124531/rBhN5EH_1.jpeg?width=1173&height=670",
+	"https://media.discordapp.net/attachments/727356806552092675/858447499463098408/best-dark-backgrounds_2.jpg",
+	
+];
+
 const defaultWelcomeMessage = (): welcomeMessage => {
     return {
         type: "",
@@ -66,7 +76,7 @@ const defaultWelcomeMessage = (): welcomeMessage => {
         message: "Welcome to {server}, {member}",
         hasWelcomeImage: false,
         welcomeImage: {
-            backgroundColor: "##7ed6df",
+            backgroundColor: "#00b3c7",
             borderColor: "#eb4d4b",
             backgroundImage: null,
         },
@@ -123,8 +133,8 @@ const WelcomeImageSettings = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-	gap: .5rem;
-	padding: .5rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
 `;
 
 const Welcome = () => {
@@ -134,8 +144,9 @@ const Welcome = () => {
         .collection("DiscordSettings")
         .doc(serverId);
     const [snapshot, loading, error] = useDocumentData(docRef);
-    const { allChannels, emotes, roles, isPremium } =
-        useContext(discordContext);
+    const { allChannels, emotes, roles, isPremium } = useContext(
+        discordContext
+    );
     const [emotePickerOpen, setEmotePickerOpen] = useState(false);
     const [backgroundPickerOpen, setBackgroundPickerOpen] = useState(false);
     const [borderPickerOpen, setBorderPickerOpen] = useState(false);
@@ -149,7 +160,10 @@ const Welcome = () => {
 
     useEffect(() => {
         if (databaseWelcomeMessage) {
-            dispatch({ type: actions.SET, value: cloneDeep(databaseWelcomeMessage) });
+            dispatch({
+                type: actions.SET,
+                value: cloneDeep(databaseWelcomeMessage),
+            });
         }
     }, [databaseWelcomeMessage]);
 
@@ -170,7 +184,8 @@ const Welcome = () => {
         dispatch({ type: actions.SET, value: databaseWelcomeMessage });
     };
 
-    const { backgroundColor, borderColor } = state.welcomeImage || {};
+    const { backgroundColor, borderColor, backgroundImage } =
+        state.welcomeImage || {};
 
     const updateBackgroundColor = (color: { hex: string }) => {
         dispatch({
@@ -336,7 +351,7 @@ const Welcome = () => {
                                                 height="400"
                                             >
                                                 <image
-                                                    href="${customizationData.backgroundImage}"
+                                                    href={backgroundImage}
                                                     x="0"
                                                     y="0"
                                                     width="700"
@@ -358,7 +373,7 @@ const Welcome = () => {
                                             height="100%"
                                             rx="25px"
                                             ry="25px"
-                                            style={{ fill: backgroundColor }}
+                                            style={{ fill: "url(#bgImage)" }}
                                         ></rect>
                                         <circle
                                             r="90"
@@ -366,18 +381,16 @@ const Welcome = () => {
                                             cy="35%"
                                             style={{ fill: borderColor }}
                                         ></circle>
-                                        <clipPath id="clipCircle">
-                                            <circle
-                                                r="83"
-                                                cx="50%"
-                                                cy="35%"
-                                            ></circle>
-                                        </clipPath>
                                         <image
-                                            x="260"
-                                            y="50"
+                                            x="50%"
+                                            y="35%"
                                             width="180"
                                             height="180"
+                                            style={{
+                                                clipPath: "circle(83%)",
+                                                transform:
+                                                    "translate(-90px, -90px)",
+                                            }}
                                             clip-path="url(#clipCircle)"
                                             href="https://cdn.discordapp.com/avatars/193826355266191372/49769d1ba6b5e5da6d9f6e0582afab99.png"
                                         ></image>
@@ -423,10 +436,18 @@ const Welcome = () => {
                                         </text>
                                     </svg>
                                     <WelcomeImageSettings>
+                                        <SectionTitle>
+                                            Background Color
+                                        </SectionTitle>
                                         <ColorPickers>
                                             <Tooltip title="Default">
                                                 <ColorPickerBlock
-                                                    color={"#992d22"}
+                                                    color={"#00b3c7"}
+                                                    onClick={() =>
+                                                        updateBackgroundColor({
+                                                            hex: "#00b3c7",
+                                                        })
+                                                    }
                                                 />
                                             </Tooltip>
                                             <ColorPickerBlock
@@ -471,10 +492,18 @@ const Welcome = () => {
                                                 onChange={updateBackgroundColor}
                                             />
                                         </ColorPickers>
+                                        <SectionTitle>
+                                            Border Color
+                                        </SectionTitle>
                                         <ColorPickers>
                                             <Tooltip title="Default">
                                                 <ColorPickerBlock
-                                                    color={"#992d22"}
+                                                    color={"#eb4d4b"}
+                                                    onClick={() =>
+                                                        updateBorderColor({
+                                                            hex: "#eb4d4b",
+                                                        })
+                                                    }
                                                 />
                                             </Tooltip>
                                             <ColorPickerBlock
@@ -515,6 +544,36 @@ const Welcome = () => {
                                                 onChange={updateBorderColor}
                                             />
                                         </ColorPickers>
+                                        <SectionTitle>
+                                            Background Image
+                                        </SectionTitle>
+                                        <Images>
+                                            {defaultImages.map((src) => (
+                                                <div
+                                                    key={src}
+                                                    className={`${
+                                                        backgroundImage === src
+                                                            ? "selected"
+                                                            : ""
+                                                    }`}
+                                                >
+                                                    <ImageContainer
+                                                        key={src}
+                                                        onClick={() =>
+                                                            dispatch({
+                                                                type:
+                                                                    actions.UPDATE,
+                                                                key:
+                                                                    "welcomeImage.backgroundImage",
+                                                                value: src,
+                                                            })
+                                                        }
+                                                        //@ts-ignore
+                                                        src={src}
+                                                    ></ImageContainer>
+                                                </div>
+                                            ))}
+                                        </Images>
                                     </WelcomeImageSettings>
                                 </WelcomeImageContainer>
                             )}

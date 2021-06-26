@@ -92,6 +92,11 @@ const Header = () => {
 					Community
 				</Anchor>
 			</styles.navItem>
+			<styles.navItem name="Guides">
+				<Anchor newTab href="https://disstreamchat.com/Guides">
+					Guides
+				</Anchor>
+			</styles.navItem>
 
 			{isLoggedIn && (
 				<styles.navItem name="Dashboard">
