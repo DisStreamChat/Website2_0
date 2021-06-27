@@ -133,7 +133,8 @@ const WelcomeContainer = styled.div`
 const WelcomeImageContainer = styled(motion.div)`
     overflow: hidden;
     display: flex;
-    gap: 0.5rem;
+    gap: 2rem;
+	align-items: center;
 `;
 
 const WelcomeImageSettings = styled.div`
@@ -553,7 +554,7 @@ const Welcome = () => {
                                         <SectionTitle>
                                             Background Image
                                         </SectionTitle>
-                                        <Images>
+                                        <Images style={{justifyContent: "flex-start"}}>
                                             {defaultImages.map((src) => (
                                                 <div
                                                     key={src}
