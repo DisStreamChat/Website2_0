@@ -147,12 +147,12 @@ const WelcomeImageSettings = styled.div`
 
 const Welcome = () => {
     const router = useRouter();
-    const [, serverId, pluginName] = router.query.type as string[];
+    const [, serverId] = router.query.type as string[];
     const docRef = firebaseClient.db
         .collection("DiscordSettings")
         .doc(serverId);
     const [snapshot, loading, error] = useDocumentData(docRef);
-    const { allChannels, emotes, roles, isPremium } =
+    const { allChannels, emotes, roles, isPremium, setPremiumModalOpen } =
         useContext(discordContext);
     const [emotePickerOpen, setEmotePickerOpen] = useState(false);
     const [backgroundPickerOpen, setBackgroundPickerOpen] = useState(false);
@@ -319,277 +319,268 @@ const Welcome = () => {
                 </WelcomeArea>
                 <SaveBar changed={changed} save={save} reset={reset} />
             </div>
-            {isPremium && (
-                <div>
-                    <WelcomeArea>
-                        <SectionTitle>
-                            <Switch
-                                checked={state.hasWelcomeImage}
-                                onChange={(e) =>
-                                    dispatch({
-                                        type: actions.UPDATE,
-                                        value: e.target.checked,
-                                        key: "hasWelcomeImage",
-                                    })
+            <div>
+                <WelcomeArea>
+                    <SectionTitle>
+                        <Switch
+                            checked={state.hasWelcomeImage}
+                            onChange={(e) => {
+                                if (!isPremium) {
+                                    return setPremiumModalOpen(true);
                                 }
-                                color="primary"
-                                name="checkedB"
-                            />{" "}
-                            <span className="premium">Welcome Image</span>
-                        </SectionTitle>
-                        <AnimatePresence>
-                            {state.hasWelcomeImage && (
-                                <WelcomeImageContainer
-                                    initial={{ height: 0 }}
-                                    animate={{ height: "auto" }}
-                                    exit={{ height: 0 }}
+                                dispatch({
+                                    type: actions.UPDATE,
+                                    value: e.target.checked,
+                                    key: "hasWelcomeImage",
+                                });
+                            }}
+                            color="primary"
+                            name="checkedB"
+                        />{" "}
+                        <span className="premium">Welcome Image</span>
+                    </SectionTitle>
+                    <AnimatePresence>
+                        {state.hasWelcomeImage && isPremium && (
+                            <WelcomeImageContainer
+                                initial={{ height: 0 }}
+                                animate={{ height: "auto" }}
+                                exit={{ height: 0 }}
+                            >
+                                <svg
+                                    version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="711px"
+                                    height="400px"
                                 >
-                                    <svg
-                                        version="1.1"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="711px"
-                                        height="400px"
-                                    >
-                                        <defs>
-                                            <pattern
-                                                id="bgImage"
-                                                patternUnits="userSpaceOnUse"
+                                    <defs>
+                                        <pattern
+                                            id="bgImage"
+                                            patternUnits="userSpaceOnUse"
+                                            width="711"
+                                            height="400"
+                                        >
+                                            <image
+                                                href={backgroundImage}
+                                                x="0"
+                                                y="0"
                                                 width="711"
                                                 height="400"
-                                            >
-                                                <image
-                                                    href={backgroundImage}
-                                                    x="0"
-                                                    y="0"
-                                                    width="711"
-                                                    height="400"
-                                                />
-                                            </pattern>
-                                        </defs>
-                                        <rect
-                                            id="rect"
-                                            width="100%"
-                                            height="100%"
-                                            rx="25px"
-                                            ry="25px"
-                                            style={{ fill: backgroundColor }}
-                                        ></rect>
-                                        <rect
-                                            id="rect"
-                                            width="100%"
-                                            height="100%"
-                                            rx="25px"
-                                            ry="25px"
-                                            style={{ fill: "url(#bgImage)" }}
-                                        ></rect>
-                                        <circle
-                                            r="90"
-                                            cx="50%"
-                                            cy="35%"
-                                            style={{ fill: borderColor }}
-                                        ></circle>
-                                        <image
-                                            x="50%"
-                                            y="35%"
-                                            width="180"
-                                            height="180"
-                                            style={{
-                                                clipPath: "circle(46%)",
-                                                transform:
-                                                    "translate(-90px, -90px)",
-                                            }}
-                                            clip-path="url(#clipCircle)"
-                                            href="https://preview.redd.it/nx4jf8ry1fy51.gif?format=png8&s=a5d51e9aa6b4776ca94ebe30c9bb7a5aaaa265a6"
-                                        ></image>
-                                        <text
-                                            dominant-baseline="middle"
-                                            text-anchor="middle"
-                                            x="50%"
-                                            y="272"
-                                            font-family="Poppins"
-                                            font-size="48"
-                                            font-weight="800"
-                                            text-align="center"
-                                        >
-                                            <tspan fill="white">WELCOME</tspan>
-                                        </text>
-                                        <text
-                                            dominant-baseline="middle"
-                                            text-anchor="middle"
-                                            x="50%"
-                                            y="315"
-                                            font-family="Poppins"
-                                            font-size="48"
-                                            font-weight="800"
-                                            text-align="center"
-                                        >
-                                            <tspan fill="white">
-                                                David#1000
-                                            </tspan>
-                                        </text>
-                                        <text
-                                            dominant-baseline="middle"
-                                            text-anchor="middle"
-                                            x="50%"
-                                            y="355"
-                                            font-family="Poppins"
-                                            font-size="24"
-                                            font-weight="800"
-                                            text-align="center"
-                                        >
-                                            <tspan fill="white">
-                                                YOU ARE OUR 100TH MEMBER!
-                                            </tspan>
-                                        </text>
-                                    </svg>
-                                    <WelcomeImageSettings>
-                                        <SectionTitle>
-                                            Background Color
-                                        </SectionTitle>
-                                        <ColorPickers>
-                                            <Tooltip title="Default">
-                                                <ColorPickerBlock
-                                                    color={"#00b3c7"}
-                                                    onClick={() =>
-                                                        updateBackgroundColor({
-                                                            hex: "#00b3c7",
-                                                        })
-                                                    }
-                                                />
-                                            </Tooltip>
-                                            <ColorPickerBlock
-                                                onClick={() => {
-                                                    setBackgroundPickerOpen(
-                                                        true
-                                                    );
-                                                }}
-                                                color={
-                                                    roleColors.includes(
-                                                        backgroundColor
-                                                    )
-                                                        ? null
-                                                        : backgroundColor
-                                                }
-                                            >
-                                                <ColorizeIcon></ColorizeIcon>
-                                                {backgroundPickerOpen && (
-                                                    <ClickAwayListener
-                                                        onClickAway={() => {
-                                                            setBackgroundPickerOpen(
-                                                                false
-                                                            );
-                                                        }}
-                                                    >
-                                                        <ChromePicker
-                                                            disableAlpha
-                                                            color={
-                                                                backgroundColor
-                                                            }
-                                                            onChange={
-                                                                updateBackgroundColor
-                                                            }
-                                                        />
-                                                    </ClickAwayListener>
-                                                )}
-                                            </ColorPickerBlock>
-                                            <CirclePicker
-                                                width="380px"
-                                                color={backgroundColor}
-                                                colors={roleColors}
-                                                onChange={updateBackgroundColor}
                                             />
-                                        </ColorPickers>
-                                        <SectionTitle>
-                                            Border Color
-                                        </SectionTitle>
-                                        <ColorPickers>
-                                            <Tooltip title="Default">
-                                                <ColorPickerBlock
-                                                    color={"#eb4d4b"}
-                                                    onClick={() =>
-                                                        updateBorderColor({
-                                                            hex: "#eb4d4b",
-                                                        })
-                                                    }
-                                                />
-                                            </Tooltip>
+                                        </pattern>
+                                    </defs>
+                                    <rect
+                                        id="rect"
+                                        width="100%"
+                                        height="100%"
+                                        rx="25px"
+                                        ry="25px"
+                                        style={{ fill: backgroundColor }}
+                                    ></rect>
+                                    <rect
+                                        id="rect"
+                                        width="100%"
+                                        height="100%"
+                                        rx="25px"
+                                        ry="25px"
+                                        style={{ fill: "url(#bgImage)" }}
+                                    ></rect>
+                                    <circle
+                                        r="90"
+                                        cx="50%"
+                                        cy="35%"
+                                        style={{ fill: borderColor }}
+                                    ></circle>
+                                    <image
+                                        x="50%"
+                                        y="35%"
+                                        width="180"
+                                        height="180"
+                                        style={{
+                                            clipPath: "circle(46%)",
+                                            transform:
+                                                "translate(-90px, -90px)",
+                                        }}
+                                        clip-path="url(#clipCircle)"
+                                        href="https://preview.redd.it/nx4jf8ry1fy51.gif?format=png8&s=a5d51e9aa6b4776ca94ebe30c9bb7a5aaaa265a6"
+                                    ></image>
+                                    <text
+                                        dominant-baseline="middle"
+                                        text-anchor="middle"
+                                        x="50%"
+                                        y="272"
+                                        font-family="Poppins"
+                                        font-size="48"
+                                        font-weight="800"
+                                        text-align="center"
+                                    >
+                                        <tspan fill="white">WELCOME</tspan>
+                                    </text>
+                                    <text
+                                        dominant-baseline="middle"
+                                        text-anchor="middle"
+                                        x="50%"
+                                        y="315"
+                                        font-family="Poppins"
+                                        font-size="48"
+                                        font-weight="800"
+                                        text-align="center"
+                                    >
+                                        <tspan fill="white">David#1000</tspan>
+                                    </text>
+                                    <text
+                                        dominant-baseline="middle"
+                                        text-anchor="middle"
+                                        x="50%"
+                                        y="355"
+                                        font-family="Poppins"
+                                        font-size="24"
+                                        font-weight="800"
+                                        text-align="center"
+                                    >
+                                        <tspan fill="white">
+                                            YOU ARE OUR 100TH MEMBER!
+                                        </tspan>
+                                    </text>
+                                </svg>
+                                <WelcomeImageSettings>
+                                    <SectionTitle>
+                                        Background Color
+                                    </SectionTitle>
+                                    <ColorPickers>
+                                        <Tooltip title="Default">
                                             <ColorPickerBlock
-                                                onClick={() => {
-                                                    setBorderPickerOpen(true);
-                                                }}
-                                                color={
-                                                    roleColors.includes(
-                                                        borderColor
-                                                    )
-                                                        ? null
-                                                        : borderColor
+                                                color={"#00b3c7"}
+                                                onClick={() =>
+                                                    updateBackgroundColor({
+                                                        hex: "#00b3c7",
+                                                    })
                                                 }
-                                            >
-                                                <ColorizeIcon></ColorizeIcon>
-                                                {borderPickerOpen && (
-                                                    <ClickAwayListener
-                                                        onClickAway={() => {
-                                                            setBorderPickerOpen(
-                                                                false
-                                                            );
-                                                        }}
-                                                    >
-                                                        <ChromePicker
-                                                            disableAlpha
-                                                            color={borderColor}
-                                                            onChange={
-                                                                updateBorderColor
-                                                            }
-                                                        />
-                                                    </ClickAwayListener>
-                                                )}
-                                            </ColorPickerBlock>
-                                            <CirclePicker
-                                                width="380px"
-                                                color={borderColor}
-                                                colors={roleColors}
-                                                onChange={updateBorderColor}
                                             />
-                                        </ColorPickers>
-                                        <SectionTitle>
-                                            Background Image
-                                        </SectionTitle>
-                                        <Images
-                                            style={{
-                                                justifyContent: "flex-start",
+                                        </Tooltip>
+                                        <ColorPickerBlock
+                                            onClick={() => {
+                                                setBackgroundPickerOpen(true);
                                             }}
+                                            color={
+                                                roleColors.includes(
+                                                    backgroundColor
+                                                )
+                                                    ? null
+                                                    : backgroundColor
+                                            }
                                         >
-                                            {defaultImages.map((src) => (
-                                                <div
-                                                    key={src}
-                                                    className={`${
-                                                        backgroundImage === src
-                                                            ? "selected"
-                                                            : ""
-                                                    }`}
+                                            <ColorizeIcon></ColorizeIcon>
+                                            {backgroundPickerOpen && (
+                                                <ClickAwayListener
+                                                    onClickAway={() => {
+                                                        setBackgroundPickerOpen(
+                                                            false
+                                                        );
+                                                    }}
                                                 >
-                                                    <ImageContainer
-                                                        key={src}
-                                                        onClick={() =>
-                                                            dispatch({
-                                                                type: actions.UPDATE,
-                                                                key: "welcomeImage.backgroundImage",
-                                                                value: src,
-                                                            })
+                                                    <ChromePicker
+                                                        disableAlpha
+                                                        color={backgroundColor}
+                                                        onChange={
+                                                            updateBackgroundColor
                                                         }
-                                                        //@ts-ignore
-                                                        src={src}
-                                                    ></ImageContainer>
-                                                </div>
-                                            ))}
-                                        </Images>
-                                    </WelcomeImageSettings>
-                                </WelcomeImageContainer>
-                            )}
-                        </AnimatePresence>
-                    </WelcomeArea>
-                </div>
-            )}
+                                                    />
+                                                </ClickAwayListener>
+                                            )}
+                                        </ColorPickerBlock>
+                                        <CirclePicker
+                                            width="380px"
+                                            color={backgroundColor}
+                                            colors={roleColors}
+                                            onChange={updateBackgroundColor}
+                                        />
+                                    </ColorPickers>
+                                    <SectionTitle>Border Color</SectionTitle>
+                                    <ColorPickers>
+                                        <Tooltip title="Default">
+                                            <ColorPickerBlock
+                                                color={"#eb4d4b"}
+                                                onClick={() =>
+                                                    updateBorderColor({
+                                                        hex: "#eb4d4b",
+                                                    })
+                                                }
+                                            />
+                                        </Tooltip>
+                                        <ColorPickerBlock
+                                            onClick={() => {
+                                                setBorderPickerOpen(true);
+                                            }}
+                                            color={
+                                                roleColors.includes(borderColor)
+                                                    ? null
+                                                    : borderColor
+                                            }
+                                        >
+                                            <ColorizeIcon></ColorizeIcon>
+                                            {borderPickerOpen && (
+                                                <ClickAwayListener
+                                                    onClickAway={() => {
+                                                        setBorderPickerOpen(
+                                                            false
+                                                        );
+                                                    }}
+                                                >
+                                                    <ChromePicker
+                                                        disableAlpha
+                                                        color={borderColor}
+                                                        onChange={
+                                                            updateBorderColor
+                                                        }
+                                                    />
+                                                </ClickAwayListener>
+                                            )}
+                                        </ColorPickerBlock>
+                                        <CirclePicker
+                                            width="380px"
+                                            color={borderColor}
+                                            colors={roleColors}
+                                            onChange={updateBorderColor}
+                                        />
+                                    </ColorPickers>
+                                    <SectionTitle>
+                                        Background Image
+                                    </SectionTitle>
+                                    <Images
+                                        style={{
+                                            justifyContent: "flex-start",
+                                        }}
+                                    >
+                                        {defaultImages.map((src) => (
+                                            <div
+                                                key={src}
+                                                className={`${
+                                                    backgroundImage === src
+                                                        ? "selected"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <ImageContainer
+                                                    key={src}
+                                                    onClick={() =>
+                                                        dispatch({
+                                                            type: actions.UPDATE,
+                                                            key: "welcomeImage.backgroundImage",
+                                                            value: src,
+                                                        })
+                                                    }
+                                                    //@ts-ignore
+                                                    src={src}
+                                                ></ImageContainer>
+                                            </div>
+                                        ))}
+                                    </Images>
+                                </WelcomeImageSettings>
+                            </WelcomeImageContainer>
+                        )}
+                    </AnimatePresence>
+                </WelcomeArea>
+            </div>
         </WelcomeContainer>
     );
 };

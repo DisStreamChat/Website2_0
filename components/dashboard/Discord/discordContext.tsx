@@ -44,6 +44,8 @@ interface discordContextTpe {
     setEmotes: Dispatch<SetStateAction<obj[]>>;
     isPremium: boolean;
     setIsPremium: Dispatch<SetStateAction<boolean>>;
+    premiumModalOpen: boolean;
+    setPremiumModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const discordContext = createContext<discordContextTpe>(null);
@@ -61,6 +63,7 @@ export const DiscordContextProvider = ({ children }) => {
     const [isPremium, setIsPremium] = useState<boolean>();
     const [emotes, setEmotes] = useState<obj[]>([]);
     const [activePlugins, setActivePlugins] = useState<obj<boolean>>({});
+    const [premiumModalOpen, setPremiumModalOpen] = useState<boolean>();
     const router = useRouter();
 
     const [, serverId] = router.query.type as string[];
@@ -141,6 +144,8 @@ export const DiscordContextProvider = ({ children }) => {
     return (
         <discordContext.Provider
             value={{
+                premiumModalOpen,
+                setPremiumModalOpen,
                 isPremium,
                 setIsPremium,
                 currentGuild,
