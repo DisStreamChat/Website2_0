@@ -132,6 +132,20 @@ const GlobalStyle = createGlobalStyle`
 		width: 100%;
 		border-color: grey;
 	}
+
+	.premium {
+		position: relative;
+		&:after {
+			content: "";
+			padding: .5rem;
+			border-radius: 50%;
+			position: absolute;
+			top: 0;
+			right: -1.5rem;
+			background: #ffc34f;
+		}
+
+	}
 `;
 
 export default GlobalStyle;

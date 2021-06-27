@@ -72,8 +72,8 @@ const defaultImages = [
     "https://1.bp.blogspot.com/-jGzEyxRo5lA/Xu-gD2pjeCI/AAAAAAAAU90/oXBIHt6sXKc0vQp0_3CIxRzxTU3GpLMKwCK4BGAsYHg/w976-h549/DESKTOP-BACKGROUND-HEROSCREEN.CC-UHD-16-9-ASPECT.png",
     "https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8MTYlM0E5fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
     "https://images.wallpaperscraft.com/image/code_lines_programming_130775_3840x2160.jpg",
-	"https://media.discordapp.net/attachments/727356806552092675/858712644520509460/forest_mountains_sunset_cool_weather_minimalism.jpg",
-	"https://eskipaper.com/images/rainbow-wallpaper-8.jpg",
+    "https://media.discordapp.net/attachments/727356806552092675/858712644520509460/forest_mountains_sunset_cool_weather_minimalism.jpg",
+    "https://eskipaper.com/images/rainbow-wallpaper-8.jpg",
 ];
 
 const defaultWelcomeMessage = (): welcomeMessage => {
@@ -134,7 +134,7 @@ const WelcomeImageContainer = styled(motion.div)`
     overflow: hidden;
     display: flex;
     gap: 2rem;
-	align-items: center;
+    align-items: center;
 `;
 
 const WelcomeImageSettings = styled.div`
@@ -335,7 +335,7 @@ const Welcome = () => {
                                 color="primary"
                                 name="checkedB"
                             />{" "}
-                            Welcome Image
+                            <span className="premium">Welcome Image</span>
                         </SectionTitle>
                         <AnimatePresence>
                             {state.hasWelcomeImage && (
@@ -554,7 +554,11 @@ const Welcome = () => {
                                         <SectionTitle>
                                             Background Image
                                         </SectionTitle>
-                                        <Images style={{justifyContent: "flex-start"}}>
+                                        <Images
+                                            style={{
+                                                justifyContent: "flex-start",
+                                            }}
+                                        >
                                             {defaultImages.map((src) => (
                                                 <div
                                                     key={src}
