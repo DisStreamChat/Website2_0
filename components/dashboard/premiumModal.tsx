@@ -7,11 +7,13 @@ import Modal from "../shared/ui-components/Modal";
 
 import { discordContext } from "./Discord/discordContext";
 import { ServerModal } from "./Discord/styles";
+import ClearIcon from "@material-ui/icons/Clear";
 
 const PremiumModalBody = styled(ServerModal)`
     height: 50vh;
     display: flex;
     padding: 0;
+    position: relative;
 `;
 
 const PremiumModalSection = styled.div`
@@ -65,6 +67,13 @@ const PremiumButtons = styled.div`
     justify-content: space-between;
 `;
 
+const CloseButton = styled(EmptyButton)`
+    position: absolute;
+    top: .25rem;
+    right: .25rem;
+	opacity: .75;
+`;
+
 export const PremiumModal = () => {
     const { premiumModalOpen, setPremiumModalOpen } =
         useContext(discordContext);
@@ -75,6 +84,9 @@ export const PremiumModal = () => {
             onClose={() => setPremiumModalOpen(false)}
         >
             <PremiumModalBody>
+                <CloseButton onClick={() => setPremiumModalOpen(false)}>
+                    <ClearIcon />
+                </CloseButton>
                 <PremiumModalLeft>
                     <img src="/logo.png"></img>
                 </PremiumModalLeft>
@@ -89,10 +101,7 @@ export const PremiumModal = () => {
                             <li>Many affordable options</li>
                             <li>Fully refundable for 7 days</li>
                             <li>Transferable to other servers</li>
-                            <li>
-                                Many features to bring the best out of your
-                                server
-                            </li>
+                            <li>Plenty unique features</li>
                         </PremiumList>
                         <PremiumButtons>
                             <Link href="/premium">
@@ -102,7 +111,11 @@ export const PremiumModal = () => {
                                     </OrangeButton>
                                 </a>
                             </Link>
-                            <EmptyButton>Not now</EmptyButton>
+                            <EmptyButton
+                                onClick={() => setPremiumModalOpen(false)}
+                            >
+                                Not now
+                            </EmptyButton>
                         </PremiumButtons>
                     </RightContent>
                 </PremiumModalRight>
