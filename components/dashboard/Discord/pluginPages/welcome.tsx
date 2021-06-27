@@ -63,10 +63,17 @@ interface welcomeMessage {
 
 const defaultImages = [
     null,
-    "https://media.discordapp.net/attachments/727356806552092675/858445996936396810/iaoPLSX_1.png?width=1173&height=670",
-    "https://media.discordapp.net/attachments/727356806552092675/858444072431124531/rBhN5EH_1.jpeg?width=1173&height=670",
-	"https://media.discordapp.net/attachments/727356806552092675/858447499463098408/best-dark-backgrounds_2.jpg",
-	
+    "https://wallpapercave.com/wp/wp3137855.jpg",
+    "https://c4.wallpaperflare.com/wallpaper/237/293/295/3-316-16-9-aspect-ratio-s-sfw-wallpaper-preview.jpg",
+    "https://wallpaperaccess.com/full/1406854.jpg",
+    "https://c4.wallpaperflare.com/wallpaper/769/628/991/3-316-16-9-aspect-ratio-s-sfw-wallpaper-preview.jpg",
+    "https://resi.ze-robot.com/dl/sm/small-memory-by-mikael-gustafsson-1440p-2560%C3%971440.jpg",
+    "https://images.wallpaperscraft.com/image/board_black_line_texture_background_wood_55220_2560x1440.jpg",
+    "https://1.bp.blogspot.com/-jGzEyxRo5lA/Xu-gD2pjeCI/AAAAAAAAU90/oXBIHt6sXKc0vQp0_3CIxRzxTU3GpLMKwCK4BGAsYHg/w976-h549/DESKTOP-BACKGROUND-HEROSCREEN.CC-UHD-16-9-ASPECT.png",
+    "https://images.unsplash.com/photo-1558637845-c8b7ead71a3e?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8MTYlM0E5fGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&w=1000&q=80",
+    "https://images.wallpaperscraft.com/image/code_lines_programming_130775_3840x2160.jpg",
+	"https://media.discordapp.net/attachments/727356806552092675/858712644520509460/forest_mountains_sunset_cool_weather_minimalism.jpg",
+	"https://eskipaper.com/images/rainbow-wallpaper-8.jpg",
 ];
 
 const defaultWelcomeMessage = (): welcomeMessage => {
@@ -144,9 +151,8 @@ const Welcome = () => {
         .collection("DiscordSettings")
         .doc(serverId);
     const [snapshot, loading, error] = useDocumentData(docRef);
-    const { allChannels, emotes, roles, isPremium } = useContext(
-        discordContext
-    );
+    const { allChannels, emotes, roles, isPremium } =
+        useContext(discordContext);
     const [emotePickerOpen, setEmotePickerOpen] = useState(false);
     const [backgroundPickerOpen, setBackgroundPickerOpen] = useState(false);
     const [borderPickerOpen, setBorderPickerOpen] = useState(false);
@@ -340,21 +346,21 @@ const Welcome = () => {
                                     <svg
                                         version="1.1"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        width="700px"
+                                        width="711px"
                                         height="400px"
                                     >
                                         <defs>
                                             <pattern
                                                 id="bgImage"
                                                 patternUnits="userSpaceOnUse"
-                                                width="700"
+                                                width="711"
                                                 height="400"
                                             >
                                                 <image
                                                     href={backgroundImage}
                                                     x="0"
                                                     y="0"
-                                                    width="700"
+                                                    width="711"
                                                     height="400"
                                                 />
                                             </pattern>
@@ -387,12 +393,12 @@ const Welcome = () => {
                                             width="180"
                                             height="180"
                                             style={{
-                                                clipPath: "circle(83%)",
+                                                clipPath: "circle(46%)",
                                                 transform:
                                                     "translate(-90px, -90px)",
                                             }}
                                             clip-path="url(#clipCircle)"
-                                            href="https://cdn.discordapp.com/avatars/193826355266191372/49769d1ba6b5e5da6d9f6e0582afab99.png"
+                                            href="https://preview.redd.it/nx4jf8ry1fy51.gif?format=png8&s=a5d51e9aa6b4776ca94ebe30c9bb7a5aaaa265a6"
                                         ></image>
                                         <text
                                             dominant-baseline="middle"
@@ -561,10 +567,8 @@ const Welcome = () => {
                                                         key={src}
                                                         onClick={() =>
                                                             dispatch({
-                                                                type:
-                                                                    actions.UPDATE,
-                                                                key:
-                                                                    "welcomeImage.backgroundImage",
+                                                                type: actions.UPDATE,
+                                                                key: "welcomeImage.backgroundImage",
                                                                 value: src,
                                                             })
                                                         }
