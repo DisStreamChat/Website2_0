@@ -55,7 +55,7 @@ export const ImageUploadContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: ${props => props.hasImage ? "1" : ".7"};
+    opacity: ${(props) => (props.hasImage ? "1" : ".7")};
     border-width: 2px;
     border-style: dashed;
     border-color: rgb(85, 87, 98);
@@ -89,8 +89,8 @@ const Image = styled.img`
 `;
 
 interface ImageUploadProps {
-	large?: boolean;
-	onChange?: (url: string) => void
+    large?: boolean;
+    onChange?: (url: string) => void;
 }
 
 export const ImageUpload = ({ large, onChange }: ImageUploadProps) => {
@@ -106,10 +106,10 @@ export const ImageUpload = ({ large, onChange }: ImageUploadProps) => {
                 type="file"
                 onChange={(event) => {
                     const file = event.target.files[0];
-					if(!file) return;
-					const fileUrl = URL.createObjectURL(file)
+                    if (!file) return;
+                    const fileUrl = URL.createObjectURL(file);
                     setImage(fileUrl);
-					onChange?.(fileUrl)
+                    onChange?.(fileUrl);
                 }}
             />
             <Container
