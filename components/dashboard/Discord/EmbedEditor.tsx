@@ -1,5 +1,5 @@
 import { MessageEmbedOptions } from "discord.js";
-import React from "react";
+import React, { useContext } from "react";
 import {
     EmbedEditorBody,
     EmbedHalf,
@@ -12,6 +12,13 @@ import { CirclePicker, ChromePicker } from "react-color";
 import { roleColors } from "../../header/rankCardModal";
 import InsertPhotoTwoToneIcon from "@material-ui/icons/InsertPhotoTwoTone";
 import { TextArea, TextInput } from "../../shared/ui-components/TextField";
+import {
+    generalItems,
+    channelAutoComplete,
+    roleAutoComplete,
+    emoteAutoComplete,
+} from "../../../utils/functions/autocomplete";
+import { discordContext } from "./discordContext";
 export interface EmbedOptions extends Omit<MessageEmbedOptions, "color"> {
     color: string;
 }
@@ -57,6 +64,7 @@ interface EmbedEditorProps {
 }
 
 export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
+    const { roles, allChannels, emotes } = useContext(discordContext);
     return (
         <EmbedEditorBody color={value.color}>
             <EmbedHalf>
@@ -108,7 +116,36 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                 <EmbedSection>
                     <EmbedSectionTitle>Message Content</EmbedSectionTitle>
                     <TextArea
-                        trigger={{}}
+                        trigger={{
+                            "{": {
+                                dataProvider: (token) => {
+                                    return generalItems
+                                        .filter((chatter) =>
+                                            chatter.includes(token)
+                                        )
+                                        .map((chatter) => ({
+                                            name: `${chatter}`,
+                                            char: `{${chatter}}`,
+                                        }));
+                                },
+                                component: ({
+                                    selected,
+                                    entity: { name, char },
+                                }) => (
+                                    <div
+                                        className={`text-area-item ${
+                                            selected ? "selected" : ""
+                                        }`}
+                                    >
+                                        {name}
+                                    </div>
+                                ),
+                                output: (item, trigger) => item.char,
+                            },
+                            "#": channelAutoComplete(allChannels),
+                            "@": roleAutoComplete(roles),
+                            ":": emoteAutoComplete(emotes),
+                        }}
                         value={value.description}
                         placeholder="Message Content"
                         type="text"
@@ -140,18 +177,18 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                     <FlexSection>
                         <ImageUpload
                             onChange={(url) => {
-                                if(!onChange) return;
-								const copy = { ...value };
+                                if (!onChange) return;
+                                const copy = { ...value };
                                 copy.footer = {
                                     ...copy.footer,
                                     iconURL: url,
                                     icon_url: url,
                                 };
-								onChange(copy);
+                                onChange(copy);
                             }}
                         />
                         <TextInput
-                            value={value.author.name}
+                            value={value.footer.text}
                             onChange={(event) => {
                                 if (!onChange) return;
                                 const copy = { ...value };

@@ -1,3 +1,5 @@
+import { EmbedOptions } from "../components/dashboard/Discord/EmbedEditor";
+
 export interface role {
 	id: string,
 	name: string,
@@ -36,6 +38,8 @@ export interface command {
 	permittedRoles: string[];
 	roles?: role[];
 	type: string;
+	embedMessage: boolean;
+	embedMessageData: EmbedOptions;
 }
 
 export interface commandMap {
