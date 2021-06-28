@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import InsertPhotoTwoToneIcon from "@material-ui/icons/InsertPhotoTwoTone";
 import { useRef, useState } from "react";
-
+import firebaseClient from "../../../firebase/client";
 interface EmbedEditorBodyProps {
     color: string;
 }
@@ -42,8 +42,8 @@ export const FlexSection = styled.div`
 `;
 
 export const AddFieldSection = styled(FlexSection)`
-	justify-content: space-between;
-`
+    justify-content: space-between;
+`;
 
 export const EmbedSectionTitle = styled.span`
     display: inline-block;
@@ -119,12 +119,17 @@ export const ImageUpload = ({ large, onChange }: ImageUploadProps) => {
             <ImageInput
                 ref={inputRef}
                 type="file"
-                onChange={(event) => {
+                onChange={async (event) => {
                     const file = event.target.files[0];
                     if (!file) return;
                     const fileUrl = URL.createObjectURL(file);
                     setImage(fileUrl);
-                    onChange?.(fileUrl);
+                    const response = await firebaseClient.storage
+                        .ref()
+						.child("author.png")
+                        .put(file);
+					const url = await response.ref.getDownloadURL()
+					onChange?.(url);
                 }}
             />
             <Container

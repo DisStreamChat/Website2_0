@@ -94,7 +94,17 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                 <EmbedSection>
                     <EmbedSectionTitle>Author</EmbedSectionTitle>
                     <FlexSection>
-                        <ImageUpload onChange={(url) => {}} />
+                        <ImageUpload
+                            onChange={(url) => {
+                                if (!onChange) return;
+                                const copy = { ...value };
+                                copy.author.icon_url = url;
+                                copy.author.iconURL = url;
+                                copy.author.proxyIconURL = url;
+                                copy.author.proxy_icon_url = url;
+                                onChange(copy);
+                            }}
+                        />
                         <TextInput
                             value={value.author.name}
                             onChange={(event) => {

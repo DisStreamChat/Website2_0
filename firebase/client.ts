@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/performance";
 import "firebase/functions"
+import "firebase/storage"
 
 const firebaseConfig = {
 	apiKey: "AIzaSyBYf5_N6811jS6vRSeakY4atZnoOJKwfq8",
@@ -20,6 +21,7 @@ class Firebase {
 	db: app.firestore.Firestore;
 	auth: app.auth.Auth;
 	app: typeof app;
+	storage: app.storage.Storage;
 	perf: app.performance.Performance;
 
 	constructor() {
@@ -32,6 +34,7 @@ class Firebase {
 		}
 		this.auth = app.auth();
 		this.db = app.firestore();
+		this.storage = app.storage()
 		this.app = app;
 	}
 
