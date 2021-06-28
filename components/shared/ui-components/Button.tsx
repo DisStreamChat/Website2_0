@@ -1,15 +1,8 @@
-import {
-	createMuiTheme,
-	createStyles,
-	withStyles,
-	makeStyles,
-	Theme,
-	ThemeProvider,
-} from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import { green, purple } from "@material-ui/core/colors";
-import styled from "styled-components";
-import chroma from "chroma-js";
+import chroma from 'chroma-js';
+import styled from 'styled-components';
+
+import Button from '@material-ui/core/Button';
+import { Theme, withStyles } from '@material-ui/core/styles';
 
 export const PaddingButton = withStyles((theme: Theme) => ({
 	root: {
@@ -124,5 +117,9 @@ export const EmptyButton = styled.button`
 	border: none;
 	text-align: left;
 	color: white;
-	
+	display: flex;
+	padding: 0;
+	&:focus {
+		outline: 1px solid #aaa;
+	}
 `

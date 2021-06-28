@@ -1,10 +1,12 @@
-import { MessageEmbedOptions } from "discord.js";
-import React, { useContext } from "react";
+import { EmbedFieldData, MessageEmbedOptions } from "discord.js";
+import React, { useContext, useState } from "react";
 import {
+    AddFieldSection,
     EmbedEditorBody,
     EmbedHalf,
     EmbedSection,
     EmbedSectionTitle,
+    FieldContainer,
     FlexSection,
     ImageUpload,
 } from "./EmbedEditor.style";
@@ -19,6 +21,10 @@ import {
     emoteAutoComplete,
 } from "../../../utils/functions/autocomplete";
 import { discordContext } from "./discordContext";
+import { Switch } from "@material-ui/core";
+import { EmptyButton } from "../../shared/ui-components/Button";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 export interface EmbedOptions extends Omit<MessageEmbedOptions, "color"> {
     color: string;
 }
@@ -29,7 +35,7 @@ export const defaultEmbedGenerator = (description?: string): EmbedOptions => {
         title: null,
         url: null,
         timestamp: 0,
-        fields: [],
+        fields: [{ name: "", value: "", inline: false }],
         files: [],
         description,
         author: {
@@ -65,6 +71,11 @@ interface EmbedEditorProps {
 
 export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
     const { roles, allChannels, emotes } = useContext(discordContext);
+    const [tempField, setTempField] = useState<EmbedFieldData>({
+        name: "",
+        value: "",
+        inline: false,
+    });
     return (
         <EmbedEditorBody color={value.color}>
             <EmbedHalf>
@@ -160,6 +171,140 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                 </EmbedSection>
                 <EmbedSection>
                     <EmbedSectionTitle>Additional fields</EmbedSectionTitle>
+                    <div>
+                        {value.fields.map((field, i) => (
+                            <FieldContainer inline={field.inline}>
+                                <TextInput
+                                    placeholder="Field Name"
+                                    value={field.name}
+                                    onChange={(e) => {
+                                        if (!onChange) return;
+                                        const copy = { ...value };
+                                        copy.fields[i].name = e.target.value;
+                                        onChange(copy);
+                                    }}
+                                />
+                                <TextInput
+                                    placeholder="Field Value"
+                                    value={field.value}
+                                    onChange={(e) => {
+                                        if (!onChange) return;
+                                        const copy = { ...value };
+                                        copy.fields[i].value = e.target.value;
+                                        onChange(copy);
+                                    }}
+                                />
+                                <AddFieldSection>
+                                    <FlexSection>
+                                        <div>inline</div>
+                                        <Switch
+                                            checked={field.inline}
+                                            onChange={(e) => {
+                                                if (!onChange) return;
+                                                const copy = { ...value };
+                                                copy.fields[i].inline =
+                                                    e.target.checked;
+                                                onChange(copy);
+                                            }}
+                                        />
+                                    </FlexSection>
+                                    <FlexSection>
+                                        <EmptyButton
+                                            style={{ color: "#e74c3c" }}
+                                            onClick={() => {
+                                                if (!onChange) return;
+                                                const copy = { ...value };
+                                                copy.fields.splice(i, 1);
+                                                onChange(copy);
+                                            }}
+                                        >
+                                            <ClearIcon />
+                                        </EmptyButton>
+                                    </FlexSection>
+                                </AddFieldSection>
+                            </FieldContainer>
+                        ))}
+                        {tempField && (
+                            <FieldContainer inline={tempField.inline}>
+                                <TextInput
+                                    placeholder="Field Name"
+                                    value={tempField.name}
+                                    onChange={(e) =>
+                                        setTempField((prev) => ({
+                                            ...prev,
+                                            name: e.target.value,
+                                        }))
+                                    }
+                                />
+                                <TextInput
+                                    placeholder="Field Value"
+                                    value={tempField.value}
+                                    onChange={(e) =>
+                                        setTempField((prev) => ({
+                                            ...prev,
+                                            value: e.target.value,
+                                        }))
+                                    }
+                                />
+                                <AddFieldSection>
+                                    <FlexSection>
+                                        <div>inline</div>
+                                        <Switch
+                                            checked={tempField.inline}
+                                            onChange={(e) =>
+                                                setTempField((prev) => ({
+                                                    ...prev,
+                                                    inline: e.target.checked,
+                                                }))
+                                            }
+                                        />
+                                    </FlexSection>
+                                    <FlexSection>
+                                        <EmptyButton
+                                            style={{ color: "#2ecc71" }}
+                                            onClick={() => {
+                                                if (
+                                                    tempField.name.length ===
+                                                        0 ||
+                                                    tempField.value.length === 0
+                                                )
+                                                    return;
+                                                const copy = { ...value };
+                                                copy.fields.push({
+                                                    ...tempField,
+                                                });
+                                                onChange?.(copy);
+                                                setTempField({
+                                                    name: "",
+                                                    value: "",
+                                                    inline: false,
+                                                });
+                                            }}
+                                        >
+                                            <CheckIcon />
+                                        </EmptyButton>
+                                        <EmptyButton
+                                            style={{ color: "#e74c3c" }}
+                                            onClick={() => {
+                                                setTempField({
+                                                    name: "",
+                                                    value: "",
+                                                    inline: false,
+                                                });
+                                                setTempField({
+                                                    name: "",
+                                                    value: "",
+                                                    inline: false,
+                                                });
+                                            }}
+                                        >
+                                            <ClearIcon />
+                                        </EmptyButton>
+                                    </FlexSection>
+                                </AddFieldSection>
+                            </FieldContainer>
+                        )}
+                    </div>
                 </EmbedSection>
                 <EmbedSection>
                     <ImageUpload

@@ -41,6 +41,10 @@ export const FlexSection = styled.div`
     gap: 0.5rem;
 `;
 
+export const AddFieldSection = styled(FlexSection)`
+	justify-content: space-between;
+`
+
 export const EmbedSectionTitle = styled.span`
     display: inline-block;
     margin-bottom: 0.25rem;
@@ -77,6 +81,17 @@ export const LargeImageUploadContainer = styled(ImageUploadContainer)`
     max-width: 185px;
     max-height: 185px;
     border-radius: 0.25rem;
+`;
+
+export const FieldContainer = styled.div`
+    display: ${(props: { inline: boolean }) =>
+        props.inline ? "inline-flex" : "flex"};
+    gap: 0.25rem;
+    flex-direction: column;
+    &:not(:first-child) {
+        margin-left: ${(props: { inline: boolean }) =>
+            props.inline ? ".25rem" : "0"};
+    }
 `;
 
 const ImageInput = styled.input`
