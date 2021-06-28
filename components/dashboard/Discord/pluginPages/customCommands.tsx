@@ -248,7 +248,7 @@ export const CommandModal = ({ defaultValue, ...props }) => {
                                             key: "type",
                                             value: e.target.checked
                                                 ? "embed"
-                                                : "type",
+                                                : "text",
                                         })
                                     }
                                 />
@@ -578,7 +578,7 @@ const CustomCommands = () => {
     }, [snapshot]);
 
     const commands: [string, command][] = Object.entries(localCommands || {})
-        .filter(([key, val]) => val.type === "text")
+        .filter(([key, val]) => ["embed", "text"].includes(val.type))
         .sort();
 
     const changed = !isEqual(snapshot ?? {}, localCommands);
@@ -619,7 +619,7 @@ const CustomCommands = () => {
                         {
                             [state.name]: {
                                 ...state,
-                                type: isRole ? "role" : "text",
+                                type: isRole ? "role" : state.type,
                             },
                         },
                         { merge: true }
