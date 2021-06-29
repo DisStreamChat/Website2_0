@@ -1,30 +1,23 @@
-import { EmbedFieldData, MessageEmbedOptions } from "discord.js";
-import React, { useContext, useState } from "react";
+import { EmbedFieldData, MessageEmbedOptions } from 'discord.js';
+import React, { useContext, useState } from 'react';
+import { CirclePicker } from 'react-color';
+
+import { Switch } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
+import ClearIcon from '@material-ui/icons/Clear';
+
 import {
-    AddFieldSection,
-    EmbedEditorBody,
-    EmbedHalf,
-    EmbedSection,
-    EmbedSectionTitle,
-    FieldContainer,
-    FlexSection,
-    ImageUpload,
-} from "./EmbedEditor.style";
-import { CirclePicker, ChromePicker } from "react-color";
-import { roleColors } from "../../header/rankCardModal";
-import InsertPhotoTwoToneIcon from "@material-ui/icons/InsertPhotoTwoTone";
-import { TextArea, TextInput } from "../../shared/ui-components/TextField";
+    channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete
+} from '../../../utils/functions/autocomplete';
+import { roleColors } from '../../header/rankCardModal';
+import { EmptyButton } from '../../shared/ui-components/Button';
+import { TextArea, TextInput } from '../../shared/ui-components/TextField';
+import { discordContext } from './discordContext';
 import {
-    generalItems,
-    channelAutoComplete,
-    roleAutoComplete,
-    emoteAutoComplete,
-} from "../../../utils/functions/autocomplete";
-import { discordContext } from "./discordContext";
-import { Switch } from "@material-ui/core";
-import { EmptyButton } from "../../shared/ui-components/Button";
-import CheckIcon from "@material-ui/icons/Check";
-import ClearIcon from "@material-ui/icons/Clear";
+    AddFieldSection, EmbedEditorBody, EmbedHalf, EmbedSection, EmbedSectionTitle, FieldContainer,
+    FlexSection, ImageUpload
+} from './EmbedEditor.style';
+
 export interface EmbedOptions extends Omit<MessageEmbedOptions, "color"> {
     color: string;
 }
