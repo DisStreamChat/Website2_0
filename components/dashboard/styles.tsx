@@ -7,7 +7,6 @@ export const DashboardContainer = styled(Main)`
 	display: flex;
 	justify-content: center;
 	min-height: calc(100vh - 80px);
-	padding-top: 2rem;
 	@media screen and (max-width: 1024px) {
 		justify-content: flex-start;
 		flex-direction: column;
@@ -57,23 +56,16 @@ export const SideBarItem = styled(motion.div)`
 `;
 
 export const ContentArea = styled.div`
-	--width: 80%;
+	--width: 100%;
 	max-width: var(--width);
 	min-width: var(--width);
-	/* max-width: 80%; */
 	display: flex;
 	flex-direction: column;
 	white-space: pre-wrap;
-	@media screen and (max-width: 1024px) {
-		min-width: 80%;
-	}
 	@media screen and (max-width: 425px) {
 		${H1} {
 			font-size: 1.75rem;
 		}
-	}
-	@media screen and (max-width: 320px) {
-		min-width: 90%;
 	}
 	hr {
 		width: 100%;

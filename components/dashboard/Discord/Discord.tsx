@@ -20,8 +20,6 @@ const Description = styled.p`
 	opacity: 0.8;
 `;
 
-const ServerArea = styled.div``;
-
 const Discord = ({ session }: dashboardProps) => {
 	const [refreshed, setRefreshed] = useState(false);
 	const [servers, setServers] = useState(null);
@@ -39,7 +37,6 @@ const Discord = ({ session }: dashboardProps) => {
 		if (localServers) {
 			setServers(JSON.parse(localServers));
 		}
-		//test 
 		(async () => {
 			const getServers = firebaseClient.app.functions().httpsCallable("getServers");
 			const data = await getServers({
@@ -59,15 +56,6 @@ const Discord = ({ session }: dashboardProps) => {
 			setServers(sortedServers);
 			localStorage.setItem(`servers - ${user.id ?? user.uid}`, JSON.stringify(sortedServers));
 		})();
-
-		// adminServers ??
-		// guilds.filter(server => {
-		// 	return (
-		// 		server.permissions.includes("MANAGE_GUILD") ||
-		// 		server.owner ||
-		// 		server.permissions.includes("ADMINISTRATOR")
-		// 		);
-		// 	});
 	}, [adminServers, guilds]);
 
 	const server = servers?.find(server => server.id === serverId);
@@ -115,7 +103,7 @@ const Discord = ({ session }: dashboardProps) => {
 					<ServerSelect servers={servers} />
 				</>
 			) : (
-				server && <Server server={server} />
+				server && <Server server={server} servers={servers} />
 			)}
 		</>
 	);

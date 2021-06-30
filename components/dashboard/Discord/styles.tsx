@@ -47,8 +47,9 @@ export const ServerItemBody = styled.div`
 
 export const PluginBody = styled.div`
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+	min-width: 80%;
 	gap: 25px;
+	grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
 	-webkit-box-pack: center;
 	justify-content: center;
 `;
@@ -56,20 +57,24 @@ export const PluginBody = styled.div`
 export const ServerHeader = styled.div`
 	display: flex;
 	align-items: center;
-	margin-bottom: 1rem;
-	padding-bottom: 1rem;
-	justify-content: space-between;
-	h1 {
-		font-size: 1.75rem;
-		font-weight: bold;
-	}
-	border-bottom: 1px solid grey;
+	flex-direction: column;
+	position: sticky;
+	top: 80px;
+	background: var(--background-dark-gray);
+	flex: .25;
+	padding: 1rem;
+	align-self: flex-start;
+	height: calc(100vh - 80px);
 `;
 
 export const ServerHeaderItem = styled.div`
 	display: flex;
 	align-items: center;
 	--gap: 1rem;
+	&.column {
+		flex-direction: column;
+		align-items: start;
+	}
 	button {
 		white-space: nowrap;
 	}

@@ -1,11 +1,11 @@
 import Select from "react-select";
 import { colorStyles } from "../../../utils/constants";
 
-const StyledSelect = props => {
+const StyledSelect = (props) => {
 	return (
 		<Select
 			{...props}
-			styles={colorStyles}
+			styles={colorStyles(props.width || "80%")}
 		/>
 	);
 };

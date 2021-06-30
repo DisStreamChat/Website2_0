@@ -16,8 +16,8 @@ export const DEFAULT_COLORS = {
 	HighlightedMessageColor: "#6e022e",
 };
 
-export const colorStyles = {
-	container: styles => ({ ...styles, width: "80%", minHeight: 50, color: "white" }),
+export const colorStyles = (width="80%") => ({
+	container: styles => ({ ...styles, width, minHeight: 50, color: "white" }),
 	control: (styles, { isDisabled }) => ({
 		...styles,
 		backgroundColor: isDisabled ? "black" : "#17181b",
@@ -61,7 +61,7 @@ export const colorStyles = {
 		};
 	},
 	singleValue: styles => ({ ...styles, color: "white" }),
-};
+});
 
 // export const redirect_uri = process.env.NODE_ENV === "production" ? "https://www.disstreamchat.com/oauth" : "http://localhost:3000/oauth" 
 export const redirect_uri = "http://localhost:3000/oauth" 
