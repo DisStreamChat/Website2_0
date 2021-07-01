@@ -64,7 +64,7 @@ const PluginListItem = styled.a`
     display: inline-flex;
     align-items: center;
     color: ${(props: any) => (props.disabled ? "grey" : "")};
-	cursor: ${(props: any) => props.disabled ? "not-allowed" : "pointer"};
+    cursor: ${(props: any) => (props.disabled ? "not-allowed" : "pointer")};
     &:hover {
         text-decoration: ${(props: any) =>
             !props.disabled ? "underline" : "none"};
@@ -216,34 +216,59 @@ const Server = ({ server, servers }) => {
                     <ServerHeaderItem className="column">
                         {plugins.map((plugin) => (
                             <div>
-                                <Link
-                                    href={
-                                        activePlugins[plugin.id] &&
-                                        !plugin.comingSoon
-                                            ? `/dashboard/discord/${serverId}/${plugin.id}`
-                                            : serverId
-                                    }
-                                    passHref
-                                >
-                                    <PluginListItem
-										// @ts-ignore
-                                        disabled={
-                                            !activePlugins[plugin.id] ||
-                                            plugin.comingSoon
+                                {!activePlugins[plugin.id] ||
+                                plugin.comingSoon ? (
+                                    <>
+                                        <PluginListItem
+                                            href={null}
+                                            // @ts-ignore
+                                            disabled={
+                                                !activePlugins[plugin.id] ||
+                                                plugin.comingSoon
+                                            }
+                                        >
+                                            <img
+                                                src={`/${plugin.image}`}
+                                                width="25"
+                                                height="25"
+                                                style={{
+                                                    display: "inline-block",
+                                                    marginRight: "1ch",
+                                                }}
+                                            ></img>
+                                            {plugin.title}
+                                        </PluginListItem>
+                                    </>
+                                ) : (
+                                    <Link
+                                        href={
+                                            activePlugins[plugin.id] &&
+                                            !plugin.comingSoon
+                                                ? `/dashboard/discord/${serverId}/${plugin.id}`
+                                                : serverId
                                         }
+                                        passHref
                                     >
-                                        <img
-                                            src={`/${plugin.image}`}
-                                            width="25"
-                                            height="25"
-                                            style={{
-                                                display: "inline-block",
-                                                marginRight: "1ch",
-                                            }}
-                                        ></img>
-                                        {plugin.id}
-                                    </PluginListItem>
-                                </Link>
+                                        <PluginListItem
+                                            // @ts-ignore
+                                            disabled={
+                                                !activePlugins[plugin.id] ||
+                                                plugin.comingSoon
+                                            }
+                                        >
+                                            <img
+                                                src={`/${plugin.image}`}
+                                                width="25"
+                                                height="25"
+                                                style={{
+                                                    display: "inline-block",
+                                                    marginRight: "1ch",
+                                                }}
+                                            ></img>
+                                            {plugin.title}
+                                        </PluginListItem>
+                                    </Link>
+                                )}
                             </div>
                         ))}
                     </ServerHeaderItem>
