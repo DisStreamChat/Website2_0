@@ -35,7 +35,7 @@ import {
     EmotePickerOpener,
 } from "../../../shared/ui-components/emotePicker";
 import SaveBar from "../../../shared/ui-components/SaveBar";
-import Select from "../../../shared/ui-components/Select";
+import Select from "../../../shared/styles/styled-select";
 import { TextArea } from "../../../shared/ui-components/TextField";
 import { ChannelItem } from "../ChannelItem";
 import { discordContext } from "../discordContext";
@@ -216,6 +216,7 @@ const Welcome = () => {
                 <WelcomeArea className="top">
                     <SectionTitle>Welcome Channel</SectionTitle>
                     <Select
+                        width="80%"
                         placeholder="Select a channel"
                         onChange={(value) => {
                             const channel = parseSelectValue(value);
