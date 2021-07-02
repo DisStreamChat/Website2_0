@@ -1,22 +1,31 @@
-import { EmbedFieldData, MessageEmbedOptions } from 'discord.js';
-import React, { useContext, useState } from 'react';
-import { CirclePicker } from 'react-color';
+import { EmbedFieldData, MessageEmbedOptions } from "discord.js";
+import React, { useContext, useState } from "react";
+import { CirclePicker } from "react-color";
 
-import { Switch } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
-import ClearIcon from '@material-ui/icons/Clear';
+import { Switch } from "@material-ui/core";
+import CheckIcon from "@material-ui/icons/Check";
+import ClearIcon from "@material-ui/icons/Clear";
 
 import {
-    channelAutoComplete, emoteAutoComplete, generalItems, roleAutoComplete
-} from '../../../utils/functions/autocomplete';
-import { roleColors } from '../../header/rankCardModal';
-import { EmptyButton } from '../../shared/ui-components/Button';
-import { TextArea, TextInput } from '../../shared/ui-components/TextField';
-import { discordContext } from './discordContext';
+    channelAutoComplete,
+    emoteAutoComplete,
+    generalItems,
+    roleAutoComplete,
+} from "../../../utils/functions/autocomplete";
+import { roleColors } from "../../header/rankCardModal";
+import { EmptyButton } from "../../shared/ui-components/Button";
+import { TextArea, TextInput } from "../../shared/ui-components/TextField";
+import { discordContext } from "./discordContext";
 import {
-    AddFieldSection, EmbedEditorBody, EmbedHalf, EmbedSection, EmbedSectionTitle, FieldContainer,
-    FlexSection, ImageUpload
-} from './EmbedEditor.style';
+    AddFieldSection,
+    EmbedEditorBody,
+    EmbedHalf,
+    EmbedSection,
+    EmbedSectionTitle,
+    FieldContainer,
+    FlexSection,
+    ImageUpload,
+} from "./EmbedEditor.style";
 
 export interface EmbedOptions extends Omit<MessageEmbedOptions, "color"> {
     color: string;
@@ -28,7 +37,7 @@ export const defaultEmbedGenerator = (description?: string): EmbedOptions => {
         title: null,
         url: null,
         timestamp: 0,
-        fields: [{ name: "", value: "", inline: false }],
+        fields: [],
         files: [],
         description,
         author: {
@@ -88,6 +97,7 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                     <EmbedSectionTitle>Author</EmbedSectionTitle>
                     <FlexSection>
                         <ImageUpload
+                            image={value.author.icon_url}
                             onChange={(url) => {
                                 if (!onChange) return;
                                 const copy = { ...value };
@@ -311,6 +321,7 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                 </EmbedSection>
                 <EmbedSection>
                     <ImageUpload
+                        image={value.image.url}
                         large
                         onChange={(url) => {
                             if (!onChange) return;
@@ -324,6 +335,7 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
                     <EmbedSectionTitle>Footer</EmbedSectionTitle>
                     <FlexSection>
                         <ImageUpload
+                            image={value.footer.icon_url}
                             onChange={(url) => {
                                 if (!onChange) return;
                                 const copy = { ...value };
@@ -352,6 +364,7 @@ export const EmbedEditor = ({ value, onChange }: EmbedEditorProps) => {
             </EmbedHalf>
             <EmbedHalf>
                 <ImageUpload
+                    image={value.thumbnail.url}
                     large
                     onChange={(url) => {
                         if (!onChange) return;

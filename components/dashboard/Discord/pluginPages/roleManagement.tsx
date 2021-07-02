@@ -52,6 +52,7 @@ import { gapFunction } from "../../../shared/styles";
 import Twemoji from "react-twemoji";
 import { uid } from "uid";
 import { REACTION_ROLE_ACTION_TYPES } from "../../../../utils/constants";
+import { defaultEmbedGenerator, EmbedEditor } from "../EmbedEditor";
 
 interface settingsBase {
     open: boolean;
@@ -163,25 +164,6 @@ const actions = {
     DELETE: "delete",
 };
 
-function deletePropertyPath(obj, path) {
-    if (!obj || !path) {
-        return;
-    }
-
-    if (typeof path === "string") {
-        path = path.split(".");
-    }
-
-    for (var i = 0; i < path.length - 1; i++) {
-        obj = obj[path[i]];
-
-        if (typeof obj === "undefined") {
-            return;
-        }
-    }
-
-    delete obj[path.pop()];
-}
 
 const settingsReducer = (state: any, action: Action) => {
     switch (action.type) {
@@ -214,7 +196,6 @@ const DescriptionItem = styled.li`
     gap: 2rem;
     /* max-width: 30%; */
     align-items: center;
-
 `;
 
 interface ReactionRoleModel {
@@ -230,6 +211,10 @@ interface ReactionRoleModel {
 
 const reactionFactory = () => ({
     message: "",
+    customMessage: false,
+    embedMessage: false,
+    customMessageId: "",
+    embedMessageData: defaultEmbedGenerator(),
     channel: null,
     reactions: {},
 });
@@ -265,8 +250,8 @@ const Error = styled.div`
 
 const ReactionRoleModal = ({ defaultValue, ...props }) => {
     const router = useRouter();
-    const [, serverId, pluginName] = router.query.type as string[];
-    const { serverSettings, roles, allChannels, emotes } =
+    const [, serverId] = router.query.type as string[];
+    const { roles, allChannels, emotes, isPremium, setPremiumModalOpen } =
         useContext(discordContext);
     const [emotePickerVisible, setEmotePickerVisible] = useState(false);
     const [creatingReaction, setCreatingReaction] = useState(null);
@@ -282,7 +267,6 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
     );
 
     useEffect(() => {
-        console.log(defaultValue);
         if (defaultValue) {
             dispatch({ type: actions.SET, value: cloneDeep(defaultValue) });
             setSavedDefault(cloneDeep(defaultValue));
@@ -290,14 +274,14 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
             dispatch({ type: actions.SET, value: reactionFactory() });
             setSavedDefault(null);
         }
-    }, [defaultValue]);
+    }, [defaultValue, props.open]);
 
     const create = async () => {
         const errors: any = {};
         if (!state.channel) {
             errors.channel = "Required";
         }
-        if (!state.message?.length) {
+        if (!state.message?.length && (!state.embedMessage && !state.customMessage)) {
             errors.message = "Required";
         }
         if (isEmpty(state.reactions)) {
@@ -399,59 +383,140 @@ const ReactionRoleModal = ({ defaultValue, ...props }) => {
                     )}
                     <hr></hr>
                     <SectionTitle>Message Content</SectionTitle>
-                    <EmoteParent>
-                        <EmotePickerOpener
-                            onClick={() => setEmotePickerVisible(true)}
-                        >
-                            <img
-                                width="24"
-                                height="24"
-                                src="/smile.svg"
-                                alt=""
-                            />
-                        </EmotePickerOpener>
-                        <EmotePicker
-                            onClickAway={() => {
-                                setEmotePickerVisible(false);
-                            }}
-                            visible={emotePickerVisible}
-                            emotes={emotes}
-                            onEmoteSelect={(emote) => {
-                                const emoteText = emote.imageUrl
-                                    ? `<${emote.colons}${emote.imageUrl
-                                          .split("/")
-                                          .slice(-1)[0]
-                                          .slice(0, -4)}>`
-                                    : emote.colons;
+                    <div>
+                        <Switch
+                            color="primary"
+                            onChange={(e) => {
+								if(!isPremium){
+									return setPremiumModalOpen(true);
+								}
                                 dispatch({
                                     type: actions.UPDATE,
-                                    value: (prev) =>
-                                        `${prev ?? ""} ${emoteText}`,
-                                    key: "message",
+                                    key: "embedMessage",
+                                    value: e.target.checked,
                                 });
-                                setEmotePickerVisible(false);
+                                dispatch({
+                                    type: actions.UPDATE,
+                                    key: "customMessage",
+                                    value: e.target.checked
+                                        ? false
+                                        : state.customMessage,
+                                });
+                            }}
+                            checked={state.embedMessage}
+                        ></Switch>
+                        <span className="premium">Embed Message</span>
+                    </div>
+                    <div>
+                        <Switch
+                            color="primary"
+                            onChange={(e) => {
+								if(!isPremium){
+									return setPremiumModalOpen(true);
+								}
+                                dispatch({
+                                    type: actions.UPDATE,
+                                    key: "customMessage",
+                                    value: e.target.checked,
+                                });
+                                dispatch({
+                                    type: actions.UPDATE,
+                                    key: "embedMessage",
+                                    value: e.target.checked
+                                        ? false
+                                        : state.embedMessage,
+                                });
+                            }}
+                            checked={state.customMessage}
+                        ></Switch>
+                        <span className="premium">Custom Message</span>
+                    </div>
+                    {!state.embedMessage && !state.customMessage && (
+                        <EmoteParent>
+                            <EmotePickerOpener
+                                onClick={() => setEmotePickerVisible(true)}
+                            >
+                                <img
+                                    width="24"
+                                    height="24"
+                                    src="/smile.svg"
+                                    alt=""
+                                />
+                            </EmotePickerOpener>
+                            <EmotePicker
+                                onClickAway={() => {
+                                    setEmotePickerVisible(false);
+                                }}
+                                visible={emotePickerVisible}
+                                emotes={emotes}
+                                onEmoteSelect={(emote) => {
+                                    const emoteText = emote.imageUrl
+                                        ? `<${emote.colons}${emote.imageUrl
+                                              .split("/")
+                                              .slice(-1)[0]
+                                              .slice(0, -4)}>`
+                                        : emote.colons;
+                                    dispatch({
+                                        type: actions.UPDATE,
+                                        value: (prev) =>
+                                            `${prev ?? ""} ${emoteText}`,
+                                        key: "message",
+                                    });
+                                    setEmotePickerVisible(false);
+                                }}
+                            />
+                            <TextArea
+                                value={state.message}
+                                onChange={(e) => {
+                                    dispatch({
+                                        type: actions.UPDATE,
+                                        value: e.target.value,
+                                        key: "message",
+                                    });
+                                    setFormErrors((prev) => ({
+                                        ...prev,
+                                        message: null,
+                                    }));
+                                }}
+                                trigger={{
+                                    "#": channelAutoComplete(allChannels),
+                                    "@": roleAutoComplete(roles),
+                                    ":": emoteAutoComplete(emotes),
+                                }}
+                            ></TextArea>
+                        </EmoteParent>
+                    )}
+                    {state.embedMessage && (
+                        <EmbedEditor
+                            value={state.embedMessageData}
+                            onChange={(data) => {
+                                dispatch({
+                                    type: actions.UPDATE,
+                                    value: data,
+                                    key: "embedMessageData",
+                                });
                             }}
                         />
-                        <TextArea
-                            value={state.message}
-                            onChange={(e) => {
-                                dispatch({
-                                    type: actions.UPDATE,
-                                    value: e.target.value,
-                                    key: "message",
-                                });
-                                setFormErrors((prev) => ({
-                                    ...prev,
-                                    message: null,
-                                }));
-                            }}
-                            trigger={{
-                                "#": channelAutoComplete(allChannels),
-                                "@": roleAutoComplete(roles),
-                                ":": emoteAutoComplete(emotes),
-                            }}
-                        ></TextArea>
-                    </EmoteParent>
+                    )}
+                    {state.customMessage && (
+                        <>
+                            <SectionTitle>
+                                custom message Id (must be in the selected
+                                channel)
+                            </SectionTitle>
+                            <TextInput
+                                value={state.customMessageId}
+                                placeholder="858412371939426325"
+                                onChange={(e) =>
+                                    dispatch({
+                                        type: actions.UPDATE,
+                                        value: e.target.value,
+                                        key: "customMessageId",
+                                    })
+                                }
+                            />
+                        </>
+                    )}
                     {formErrors.message === "Required" && (
                         <Error>Message is required</Error>
                     )}
@@ -795,6 +860,8 @@ const RoleManagement = () => {
                                     message: state.message,
                                     channel: state.channel.id,
                                     messageId: editingReaction?.id,
+									embedMessageData: state.embedMessage ? state.embedMessageData : null,
+									customMessageId: state.customMessageId
                                 }),
                                 headers: {
                                     "content-type": "application/json",
@@ -832,8 +899,9 @@ const RoleManagement = () => {
                         Messages -{" "}
                         {Object.entries(reactions.messages || {})?.length || 0}
                     </H2>
-                    {Object.entries(reactions.messages || {}).sort().map(
-                        ([key, value]: [string, any]) => (
+                    {Object.entries(reactions.messages || {})
+                        .sort()
+                        .map(([key, value]: [string, any]) => (
                             <ListItem
                                 edit={() =>
                                     editReactionRole({ id: key, ...value })
@@ -896,8 +964,7 @@ const RoleManagement = () => {
                                     )}
                                 </div>
                             </ListItem>
-                        )
-                    )}
+                        ))}
                 </span>
             </RoleSection>
             <RoleSection

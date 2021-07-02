@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import InsertPhotoTwoToneIcon from "@material-ui/icons/InsertPhotoTwoTone";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import firebaseClient from "../../../firebase/client";
+import { uid } from "uid";
 interface EmbedEditorBodyProps {
     color: string;
 }
@@ -106,13 +107,18 @@ const Image = styled.img`
 interface ImageUploadProps {
     large?: boolean;
     onChange?: (url: string) => void;
+	image: string
 }
 
-export const ImageUpload = ({ large, onChange }: ImageUploadProps) => {
-    const [image, setImage] = useState(null);
+export const ImageUpload = ({ large, onChange, image: imageUrl }: ImageUploadProps) => {
+    const [image, setImage] = useState(imageUrl);
     const inputRef = useRef<HTMLInputElement>();
 
     const Container = !large ? ImageUploadContainer : LargeImageUploadContainer;
+
+	useEffect(() => {
+		setImage(imageUrl);
+	}, [imageUrl])
 
     return (
         <>
@@ -126,14 +132,14 @@ export const ImageUpload = ({ large, onChange }: ImageUploadProps) => {
                     setImage(fileUrl);
                     const response = await firebaseClient.storage
                         .ref()
-						.child("author.png")
+						.child(`${uid()}.png`)
                         .put(file);
 					const url = await response.ref.getDownloadURL()
 					onChange?.(url);
                 }}
             />
             <Container
-                hasImage={image}
+                hasImage={!!image}
                 onClick={() => {
                     inputRef.current.click();
                 }}
