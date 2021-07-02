@@ -275,6 +275,11 @@ const AuditList = styled.ul`
     gap: 0.5rem;
 `;
 
+const LoggingButtons = styled.div`
+    display: flex;
+    gap: 0.5rem;
+`;
+
 const Logging = () => {
     const router = useRouter();
 
@@ -293,7 +298,10 @@ const Logging = () => {
         defaultCollectionRef.doc("loggingEvents")
     );
     const [auditSnapshot] = useCollectionData(
-        collectionRef.doc(serverId).collection("audit").orderBy("createdAt", "asc")
+        collectionRef
+            .doc(serverId)
+            .collection("audit")
+            .orderBy("createdAt", "asc")
     );
 
     useEffect(() => {
@@ -391,18 +399,18 @@ const Logging = () => {
         setModalOpen(true);
     };
 
-	const exportLogs = () => {
-		const jsonString = JSON.stringify(auditSnapshot, null, 4);
-		const blob = new Blob([jsonString], {type: "application/json"})
-		const contentType = "data:application/json;charset=utf-8,"
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement("a")
-		link.setAttribute("download", "audit.json")
-		link.setAttribute("href", url)
-		document.body.appendChild(link);
-		link.click();
-		link.remove();
-	}
+    const exportLogs = () => {
+        const jsonString = JSON.stringify(auditSnapshot, null, 4);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const contentType = "data:application/json;charset=utf-8,";
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("download", "audit.json");
+        link.setAttribute("href", url);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+    };
 
     return (
         <div>
@@ -421,7 +429,7 @@ const Logging = () => {
                     </h4>
                 </span>
                 {!audit ? (
-                    <span>
+                    <LoggingButtons>
                         <BlueButton onClick={createCommand}>
                             Add log action
                         </BlueButton>
@@ -430,12 +438,14 @@ const Logging = () => {
                                 <BlueButton>Audit Log</BlueButton>
                             </a>
                         </Link>
-                    </span>
-                ) : <span>
-						<BlueButton onClick={exportLogs}>
-							Export Logs
-						</BlueButton>
-					</span>}
+                    </LoggingButtons>
+                ) : (
+                    <LoggingButtons>
+                        <BlueButton onClick={exportLogs}>
+                            Export Logs
+                        </BlueButton>
+                    </LoggingButtons>
+                )}
             </CommandsHeader>
             {!audit ? (
                 <span>
@@ -468,7 +478,9 @@ const Logging = () => {
                             <AuditRecord>
                                 <SectionTitle>{log.type}</SectionTitle>
                                 <SectionTitle>Details</SectionTitle>
-                                <div>{JSON.stringify(log.details, null, 4)}</div>
+                                <div>
+                                    {JSON.stringify(log.details, null, 4)}
+                                </div>
                                 <SectionTitle style={{ margin: "0" }}>
                                     {log.time}
                                 </SectionTitle>
