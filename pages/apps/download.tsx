@@ -12,7 +12,7 @@ const DownloadMain = styled(Main)`
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-	min-height: calc(100vh - 125px);
+	min-height: calc(100vh - 80px);
 `;
 
 const DownloadItem = styled.div`

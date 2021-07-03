@@ -38,7 +38,7 @@ const LeaderBoardMain = styled.main`
 	padding: 0 1rem;
 	display: flex;
 	flex-direction: column;
-	min-height: calc(100vh - 125px);
+	min-height: calc(100vh - 80px);
 	@media screen and (max-width: 350px){
 		padding-left: 0px;
 	}

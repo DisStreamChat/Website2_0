@@ -6,6 +6,8 @@ const footer = styled.footer`
 	flex-direction: column;
 	background: var(--background-dark-gray);
 	color: white;
+	position: relative; 
+	top: 80px;
 	/* margin-top: 3rem; */
 	a:hover,
 	a:focus {
