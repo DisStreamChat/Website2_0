@@ -862,10 +862,11 @@ const RoleManagement = () => {
 						}))}
 					onChange={opt => {
 						const value = parseSelectValue(opt, true);
+						console.log(value)
 						dispatch({
 							type: actions.UPDATE,
-							key: "join?.roles",
-							value: prev => [...prev, value],
+							key: "join.roles",
+							value: prev => [...(prev || []), value],
 						});
 					}}
 					value={join?.roles?.map(role => ({
