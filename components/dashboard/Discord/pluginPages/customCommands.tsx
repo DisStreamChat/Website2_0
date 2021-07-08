@@ -414,8 +414,9 @@ export const CommandModal = ({ defaultValue, ...props }) => {
 					</SectionSubtitle>
 					<Select
 						value={state.allowedChannels.map(id => {
-							const role = roles.find(role => role.id === id);
+							const role = allChannels.find(role => role.id === id);
 							if (!role) return { value: "", label: "" };
+
 							return {
 								label: (
 									<ChannelOption
