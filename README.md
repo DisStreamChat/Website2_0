@@ -1,34 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# DisStreamChat Website
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)   
+Hello and welcome to the GitHub repo for The DisStreamChat website! This houses all of the content at [disstreamchat.com](https://www.disstreamchat.com). 
 
-## Getting Started
+# Tech/framework used
+- React
+  - The whole site is written is react. It is a single page web page web app with react router. It is written with functional components and react hooks
+- Firebase
 
-First, run the development server:
+---
+## Support
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+This project is a part of DisStreamChat. Whether you use this project, another DisStreamChat project, have learned something from it, or just like it, please consider supporting it by becoming a patreon, so we can dedicate more time on more projects like this 😀.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<a href="https://www.patreon.com/disstreamchat?fan_landing=true" target="_blank"><img src="https://cdn.discordapp.com/attachments/727356806552092675/754198973027319868/Digital-Patreon-Wordmark_FieryCoral.png" alt="Patreon" width=200 style="height: auto !important;width: 200px !important;" ></a>
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+# Installation
+The DisStreamChat website is built with react so it is quite easy to run a development server with webpack   
+These are the steps you will need to take to install it
+1. Clone The Repo   
+    you can see the cloning/download options if you click the button on the main page labelled `Clone or Download` or you can clone it directly with `git clone https://github.com/DisStreamChat/Website.git`
+2. cd into the Repo Directory   
+    cd into the directory with `cd Website`. If you named the repo something else when you cloned it you will need to `cd` into the folder with that name
+3. Install npm dependencies   
+    You can install npm dependencies with `npm i` or `npm install`
+4. Add your environment variables   
+    You will need to create a `.env` file for your environment variables
+    the environment variables you will need are shown in the `.env.sample` file in the repo. 
+5. Start up a development server   
+    Start it up with `npm start`
+    
+    
+    
+# Contributing
+Contributions to this repository encouraged!
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Here are the type of contributions we are looking for:
+ - bug-fixes
+ - making the code easier to read (including code comments!)
+ - website design improvements
+ - adding any missing content
+ - responsiveness improvements
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+To make a contribution, just fork this repository and create a pull request.
 
-## Learn More
+If you are just editing a single file, you may click the pencil when viewing the file to edit in the browser.
 
-To learn more about Next.js, take a look at the following resources:
+# Feedback and help
+If you want to give feedback or need help with a problem feel free to make an issue here on github or join our [discord](http://discord.disstreamchat.com)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# More on Contributing and Installation
+The site welcomes contributions from the community in a variety of ways! For more information see [CONTRIBUTING.md](CONTRIBUTING.md) and [INSTALLATION.md](INSTALLATION.md). Suggestions are also welcome in the form of an issue.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+# Getting help
+If you need help either with an issue using the site or making a contribution feel free to make an issue and we will get to it as soon as we can. You can also get help and give feedback on our [discord](http://discord.disstreamchat.com)
