@@ -1,24 +1,20 @@
-import { dashboardProps } from "./types";
-import styled from "styled-components";
-import React, { useContext, useEffect, useMemo, useReducer, useState } from "react";
-import { H1, H3 } from "../shared/styles/headings";
-import Anchor from "../shared/ui-components/Anchor";
 import {
-	SearchBox,
-	BooleanSetting,
-	ColorSetting,
-	ListSetting,
-	RangeSetting,
-	SelectSetting,
-} from "disstreamchat-utils";
-import { authContext } from "../../auth/authContext";
-import firebaseClient from "../../firebase/client";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { gapFunction } from "../shared/styles";
-import { useRouter } from "next/router";
-import { Action } from "../../utils/types";
-import { isEqual } from "lodash";
-import SaveBar from "../shared/ui-components/SaveBar";
+    BooleanSetting, ColorSetting, ListSetting, RangeSetting, SearchBox, SelectSetting
+} from 'disstreamchat-utils';
+import { isEqual } from 'lodash';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useMemo, useReducer, useState } from 'react';
+import { useDocumentData } from 'react-firebase-hooks/firestore';
+import styled from 'styled-components';
+
+import { authContext } from '../../auth/authContext';
+import firebaseClient from '../../firebase/client';
+import { Action } from '../../utils/types';
+import { gapFunction } from '../shared/styles';
+import { H1, H3 } from '../shared/styles/headings';
+import Anchor from '../shared/ui-components/Anchor';
+import SaveBar from '../shared/ui-components/SaveBar';
+import { dashboardProps } from './types';
 
 const AppContainer = styled.main`
 	display: flex;
@@ -167,10 +163,7 @@ const settingReducer = (state, action: Action) => {
 		case Actions.UPDATE:
 			return {
 				...state,
-				[action.key]:
-					typeof action.value === "function"
-						? action.value(state[action.key])
-						: action.value,
+				[action.key]: typeof action.value === "function" ? action.value(state[action.key]) : action.value,
 			};
 		case Actions.SET:
 			return action.value;
@@ -188,14 +181,12 @@ const App = (props: AppProps) => {
 	const { user } = useContext(authContext);
 	const [openItem, setOpenItem] = useState("");
 
-	const [data, loading, error] = useDocumentData(
-		firebaseClient.db.collection("Streamers").doc(user?.uid)
-	);
+	const [data, loading, error] = useDocumentData(firebaseClient.db.collection("Streamers").doc(user?.uid));
 
-	console.log({ router });
 	const { settings: defaultSettings, categories } = props;
+	console.log(defaultSettings);
 
-	const allSettings: Setting[] = Object.entries(defaultSettings ||{})
+	const allSettings: Setting[] = Object.entries(defaultSettings || {})
 		.map(([key, val]) => ({
 			...val,
 			name: key,
@@ -240,28 +231,19 @@ const App = (props: AppProps) => {
 			<AppHeader>
 				<H1>App Settings</H1>
 				<H3>
-					Adjust the settings of your app. if you don't use the app but want to you can
-					start using it{" "}
+					Adjust the settings of your app. if you don't use the app but want to you can start using it{" "}
 					<Anchor local href="/apps/download" className="ul bld" newTab>
 						here
 					</Anchor>
 				</H3>
 				<hr></hr>
 			</AppHeader>
-			<SearchBox
-				search={search}
-				onChange={val => setSearch(val)}
-				resetSearch={() => setSearch("")}
-			></SearchBox>
+			<SearchBox search={search} onChange={val => setSearch(val)} resetSearch={() => setSearch("")}></SearchBox>
 			<SettingsContainer>
 				<SettingSidebar>
 					{categories?.map(cat => (
 						<CategoryItem key={cat} className={`${cat === category ? "active" : ""}`}>
-							<Anchor
-								local
-								as={`/dashboard/app/${cat.toLowerCase()}`}
-								href={`/dashboard/app/${cat.toLowerCase()}?search=${search}`}
-							>
+							<Anchor local as={`/dashboard/app/${cat.toLowerCase()}`} href={`/dashboard/app/${cat.toLowerCase()}?search=${search}`}>
 								{cat}
 							</Anchor>
 						</CategoryItem>

@@ -1,35 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { createStyles, makeStyles, Theme } from "@material-ui/core";
-import { GreenButton, RedButton } from "../../shared/ui-components/Button";
-import { useQuery } from "react-query";
-import Modal from "../../shared/ui-components/Modal";
-import Backdrop from "@material-ui/core/Backdrop";
-import Zoom from "@material-ui/core/Zoom";
-import Select from "./Select";
-import { TextInput } from "../../shared/ui-components/TextField";
-import { useDiscordContext } from "./discordContext";
-import RoleItem, { RoleOption } from "./RoleItem";
-import { transformObjectToSelectValue, parseSelectValue } from "../../../utils/functions";
-import { isEqual } from "lodash";
-import firebaseClient from "../../../firebase/client";
-import { AnimatePresence } from "framer-motion";
-import {
-	InfoModal,
-	ModalInfo,
-	ModalSubTitle,
-	ModalTitle,
-	SaveSection,
-	SettingsModal,
-} from "./styles";
-import SaveBar from "../../shared/ui-components/SaveBar";
+import { isEqual } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 
-const ServerModals = ({
-	infoModalOpen,
-	setInfoModalOpen,
-	settingsModalOpen,
-	setSettingsModalOpen,
-	serverId,
-}) => {
+
+
+import firebaseClient from '../../../firebase/client';
+import { parseSelectValue, transformObjectToSelectValue } from '../../../utils/functions';
+import Modal from '../../shared/ui-components/Modal';
+import SaveBar from '../../shared/ui-components/SaveBar';
+import { TextInput } from '../../shared/ui-components/TextField';
+import { useDiscordContext } from './discordContext';
+import RoleItem, { RoleOption } from './RoleItem';
+import Select from './Select';
+import { InfoModal, ModalInfo, ModalSubTitle, ModalTitle, SettingsModal } from './styles';
+
+const ServerModals = ({ infoModalOpen, setInfoModalOpen, settingsModalOpen, setSettingsModalOpen, serverId }) => {
 	const [adminRoles, setAdminRoles] = useState([]);
 	const [localPrefix, setLocalPrefix] = useState("");
 	const [localNickname, setLocalNickname] = useState("");
@@ -66,30 +51,22 @@ const ServerModals = ({
 	}, [nickname, prefix, dbAdminRoles]);
 
 	const { data } = useQuery("server-data", () =>
-		fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`
-		).then(res => res.json())
+		fetch(`${process.env.NEXT_PUBLIC_API_URL}/v2/discord/resolveguild?id=${serverId}`)
+			.then(res => res.json())
+			.catch()
 	);
 
 	const mappedRoles = adminRoles.map(role => ({
 		value: transformObjectToSelectValue(role),
-		label: (
-			<RoleItem
-				onClick={id => setAdminRoles(prev => prev.filter(role => role.id !== id))}
-				{...role}
-			></RoleItem>
-		),
+		label: <RoleItem onClick={id => setAdminRoles(prev => prev.filter(role => role.id !== id))} {...role}></RoleItem>,
 	}));
 
-	const mappedDefaultRoles = defaultAdminRoles.map(
-		(role: { color: string; name: string; id: string }) => ({
-			value: transformObjectToSelectValue(role),
-			label: <RoleItem disabled {...role} />,
-		})
-	);
+	const mappedDefaultRoles = defaultAdminRoles.map((role: { color: string; name: string; id: string }) => ({
+		value: transformObjectToSelectValue(role),
+		label: <RoleItem disabled {...role} />,
+	}));
 
-	const changed =
-		localNickname !== nickname || localPrefix !== prefix || !isEqual(adminRoles, dbAdminRoles);
+	const changed = localNickname !== nickname || localPrefix !== prefix || !isEqual(adminRoles, dbAdminRoles);
 
 	return (
 		<>
@@ -97,33 +74,21 @@ const ServerModals = ({
 				<SettingsModal>
 					<div>
 						<ModalTitle>Bot Nickname</ModalTitle>
-						<TextInput
-							placeholder="DisStreamBot"
-							value={localNickname}
-							onChange={e => setLocalNickname(e.target.value)}
-						/>
+						<TextInput placeholder="DisStreamBot" value={localNickname} onChange={e => setLocalNickname(e.target.value)} />
 					</div>
 					<div>
 						<ModalTitle>Command Prefix</ModalTitle>
-						<TextInput
-							value={localPrefix}
-							onChange={e => setLocalPrefix(e.target.value)}
-						/>
+						<TextInput value={localPrefix} onChange={e => setLocalPrefix(e.target.value)} />
 					</div>
 					<div>
 						<ModalTitle>Bot Admins</ModalTitle>
 						<ModalSubTitle>Default Admins</ModalSubTitle>
-						<ModalInfo>
-							These are the roles that have permission to manage your server.
-						</ModalInfo>
+						<ModalInfo>These are the roles that have permission to manage your server.</ModalInfo>
 						{roles && (
 							<Select
 								onChange={value => {
 									const parsedValue = parseSelectValue(value);
-									setAdminRoles(prev => [
-										...prev,
-										roles.find(role => role.id === parsedValue),
-									]);
+									setAdminRoles(prev => [...prev, roles.find(role => role.id === parsedValue)]);
 								}}
 								value={[...mappedDefaultRoles, ...mappedRoles]}
 								options={roles.map(role => ({
