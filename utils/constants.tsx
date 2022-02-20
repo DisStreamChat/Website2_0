@@ -64,4 +64,4 @@ export const colorStyles = {
 };
 
 // export const redirect_uri = process.env.NODE_ENV === "production" ? "https://www.disstreamchat.com/oauth" : "http://localhost:3000/oauth" 
-export const redirect_uri = "http://localhost:3000/oauth" 
+export const redirect_uri = "https://www.disstreamchat.com/oauth"
