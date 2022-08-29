@@ -24,6 +24,12 @@ const PrivacyPolicy = styled.div`
 		font-size: 2rem;
 		font-weight: bold;
 	}
+	h3{
+		font-size: 1.25rem;
+		font-weight: bold;
+		margin-bottom: .25rem;
+
+	}
 	ul {
 		padding-left: 1rem;
 	}
@@ -75,6 +81,8 @@ const Privacy = () => {
 					</p>
 
 					<h2>Information we collect</h2>
+
+					<h3>NOTICE: Discord messages may be shared (but not stored) outside of discord.</h3>
 
 					<p>
 						The personal information that you are asked to provide, and the reasons why
