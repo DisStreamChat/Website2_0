@@ -60,3 +60,5 @@ The site welcomes contributions from the community in a variety of ways! For mor
 # Getting help
 
 If you need help either with an issue using the site or making a contribution, feel free to make an issue and we will get to it as soon as we can. You can also get help and give feedback on our [Discord](http://discord.disstreamchat.com) server.
+
+[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
